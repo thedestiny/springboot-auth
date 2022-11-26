@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: product-server
+  main:
+    allow-bean-definition-overriding: true
+
+  cloud:
+    config:
+      allow-override: true
+    nacos:
+      config:
+        group: springboot-oauth
+        server-addr: localhost:8848
+        namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
+#        file-extension: properties
+        username: nacos
+        password: nacos
+        encode: UTF-8
+        max-retry: 3
+        timeout: 4000
+        refresh-enabled: true
