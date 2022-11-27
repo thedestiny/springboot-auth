@@ -44,3 +44,15 @@ app:
       token-info-uri: http://127.0.0.1:9401/oauth/check_token
       # 访问令牌获取 URL，自定义的
       access-token-uri: http://127.0.0.1:9401/oauth/token
+
+feign:
+  okhttp:
+    enabled: true
+
+  httpclient:
+    connection-timeout: 2000
+    connection-timer-repeat: 3000
+    max-connections: 200
+    max-connections-per-route: 50
+    ok-http:
+      read-timeout: 70s
