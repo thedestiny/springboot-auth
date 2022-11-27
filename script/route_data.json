@@ -1,44 +1,44 @@
 [
   {
-    "predicates":[
+    "predicates": [
       {
-        "args":{
-          "pattern":"/order/**"
+        "args": {
+          "pattern": "/order/**"
         },
-        "name":"Path"
+        "name": "Path"
       }
     ],
-    "id":"order-server",
-    "filters":[
+    "id": "order-server",
+    "filters": [
       {
-        "args":{
+        "args": {
           "parts": 0
         },
-        "name":"StripPrefix"
+        "name": "StripPrefix"
       }
     ],
-    "uri":"lb://order-server",
-    "order":1
+    "uri": "lb://order-server",
+    "order": 1
   },
   {
-    "predicates":[
+    "predicates": [
       {
-        "args":{
-          "pattern":"/user/**"
+        "args": {
+          "pattern": "/user/**"
         },
-        "name":"Path"
+        "name": "Path"
       }
     ],
-    "id":"user-server",
-    "filters":[
+    "id": "user-server",
+    "filters": [
       {
-        "args":{
+        "args": {
           "parts": 0
         },
-        "name":"StripPrefix"
+        "name": "StripPrefix"
       }
     ],
-    "uri":"lb://user-server",
-    "order":1
+    "uri": "lb://user-server",
+    "order": 1
   }
 ]

@@ -21,7 +21,7 @@ public class GatewayConfigServiceConfig {
     @Autowired
     private NacosConfigProperties properties;
 
-
+    // 创建 nacos ConfigService
     @Bean
     public ConfigService configService() throws NacosException {
         Properties prop = new Properties();

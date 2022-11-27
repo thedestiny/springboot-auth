@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.platform.authgateway.filter.NacosConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -40,30 +41,10 @@ public class GatewayRouteInitConfig {
             // getConfigAndSignListener()方法 发起长轮询和对dataId数据变更注册监听的操作
             // getConfig 只是发送普通的HTTP请求
             String initConfigInfo = configService.getConfigAndSignListener(routeConfig.getDataId(),
-                    routeConfig.getGroup(), properties.getTimeout(), new Listener() {
-                        @Override
-                        public Executor getExecutor() {
-                            return Executors.newSingleThreadExecutor();
-                        }
+                    routeConfig.getGroup(), properties.getTimeout(), new NacosConfigListener(routeService));
 
-                        @Override
-                        public void receiveConfigInfo(String configInfo) {
-                            if (StringUtils.isNotEmpty(configInfo)) {
-                                log.info("接收到网关路由更新配置：\r\n{}", configInfo);
-                                List<RouteDefinition> definitions = JSONArray.parseArray(configInfo, RouteDefinition.class);
-                                if (CollUtil.isNotEmpty(definitions)) {
-                                    for (RouteDefinition definition : definitions) {
-                                        log.info("config update route {}", definition);
-                                        routeService.update(definition);
-                                    }
-                                }
-
-                            } else {
-                                log.warn("当前网关无动态路由相关配置");
-                            }
-                        }
-                    });
             log.info("获取网关当前动态路由配置:\r\n{}", initConfigInfo);
+            // 第一次初始化动态网关
             if (StringUtils.isNotEmpty(initConfigInfo)) {
 
                 List<RouteDefinition> definitions = JSONArray.parseArray(initConfigInfo, RouteDefinition.class);
