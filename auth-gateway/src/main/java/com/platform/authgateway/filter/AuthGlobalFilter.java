@@ -3,7 +3,6 @@ package com.platform.authgateway.filter;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.nimbusds.jose.JWSObject;
-import com.platform.authcommon.common.ErrorCode;
 import com.platform.authcommon.common.Result;
 import com.platform.authcommon.common.ResultCode;
 import lombok.extern.slf4j.Slf4j;

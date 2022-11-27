@@ -24,19 +24,20 @@ public class AppGatewayFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
+        // 获取请求和响应信息
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         Result<Object> failed = Result.failed(ResultCode.UNAUTHORIZED, "登录失败");
+        // 获取请求头中的 Authorization 信息
         String authorization = request.getHeaders().getFirst("Authorization");
         log.info("gateway filter uri is {} auth {}", exchange.getRequest().getURI().getPath(), authorization);
         if (StrUtil.isEmpty(authorization)) {
             DataBuffer buffer = response.bufferFactory().wrap(JSONObject.toJSONString(failed).getBytes());
             return response.writeWith(Mono.just(buffer));
         }
+        // 获取token 信息并将token 信息进行转换，获取 payload 信息
         authorization = authorization.replace("Bearer ", "");
         String payload = "";
-
         try {
             payload = StrUtil.toString(JWSObject.parse(authorization).getPayload());
         } catch (Exception e) {
@@ -48,7 +49,6 @@ public class AppGatewayFilter implements WebFilter {
             DataBuffer buffer = response.bufferFactory().wrap(failed.toString().getBytes());
             return response.writeWith(Mono.just(buffer));
         }
-
         //从token中解析用户信息并设置到Header中去
         log.info("AuthGlobalFilter.filter() user:{}", payload);
         ServerHttpRequest req = exchange.getRequest().mutate().header("user", payload).build();

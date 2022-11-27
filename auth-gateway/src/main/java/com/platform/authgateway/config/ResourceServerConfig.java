@@ -6,7 +6,6 @@ import com.platform.authgateway.authorization.AuthorizationManager;
 import com.platform.authgateway.component.RestAuthenticationEntryPoint;
 import com.platform.authgateway.component.RestfulAccessDeniedHandler;
 import com.platform.authgateway.filter.AppGatewayFilter;
-import com.platform.authgateway.filter.AuthGlobalFilter;
 import com.platform.authgateway.filter.IgnoreUrlsRemoveJwtFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,8 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Configuration
-@EnableWebFluxSecurity
+@EnableWebFluxSecurity // 开启webflux配置
 public class ResourceServerConfig {
-
     @Autowired
     private AuthorizationManager manager;
     @Autowired
@@ -45,15 +43,10 @@ public class ResourceServerConfig {
     private IgnoreUrlsRemoveJwtFilter jwtFilter;
     @Autowired
     private AppGatewayFilter gatewayFilter;
-
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-
-        http.oauth2ResourceServer().jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter());
-
-        //自定义处理JWT请求头过期或签名错误的结果
-        // http.oauth2ResourceServer().authenticationEntryPoint(entryPoint);
+        // jwt 相关配置信息
+        http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
         //对白名单路径，直接移除JWT请求头
         http.addFilterBefore(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         http.addFilterBefore(gatewayFilter, SecurityWebFiltersOrder.AUTHENTICATION);
@@ -61,24 +54,17 @@ public class ResourceServerConfig {
                 .pathMatchers(ArrayUtil.toArray(ignoreUrlsConfig.getUrls(),String.class)).permitAll()//白名单配置
                 .anyExchange().access(manager) //鉴权管理器配置
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(deniedHandler)//处理未授权
-                .authenticationEntryPoint(entryPoint)//处理未认证
-                .and().csrf().disable();
-
+                // 处理拒接处理器和未认证处理器
+                .exceptionHandling().accessDeniedHandler(deniedHandler).authenticationEntryPoint(entryPoint)
+                .and().csrf().disable().cors().disable();
         return http.build();
     }
 
-
-
-
     @Bean
     public Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter() {
-
         JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
         converter.setAuthorityPrefix(AuthConstant.AUTHORITY_PREFIX);
         converter.setAuthoritiesClaimName(AuthConstant.AUTHORITY_CLAIM_NAME);
-
         JwtAuthenticationConverter jwtAuth = new JwtAuthenticationConverter();
         jwtAuth.setJwtGrantedAuthoritiesConverter(converter);
         return new ReactiveJwtAuthenticationConverterAdapter(jwtAuth);

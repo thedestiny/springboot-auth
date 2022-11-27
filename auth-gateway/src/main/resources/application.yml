@@ -4,7 +4,6 @@ server:
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-
   profiles:
     active: dev
   application:
@@ -46,11 +45,20 @@ spring:
 
   redis:
     port: 6379
-    password: tianhe
+    password:
     host: localhost
     timeout: 10000
     database: 2
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
 
+gateway:
+  routes:
+    config:
+      data-id: gateway-routes.json  #动态路由
+      group: springboot-oauth
+      namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
 
 secure:
   ignore:

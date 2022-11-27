@@ -26,6 +26,7 @@ public class AuthController {
 
     /**
      * Oauth2登录认证
+     * /oauth/token
      */
     @PostMapping(value = "/token")
     public OAuth2AccessToken accessToken(Principal principal,

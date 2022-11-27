@@ -63,3 +63,7 @@ CREATE TABLE `oauth_refresh_token`  (
      `authentication` blob NULL
 ) ENGINE = InnoDB ;
 
+-- client 配置信息
+INSERT INTO `oauth_client_details` VALUES ('clientapp', 'micro-oauth', '112233', 'read_userinfo,read_contacts', 'authorization_code,refresh_token', 'http://127.0.0.1:9501/callback', 'ROLE_USER', 360000, 360000, NULL, 'false');
+INSERT INTO `oauth_client_details` VALUES ('client_001', 'client_resource', '112233', 'all', 'authorization_code,refresh_token', 'http://127.0.0.1:9501/callback', 'ROLE_USER', 360000, 360000, NULL, 'false');
+

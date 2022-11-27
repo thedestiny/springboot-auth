@@ -38,7 +38,7 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@EnableAuthorizationServer
+@EnableAuthorizationServer // 开启认证服务
 public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -52,27 +52,22 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
     @Autowired
     private DataSource dataSource;
 
+    // 采用数据库存储客户端服务信息
     @Bean
     public JdbcClientDetailsService clientDetailsService() {
         return new JdbcClientDetailsService(dataSource);
     }
-
-//    @Bean
-//    public JdbcTokenStore jdbcTokenStore() {
-//        return new JdbcTokenStore(dataSource);
-//    }
-
+    // 采用数据库存储自动授权信息
     @Bean
     public ApprovalStore approvalStore() {
         return new JdbcApprovalStore(dataSource);
     }
-
-
+    // 授权码存储配置
     @Bean
     public AuthorizationCodeServices authorizationCodeServices() {
         return new JdbcAuthorizationCodeServices(dataSource);
     }
-
+    // 配置令牌访问的端点安全约束
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         log.info(" configure !");
@@ -80,18 +75,13 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
         oauthServer.allowFormAuthenticationForClients()
                 .checkTokenAccess("isAuthenticated()") // 需要授权  /oauth/check_token
                 .tokenKeyAccess("permitAll()") //  公开 /oauth/token_key
+                // 使用不加密的方式，或者使用 PasswordEncoder 的方式来处理 client_secret 加密问题
+                // .passwordEncoder(passwordEncoder)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
 
     }
 
-//    @Override
-//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.authenticationManager(authenticationManager);
-//    }
-
-    /**
-     * 配置令牌访问的端点
-     */
+    // 用来配置令牌的访问端点和令牌服务
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
@@ -101,7 +91,6 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
         delegates.add(accessTokenConverter());
         enhancerChain.setTokenEnhancers(delegates); //配置JWT的内容增强器
 
-        //
         endpoints
                 // 设置异常WebResponseExceptionTranslator，用于处理用户名，密码错误、授权类型不正确的异常
                 // .exceptionTranslator(new OAuthServerWebResponseExceptionTranslator())
@@ -114,33 +103,11 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
                 .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST) //支持GET,POST请求
                 .tokenEnhancer(enhancerChain)
         ;
+        // 重写授权页面
         endpoints.pathMapping("/oauth/confirm_access","/custom/confirm_access");
 
-        //
     }
-
-    /**
-     * 令牌管理服务的配置
-     */
-//    @Bean
-//    public AuthorizationServerTokenServices tokenServices() {
-//        DefaultTokenServices services = new DefaultTokenServices();
-//        //客户端端配置策略
-//        services.setClientDetailsService(clientDetailsService());
-//        //支持令牌的刷新
-//        services.setSupportRefreshToken(true);
-//        //令牌服务 jdbcTokenStore jwtTokenStore
-//        services.setTokenStore(jwtTokenStore());
-//        //access_token的过期时间
-//        services.setAccessTokenValiditySeconds(60 * 60 * 24 * 3);
-//        //refresh_token的过期时间
-//        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
-//        //设置令牌增强，使用JwtAccessTokenConverter进行转换
-//        services.setTokenEnhancer(tokenEnhancer);
-//        return services;
-//    }
-
-
+    // 配置客户端的详情服务信息，客户端的信息在这里进行初始化，可以采用 inMemory 的方式，但这里使用的是数据库 存储
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
@@ -162,14 +129,13 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
 //                .resourceIds();
 
     }
-
+    // jwt token 信息
     @Bean
     public JwtTokenStore jwtTokenStore() {
         //基于内存的普通令牌  InMemoryTokenStore  JdbcTokenStore  JwkTokenStore RedisTokenStore
         //return new InMemoryTokenStore();
         return new JwtTokenStore(accessTokenConverter());
     }
-//
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         // https://blog.csdn.net/m0_45406092/article/details/121065177
@@ -187,6 +153,34 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "123456".toCharArray());
         return keyStoreKeyFactory.getKeyPair("jwt", "123456".toCharArray());
     }
+
+
+
+//    @Override
+//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+//        endpoints.authenticationManager(authenticationManager);
+//    }
+
+    /**
+     * 令牌管理服务的配置
+     */
+//    @Bean
+//    public AuthorizationServerTokenServices tokenServices() {
+//        DefaultTokenServices services = new DefaultTokenServices();
+//        //客户端端配置策略
+//        services.setClientDetailsService(clientDetailsService());
+//        //支持令牌的刷新
+//        services.setSupportRefreshToken(true);
+//        //令牌服务 jdbcTokenStore jwtTokenStore
+//        services.setTokenStore(jwtTokenStore());
+//        //access_token的过期时间
+//        services.setAccessTokenValiditySeconds(60 * 60 * 24 * 3);
+//        //refresh_token的过期时间
+//        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
+//        //设置令牌增强，使用JwtAccessTokenConverter进行转换
+//        services.setTokenEnhancer(tokenEnhancer);
+//        return services;
+//    }
 
 
 }
