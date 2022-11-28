@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+// nacos 配置信息监听器设置
 @Slf4j
 public class NacosConfigListener extends AbstractListener {
 
@@ -20,12 +21,12 @@ public class NacosConfigListener extends AbstractListener {
     public NacosConfigListener(RouteService routeService) {
         this.routeService = routeService;
     }
-
+    // 使用一个线程池来处理配置信息
     @Override
     public Executor getExecutor() {
         return Executors.newSingleThreadExecutor();
     }
-
+    // 接受 nacos 的配置变动信息
     @Override
     public void receiveConfigInfo(String configInfo) {
         // 接收网络配置信息 并进行更新路由配置

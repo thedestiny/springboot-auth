@@ -1,13 +1,10 @@
 package com.platform.authgateway.config;
 
 
-import cn.hutool.core.collection.CollUtil;
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.nacos.api.config.ConfigService;
-import com.alibaba.nacos.api.config.listener.Listener;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.platform.authgateway.filter.NacosConfigListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +14,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 @RefreshScope
 @Slf4j
 @Component
 public class GatewayRouteInitConfig {
-
     @Autowired
     private GatewayRouteConfig routeConfig;
     @Autowired
@@ -33,33 +27,27 @@ public class GatewayRouteInitConfig {
     private RouteService routeService;
     @Autowired
     private ConfigService configService;
-
     @PostConstruct
     public void init() {
-        log.info("开始网关动态路由初始化...");
+        log.info("start gateway route config...");
         try {
             // getConfigAndSignListener()方法 发起长轮询和对dataId数据变更注册监听的操作
             // getConfig 只是发送普通的HTTP请求
             String initConfigInfo = configService.getConfigAndSignListener(routeConfig.getDataId(),
                     routeConfig.getGroup(), properties.getTimeout(), new NacosConfigListener(routeService));
-
             log.info("获取网关当前动态路由配置:\r\n{}", initConfigInfo);
             // 第一次初始化动态网关
             if (StringUtils.isNotEmpty(initConfigInfo)) {
-
                 List<RouteDefinition> definitions = JSONArray.parseArray(initConfigInfo, RouteDefinition.class);
-                if (CollUtil.isNotEmpty(definitions)) {
-                    for (RouteDefinition definition : definitions) {
-                        routeService.add(definition);
-                    }
+                for (RouteDefinition definition : definitions) {
+                    routeService.add(definition);
                 }
-
             } else {
-                log.warn("当前网关无动态路由相关配置");
+                log.warn("no routes config");
             }
-            log.info("结束网关动态路由初始化...");
+            log.info("finish gateway config ...");
         } catch (Exception e) {
-            log.error("初始化网关路由时发生错误", e);
+            log.error("dynamic gateway config error ", e);
         }
 
     }

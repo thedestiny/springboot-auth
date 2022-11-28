@@ -21,7 +21,6 @@ public class RouteServiceImpl implements RouteService, ApplicationEventPublisher
     // 发布事件的
     private ApplicationEventPublisher publisher;
 
-
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher publisher) {
         this.publisher = publisher;

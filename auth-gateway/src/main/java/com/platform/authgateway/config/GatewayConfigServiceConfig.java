@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
+// 配置 nacos
 @Configuration
 public class GatewayConfigServiceConfig {
 
@@ -21,7 +22,7 @@ public class GatewayConfigServiceConfig {
     @Autowired
     private NacosConfigProperties properties;
 
-    // 创建 nacos ConfigService
+    // 创建 nacos ConfigService， 用来处理 nacos 配置服务
     @Bean
     public ConfigService configService() throws NacosException {
         Properties prop = new Properties();
