@@ -1,0 +1,26 @@
+# 应用名称
+spring:
+   application:
+      name: order-server
+   cloud:
+     nacos:
+       discovery:
+         server-addr: localhost:8848
+         namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
+         group: springboot-oauth
+
+server:
+  port: 9301
+
+
+alipay:
+  private-key: xxx
+  app-cert-path : xx
+  alipay-cert-path: xx
+  alipay-root-cert-path: xx
+  app-id: xx
+  notify: xx
+  charset: UTF-8
+  sign-type: RSA2
+  format: json
+  gateway: https://openapi.alipay.com/gateway.do

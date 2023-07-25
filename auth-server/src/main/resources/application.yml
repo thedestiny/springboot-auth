@@ -1,0 +1,63 @@
+spring:
+  freemarker:
+    suffix: .ftl
+    allow-request-override: true
+    allow-session-override: true
+    cache: false
+    charset: UTF-8
+    enabled: true
+    template-loader-path: classpath:/templates/
+    request-context-attribute: request
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  main:
+    allow-bean-definition-overriding: true
+
+  application:
+    name: auth-server
+  profiles:
+    active: dev
+  cloud:
+    config:
+      allow-override: true
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
+        group: springboot-oauth
+
+  redis:
+    port: 6379
+    password:
+    host: localhost
+    timeout: 10000
+    database: 2
+
+  datasource:
+    hikari:
+      connection-test-query: select 1
+      max-lifetime: 180000
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 36000
+      connection-timeout: 50000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/auth_db?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
+    username: root
+    password: 123456
+
+logging:
+  level:
+    com.platform: debug
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  port: 9401

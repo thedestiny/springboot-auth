@@ -1,0 +1,44 @@
+[
+  {
+    "predicates": [
+      {
+        "args": {
+          "pattern": "/order/**"
+        },
+        "name": "Path"
+      }
+    ],
+    "id": "order-server",
+    "filters": [
+      {
+        "args": {
+          "parts": 0
+        },
+        "name": "StripPrefix"
+      }
+    ],
+    "uri": "lb://order-server",
+    "order": 1
+  },
+  {
+    "predicates": [
+      {
+        "args": {
+          "pattern": "/user/**"
+        },
+        "name": "Path"
+      }
+    ],
+    "id": "user-server",
+    "filters": [
+      {
+        "args": {
+          "parts": 0
+        },
+        "name": "StripPrefix"
+      }
+    ],
+    "uri": "lb://user-server",
+    "order": 1
+  }
+]

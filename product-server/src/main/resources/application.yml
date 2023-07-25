@@ -1,0 +1,58 @@
+spring:
+  datasource:
+    hikari:
+      connection-test-query: select 1
+      max-lifetime: 180000
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 36000
+      connection-timeout: 50000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/auth_db?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
+    username: root
+    password: 123456
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
+        group: springboot-oauth
+  application:
+    name: product-server
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  port: 9501
+
+app:
+  security:
+    oauth2:
+      client-id: client_001
+      client-secret: 112233
+      # 获得 Token 信息的 URL
+      token-info-uri: http://127.0.0.1:9401/oauth/check_token
+      # 访问令牌获取 URL，自定义的
+      access-token-uri: http://127.0.0.1:9401/oauth/token
+
+feign:
+  okhttp:
+    enabled: true
+
+  httpclient:
+    connection-timeout: 2000
+    connection-timer-repeat: 3000
+    max-connections: 200
+    max-connections-per-route: 50
+    ok-http:
+      read-timeout: 70s

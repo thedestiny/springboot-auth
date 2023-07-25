@@ -1,0 +1,72 @@
+server:
+  port: 9201
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active: dev
+  application:
+    name: auth-gateway
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
+        group: springboot-oauth
+
+    gateway:
+      routes: #配置路由路径
+        - id: product-server
+          uri: lb://product-server
+          predicates:
+            - Path=/api/**
+          filters:
+            - StripPrefix=0
+
+        - id: auth-server
+          uri: lb://auth-server
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=0
+
+      discovery:
+        locator:
+          enabled: true #开启从注册中心动态创建路由的功能
+          lower-case-service-id: true #使用小写服务名，默认是大写
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:9401/rsa/publicKey' #配置RSA的公钥访问地址
+
+  redis:
+    port: 6379
+    password:
+    host: localhost
+    timeout: 10000
+    database: 2
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+
+gateway:
+  routes:
+    config:
+      data-id: gateway-routes.json  #动态路由
+      group: springboot-oauth
+      namespace: 163c702f-c805-42f2-a1e1-a491f086f3a2
+
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/actuator/**"
+      - "/auth/oauth/token"
+      - "/api/user/info"
+
+logging:
+  level:
+     com.platform: debug
