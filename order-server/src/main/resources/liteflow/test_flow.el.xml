@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow>
+    <chain name="test_flow">
+        THEN(
+        prepareTrade, grantScore, sendEmail, sendMq, sendPhone
+        );
+    </chain>
+</flow>
