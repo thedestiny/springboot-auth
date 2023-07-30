@@ -24,20 +24,18 @@ public class FlowExecutorService {
 
 
     /**
-     * 处理 交易完成后任务
+     * 处理 交易完成后任务,异步执行
      * @param flowDto
      */
     @Async(value = "getAsyncExecutor")
     public void handleApp(AppFlowDto flowDto){
-
+        // 使用的规则文件，传递参数，上下文对象
         LiteflowResponse response = flowExecutor.execute2Resp("test_flow", flowDto, AppFlowContext.class);
-
         // 获取流程执行后的结果
         if (!response.isSuccess()) {
             Exception e = response.getCause();
             log.warn(" error is {}", e.getCause(), e);
         }
-
         AppFlowContext context = response.getContextBean(AppFlowContext.class);
         log.info("handleApp 执行完成后 context {}", JSONObject.toJSONString(context));
     }

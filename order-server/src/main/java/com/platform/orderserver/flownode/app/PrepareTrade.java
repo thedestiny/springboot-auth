@@ -28,9 +28,7 @@ public class PrepareTrade extends NodeComponent {
         log.info("请求参数 {}", JSONObject.toJSONString(req));
         // 停止任务
         // setIsEnd(Boolean.TRUE);
-
         AppFlowContext context = this.getContextBean(AppFlowContext.class);
-
         log.info("设置上下文对象 {}", JSONObject.toJSONString(context));
     }
 

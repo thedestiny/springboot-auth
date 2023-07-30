@@ -2,7 +2,7 @@
 <flow>
     <chain name="test_flow">
         THEN(
-        prepareTrade, grantScore, sendEmail, sendMq, sendPhone
+           prepareTrade, grantScore, sendMq, WHEN(sendEmail, sendPhone)
         );
     </chain>
 </flow>

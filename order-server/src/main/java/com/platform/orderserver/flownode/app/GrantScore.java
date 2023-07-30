@@ -16,12 +16,9 @@ import java.util.concurrent.TimeUnit;
  * @Description 发送积分
  * @Date 2023-03-31 2:28 PM
  */
-
 @Slf4j
 @Component(value = "grantScore")
 public class GrantScore extends NodeComponent {
-
-
 
     @Override
     public void process() throws Exception {
