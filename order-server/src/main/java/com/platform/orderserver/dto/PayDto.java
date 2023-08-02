@@ -21,5 +21,14 @@ public class PayDto {
      */
     private String storeId;
 
+    /**
+     * 订单号
+     */
+    private String orderNo;
+
+    /**
+     * 支付方式
+     */
+    private Integer payType;
 
 }
