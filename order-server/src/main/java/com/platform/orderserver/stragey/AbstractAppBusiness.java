@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Description
- * @Author liangwenchao
+ * @Author liangkaiyang
  * @Date 2023-08-02 4:33 PM
  */
 
@@ -29,7 +29,7 @@ public abstract class AbstractAppBusiness implements BaseBusiness {
 
 
 
-        return null;
+        return Result.success("处理成功!");
     }
 
     // 订单支付

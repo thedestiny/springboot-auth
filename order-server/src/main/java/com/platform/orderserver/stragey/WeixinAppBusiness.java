@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class AlipayAppBusiness extends AbstractAppBusiness implements BaseBusiness {
+public class WeixinAppBusiness extends AbstractAppBusiness implements BaseBusiness {
 
 
     @Override
@@ -25,7 +25,7 @@ public class AlipayAppBusiness extends AbstractAppBusiness implements BaseBusine
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.info("支付宝支付业务流程");
+        log.info("微信支付业务流程");
         return true;
     }
 

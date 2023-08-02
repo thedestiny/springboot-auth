@@ -5,7 +5,7 @@ import com.platform.orderserver.dto.PayDto;
 
 /**
  * @Description
- * @Author liangwenchao
+ * @Author liangkaiyang
  * @Date 2023-08-02 4:32 PM
  */
 public interface BaseBusiness {
