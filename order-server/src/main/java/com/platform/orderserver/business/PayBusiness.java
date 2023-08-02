@@ -12,6 +12,7 @@ import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.platform.orderserver.config.AliPayConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,6 +28,7 @@ public class PayBusiness {
     @Autowired
     private AliPayConfig payConfig;
     @Autowired
+    @Qualifier(value = "alipayClient")
     private AlipayClient client;
 
     /**

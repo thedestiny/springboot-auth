@@ -32,18 +32,17 @@ public class AliPayConfig {
     private String alipayPublicKey = "";
 
     // 公私钥模式
-    @Bean
+    @Bean(value = "alipayClient")
     public AlipayClient alipayClient() {
-
         return new DefaultAlipayClient(this.gateway, this.appId, this.privateKey,
                 AlipayConstants.FORMAT_JSON, AlipayConstants.CHARSET_UTF8,
                 this.alipayPublicKey, AlipayConstants.SIGN_TYPE_RSA2);
-
     }
 
     // 证书模式
-    @Bean
+    // @Bean(value = "alipayClient")
     public AlipayClient certAlipayRequest() {
+
         CertAlipayRequest request = new CertAlipayRequest();
         request.setServerUrl(gateway);//服务器网址
         request.setAppId(appId);//支付宝分配给开发者的应用ID

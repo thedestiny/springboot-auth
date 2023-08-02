@@ -71,6 +71,12 @@
             <version>3.3.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.yomahub</groupId>
+            <artifactId>liteflow-spring-boot-starter</artifactId>
+            <version>2.10.6</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.zendesk</groupId>
