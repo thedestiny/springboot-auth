@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * @Description appId-客户端公钥配置
- * @Author liangwenchao
+ * @Author liangkaiyang
  * @Date 2023-06-28 3:11 PM
  */
 @Data
