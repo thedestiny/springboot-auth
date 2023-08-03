@@ -33,4 +33,9 @@ public class WeixinAppBusiness extends AbstractAppBusiness implements BaseBusine
     public boolean sendEmail(PayDto pay) {
         return super.sendEmail(pay);
     }
+
+    @Override
+    public boolean sendPhone(PayDto pay) {
+        return super.sendPhone(pay);
+    }
 }

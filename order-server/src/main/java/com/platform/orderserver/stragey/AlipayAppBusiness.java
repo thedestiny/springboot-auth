@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Description
+ * @Description 支付宝业务
  * @Author liangkaiyang
  * @Date 2023-08-02 4:36 PM
  */
 
 @Slf4j
-@Service
+@Service(value = "alipayAppBusiness")
 public class AlipayAppBusiness extends AbstractAppBusiness implements BaseBusiness {
 
 
@@ -32,5 +32,10 @@ public class AlipayAppBusiness extends AbstractAppBusiness implements BaseBusine
     @Override
     public boolean sendEmail(PayDto pay) {
         return super.sendEmail(pay);
+    }
+
+    @Override
+    public boolean sendPhone(PayDto pay) {
+        return super.sendPhone(pay);
     }
 }

@@ -33,4 +33,9 @@ public class UnionPayAppBusiness extends AbstractAppBusiness implements BaseBusi
     public boolean sendEmail(PayDto pay) {
         return super.sendEmail(pay);
     }
+
+    @Override
+    public boolean sendPhone(PayDto pay) {
+        return super.sendPhone(pay);
+    }
 }
