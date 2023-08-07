@@ -25,7 +25,7 @@ public class OceanBaseTest {
         // obmti0vk70rfoej0-mi.oceanbase.aliyuncs.com:3306
         // hu-tools 操作数据库
         Db use = Db.use(dataSource, "com.mysql.cj.jdbc.Driver");
-        List<Entity> datas = use.query("select * from tb_user");
+        List<Entity> datas = use.query("select * from tb_stock_info");
         for (Entity data : datas) {
             log.info("entity {}", JSONObject.toJSONString(data));
         }

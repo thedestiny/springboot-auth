@@ -22,5 +22,8 @@ CREATE TABLE `tb_stock_info` (
      `high_year` decimal(11,3) DEFAULT NULL COMMENT '52周最高',
      `low_year` decimal(11,3) DEFAULT NULL COMMENT '52周最低',
      `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+     `focus` int(11) DEFAULT NULL COMMENT '关注度',
+     `market_capital` decimal(11,3) DEFAULT NULL COMMENT '总市值(亿元)',
+     `turnover_rate` decimal(11,3) DEFAULT NULL COMMENT '换手率(%)',
      PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4 COMMENT = 'stock信息表';

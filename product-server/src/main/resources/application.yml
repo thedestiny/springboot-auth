@@ -9,14 +9,11 @@ spring:
       connection-timeout: 50000
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/auth_db?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
-    username: root
-    password: 123456
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: dev
+    active: prod
   cloud:
     nacos:
       discovery:
@@ -34,6 +31,9 @@ management:
 
 server:
   port: 9501
+
+
+
 
 app:
   security:
@@ -56,3 +56,11 @@ feign:
     max-connections-per-route: 50
     ok-http:
       read-timeout: 70s
+
+mybatis-plus:
+  type-aliases-package: com.platform.productserver.entity
+  global-config:
+    db-config:
+      id-type: assign_id
+
+  mapper-locations: classpath:/mapper/*.xml
