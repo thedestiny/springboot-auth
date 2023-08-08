@@ -25,23 +25,39 @@ public class StockTask {
     @Autowired
     private StockInfoMapper stockInfoMapper;
 
+    /**
+     * 沪深股市一览表，每页90条，一共 57页数据
+     * https://xueqiu.com/hq#exchange=CN&firstName=1&secondName=1_0
+     */
     @Scheduled(cron = "20 1/2 * * * ?")
     public void task() {
 
         log.info("start task !");
-        List<StockInfo> stockInfos = SnowStockUtils.queryStockList(1, 90);
-        if (CollUtil.isNotEmpty(stockInfos)) {
+        Integer total = 0;
+        for (int i = 0; i < 57; i++) {
+            List<StockInfo> stockInfos = SnowStockUtils.queryStockList(i + 1, 90);
+            if (CollUtil.isEmpty(stockInfos)) {
+                return;
+            }
+            total += stockInfos.size();
+            log.info("stock page {} size {}", i + 1, total);
             for (StockInfo node : stockInfos) {
-                JSONObject infos = SnowStockUtils.queryStockInfo(node);
-                String high = infos.getString("52周最高");
-                String low = infos.getString("52周最低");
-                String yield = infos.getString("股息率(TTM)");
-                node.setHighYear(new BigDecimal(high));
-                node.setLowYear(new BigDecimal(low));
-                log.info("stock {}",JSONObject.toJSONString(node) );
-                stockInfoMapper.saveStockInfo(node);
+                try {
+                    JSONObject infos = SnowStockUtils.queryStockInfo(node);
+                    String high = infos.getString("52周最高");
+                    String low = infos.getString("52周最低");
+                    String yield = infos.getString("股息率(TTM)");
+                    node.setHighYear(new BigDecimal(high));
+                    node.setLowYear(new BigDecimal(low));
+                    // log.info("stock code {} and name {}", node.getId(), node.getName());
+                    stockInfoMapper.saveStockInfo(node);
+                } catch (Exception e) {
+
+                }
+
             }
         }
+
 
     }
 

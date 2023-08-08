@@ -41,6 +41,9 @@ public class SnowStockUtils {
         JSONObject json = JSONObject.parseObject(execute.body());
         JSONObject data = json.getJSONObject("data");
         JSONArray list = data.getJSONArray("list");
+        if(list == null){
+            return resultList;
+        }
         for (int i = 0; i < list.size(); i++) {
             JSONObject node = list.getJSONObject(i);
             String symbol = node.getString("symbol"); // 股票代码
@@ -114,13 +117,13 @@ public class SnowStockUtils {
         Element focusTime = element.getElementsByClass("stock-time").get(0); // 球友关注和数据时间
         // 1755 球友关注 休市 08-04 15:34:51 北京时间
         List<String> split = StrUtil.split(focusTime.text(), " ");
-        System.out.println(split);
+        // System.out.println(split);
         String focus = split.get(0);
         DateTime parse1 = DateUtil.parse(DateUtil.date().year() + "-" + split.get(3), "yyyy-MM-dd");
         stock.setUpdateTime(parse1);
         stock.setFocus(handleFocus(focusTime.text(), focus));
-        System.out.println(focus);
-        System.out.println(parse1);
+        // System.out.println(focus);
+        // System.out.println(parse1);
         Element table = element.getElementsByClass("quote-info").get(0);  // 表格
         Elements tds = table.getElementsByTag("td");
         JSONObject result = new JSONObject();
