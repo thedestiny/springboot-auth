@@ -72,13 +72,14 @@ public class SnowStockUtils {
 
     public static void main(String[] args) {
 
+        JSONObject jsonObject = queryStockLine("SZ002032");
         StockInfo info = new StockInfo();
         // info.setId("SZ301388");
         info.setId("SH600519");
         // SZ301388
-        JSONObject infs = queryStockInfo(info);
+        // JSONObject infs = queryStockInfo(info);
 
-        List<StockInfo> stocks = queryStockList(1, 90);
+        // List<StockInfo> stocks = queryStockList(1, 90);
 //         for (int i = 0; i < stocks.size(); i++) {
 //             StockInfo stock = stocks.get(i);
 //             JSONObject infos = queryStockInfo(stock);
@@ -144,6 +145,34 @@ public class SnowStockUtils {
         //     System.out.println(key + "  ==  " + value);
         // }
         return result;
+
+
+    }
+
+    public static final String kline = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol={}&begin=1691505314056&period=week&type=before&count=-284&indicator=kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance";
+
+    /**
+     * 查询股票 k 线数据
+     * @param code
+     * @return
+     */
+    public static JSONObject queryStockLine(String code){
+
+        String format = StrUtil.format(kline, code);
+        HttpRequest request = HttpUtil.createGet(format);
+        request.header("Cookie", cookie);
+        HttpResponse execute = request.execute();
+        String body = execute.body();
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        JSONObject data = jsonObject.getJSONObject("data");
+        // 数据以及对应的列名称
+        JSONArray item = data.getJSONArray("item");
+        JSONArray column = data.getJSONArray("column");
+        System.out.println(jsonObject);
+
+
+        return null;
+
 
 
     }
