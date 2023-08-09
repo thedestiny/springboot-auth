@@ -10,6 +10,8 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.platform.productserver.dto.LineDto;
 import com.platform.productserver.entity.StockInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -19,7 +21,10 @@ import org.jsoup.select.Elements;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class SnowStockUtils {
@@ -41,7 +46,7 @@ public class SnowStockUtils {
         JSONObject json = JSONObject.parseObject(execute.body());
         JSONObject data = json.getJSONObject("data");
         JSONArray list = data.getJSONArray("list");
-        if(list == null){
+        if (list == null) {
             return resultList;
         }
         for (int i = 0; i < list.size(); i++) {
@@ -149,16 +154,20 @@ public class SnowStockUtils {
 
     }
 
-    public static final String kline = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol={}&begin=1691505314056&period=week&type=before&count=-284&indicator=kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance";
+    public static final String kline = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol={}&begin={}&period={}&type=before&count=-284&indicator=kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance";
 
     /**
      * 查询股票 k 线数据
+     *
      * @param code
      * @return
      */
-    public static JSONObject queryStockLine(String code){
-
-        String format = StrUtil.format(kline, code);
+    public static JSONObject queryStockLine(String code) {
+        // 查询起始时间 1691683954263
+        long time = DateUtil.parse("2020-01-01", "yyyy-MM-dd").getTime();
+        // day week month quarter year
+        time = 1691684478473L;
+        String format = StrUtil.format(kline, code, time, "week");
         HttpRequest request = HttpUtil.createGet(format);
         request.header("Cookie", cookie);
         HttpResponse execute = request.execute();
@@ -168,12 +177,23 @@ public class SnowStockUtils {
         // 数据以及对应的列名称
         JSONArray item = data.getJSONArray("item");
         JSONArray column = data.getJSONArray("column");
-        System.out.println(jsonObject);
+        // System.out.println(jsonObject);
 
+        List<LineDto> builds = Lists.newArrayList();
+        for (int i = 0; i < item.size(); i++) {
+            LineDto build = LineDto.build(item.getJSONArray(i));
+            builds.add(build);
+        }
+        // 按照时间倒序排列
+        List<LineDto> sorted = builds.stream().sorted(Comparator.comparing(LineDto::getTimestamp).reversed()).collect(Collectors.toList());
+
+        for (LineDto lineDto : sorted) {
+            System.out.println(lineDto);
+        }
 
         return null;
 
-
-
     }
+
+
 }

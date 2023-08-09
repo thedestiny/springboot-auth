@@ -31,7 +31,6 @@ public class StockTask {
      */
     @Scheduled(cron = "20 1/2 * * * ?")
     public void task() {
-
         log.info("start task !");
         Integer total = 0;
         for (int i = 0; i < 57; i++) {
@@ -52,13 +51,11 @@ public class StockTask {
                     // log.info("stock code {} and name {}", node.getId(), node.getName());
                     stockInfoMapper.saveStockInfo(node);
                 } catch (Exception e) {
-
+                    log.error("code is error {}", e.getMessage(), e);
                 }
 
             }
         }
-
-
     }
 
 

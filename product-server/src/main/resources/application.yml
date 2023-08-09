@@ -1,15 +1,4 @@
 spring:
-  datasource:
-    hikari:
-      connection-test-query: select 1
-      max-lifetime: 180000
-      minimum-idle: 10
-      maximum-pool-size: 50
-      idle-timeout: 36000
-      connection-timeout: 50000
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
@@ -22,6 +11,30 @@ spring:
         group: springboot-oauth
   application:
     name: product-server
+  # 数据库连接和数据库连接池配置
+  datasource:
+    hikari:
+      connection-test-query: select 1
+      max-lifetime: 180000
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 36000
+      connection-timeout: 50000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: url
+    username: username
+    password: password
+# mybatis-plus 配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.platform.productserver.entity
+  global-config:
+    db-config:
+      id-type: assign_id
+  configuration:
+    map-underscore-to-camel-case: true
+
 
 management:
   endpoints:
@@ -57,10 +70,4 @@ feign:
     ok-http:
       read-timeout: 70s
 
-mybatis-plus:
-  type-aliases-package: com.platform.productserver.entity
-  global-config:
-    db-config:
-      id-type: assign_id
 
-  mapper-locations: classpath:/mapper/*.xml
