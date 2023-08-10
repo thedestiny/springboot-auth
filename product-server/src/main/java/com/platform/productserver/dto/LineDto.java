@@ -1,13 +1,13 @@
 package com.platform.productserver.dto;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONArray;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.jar.JarEntry;
 
 /**
  * 股票k 线图数据
@@ -34,7 +34,7 @@ public class LineDto implements Serializable {
     private BigDecimal percent;
     // 换手率
     private BigDecimal turn;
-    // 成交金额
+    // 成交金额(亿元)
     private BigDecimal amount;
     // 市盈率
     private BigDecimal pe;
@@ -44,6 +44,8 @@ public class LineDto implements Serializable {
     private BigDecimal ps;
     // 实现率
     private BigDecimal pcf;
+    // 流动市值
+    private BigDecimal floatCapital;
 
     /**
      * 0-timestamp
@@ -63,8 +65,6 @@ public class LineDto implements Serializable {
      * @return
      */
     public static LineDto build(JSONArray ele){
-
-        // JSONArray ele = item.getJSONArray(i);
         Long aLong = ele.getLong(0);
         String date = DateUtil.format(DateUtil.date(aLong), "yyyy-MM-dd");
         LineDto dto = LineDto.builder()
@@ -72,7 +72,11 @@ public class LineDto implements Serializable {
                 .chg(bg(ele, 6)).percent(bg(ele, 7)).turn(bg(ele, 8)).amount(bg(ele, 9))
                 .pe(bg(ele, 12)).pb(bg(ele, 13)).ps(bg(ele, 14)).pcf(bg(ele, 15))
                 .build();
-        // System.out.println(dto);
+        BigDecimal turn = dto.getTurn();
+        BigDecimal amount = dto.getAmount();
+        BigDecimal div = NumberUtil.div(amount, turn, 2);
+        div = NumberUtil.div(div, 1000000,2); // 转换单位为 亿元
+        dto.setFloatCapital(div);
         return dto;
 
     }

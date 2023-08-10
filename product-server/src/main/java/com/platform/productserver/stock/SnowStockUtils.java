@@ -1,6 +1,7 @@
 package com.platform.productserver.stock;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -32,7 +33,7 @@ public class SnowStockUtils {
     // 获取stock 列表
     public final static String tmp = "https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={}&size={}&order=desc&orderby=code&order_by=symbol&market=CN&type=sh_sz";
     // cookie
-    public final static String cookie = "device_id=2b38bc16558c7136729b7ca56964df25; s=af11m6tu48; xq_a_token=715ae77c7b72c67549b80e153e894ef2e19f0446; xq_r_token=a1c71f74d5f0fd50f87640a0682c837e5a07f706; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5MjkyMzcyMSwiY3RtIjoxNjkxMjk4NDEwMzk2LCJjaWQiOiJkOWQwbjRBWnVwIn0.aIP_BZmsXrJ3UuEzXUETjHjS4F5tl5PO1z9zLF_z6YgOt8HCa6g9MufuI2IPsZuCxaEQMM2JJnHQJnEb5RjGlGlez5uX_pVSMugf_GcvKbDWetO7t9qQ6bc5E3d6kQxAqp22a9mXYbtOm483XJiwIWrxUDgLfL_9JCOoeLwC6nulDWDTsqURbiJOB1vqfKj4I91A-q16ylmq6w_pAQxHXNz2weCAMBD-gYdpiSH_GjoMwfyNA7LrcU98dcrL_pdKPgXwzpzJ7Uy-l8olN-HeByTFXsT5Aa_d1tkambcK3B3nnDREzZs1RIEYzwEhiLqgFiKuHn3owsyEAOwrBLaiJQ; Hm_lvt_1db88642e346389874251b5a1eded6e3=1691258397,1691298436; u=391691298436287; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1691298483";
+    public final static String cookie = "device_id=2b38bc16558c7136729b7ca56964df25; s=af11m6tu48; xq_a_token=5ebe9dee46079c18ce86d1b568ceb4f4a6f40ed6; xqat=5ebe9dee46079c18ce86d1b568ceb4f4a6f40ed6; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOjgxNTg3ODA5NDYsImlzcyI6InVjIiwiZXhwIjoxNjk0MDEwNjc0LCJjdG0iOjE2OTE0MTg2NzQzMDQsImNpZCI6ImQ5ZDBuNEFadXAifQ.iAU87KeSQnhNLNzZbiTH5w-X20PYvqdm2w19PUF7cDBcMCp91-HN2W4izwqbNCxhCpUJF5lrjNTDlgOfORpvwCSFU8eUQXeGrvONa2k-YZFYNMZfFDkE66JWYfXbBj7nZMp4WuDVB3ByCIUuDSBXM_bkaIuA2Tbxib2MoHpaqhnMIMSzsYg6jxgoLOLbQOLYP0YOZ2ud_xOg5ufSqTD4BzQg016mGNS6r55DPUYVQX_WF5iJQyTCwZnaHWblwF5QNpYxE9EvZ_cb3sGRM1dF9R14B9ZzBmY7g5rbfXtj9Jw7AwkAIKmEMfJgu06zfLMviWbU5rw01y_nePHltbv8Pw; xq_r_token=7c7bb53ce65f0eb34bbf61a2de4e68778f33f960; xq_is_login=1; u=8158780946; bid=db8e4f1e50c43c68f8fff28eae72dd3f_ll3vxqz5; Hm_lvt_1db88642e346389874251b5a1eded6e3=1691298436,1691414145,1691594916,1691673376; is_overseas=0; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1691673420";
 
     /**
      * 获取股票列表信息
@@ -77,10 +78,23 @@ public class SnowStockUtils {
 
     public static void main(String[] args) {
 
-        JSONObject jsonObject = queryStockLine("SZ002032");
+        List<LineDto> dtoList = queryStockLine("SZ002032", 1691684478473L, "week");
         StockInfo info = new StockInfo();
         // info.setId("SZ301388");
         info.setId("SH600519");
+
+        List<StockInfo> stocks = queryStockList(1, 900);
+        for (StockInfo stock : stocks) {
+            try {
+                List<LineDto> dtoList1 = queryStockLine(stock.getId(), 1691684478473L, "week");
+                stockModel(stock, dtoList1);
+            } catch (Exception e){}
+
+
+
+        }
+
+
         // SZ301388
         // JSONObject infs = queryStockInfo(info);
 
@@ -154,44 +168,80 @@ public class SnowStockUtils {
 
     }
 
+    /**
+     * k 线数据获取接口列表
+     */
     public static final String kline = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol={}&begin={}&period={}&type=before&count=-284&indicator=kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance";
 
     /**
      * 查询股票 k 线数据
      *
-     * @param code
+     * @param code   股票代码
+     * @param time   开始时间
+     * @param period 查询周期  day week month quarter year
      * @return
      */
-    public static JSONObject queryStockLine(String code) {
-        // 查询起始时间 1691683954263
-        long time = DateUtil.parse("2020-01-01", "yyyy-MM-dd").getTime();
-        // day week month quarter year
-        time = 1691684478473L;
-        String format = StrUtil.format(kline, code, time, "week");
+    public static List<LineDto> queryStockLine(String code, long time, String period) {
+        String format = StrUtil.format(kline, code, time, period);
         HttpRequest request = HttpUtil.createGet(format);
         request.header("Cookie", cookie);
         HttpResponse execute = request.execute();
         String body = execute.body();
         JSONObject jsonObject = JSONObject.parseObject(body);
         JSONObject data = jsonObject.getJSONObject("data");
-        // 数据以及对应的列名称
+        // 数据以及对应的列名称 item 数据列表 column 数据列 JSONArray column = data.getJSONArray("column");
         JSONArray item = data.getJSONArray("item");
-        JSONArray column = data.getJSONArray("column");
-        // System.out.println(jsonObject);
-
         List<LineDto> builds = Lists.newArrayList();
         for (int i = 0; i < item.size(); i++) {
-            LineDto build = LineDto.build(item.getJSONArray(i));
-            builds.add(build);
+            builds.add(LineDto.build(item.getJSONArray(i)));
         }
-        // 按照时间倒序排列
+        // 按照时间倒序排列 打印 k 线数据信息
         List<LineDto> sorted = builds.stream().sorted(Comparator.comparing(LineDto::getTimestamp).reversed()).collect(Collectors.toList());
+        for (LineDto o : sorted) {
+            List<Object> objects = Lists.newArrayList(o.getTimestamp(), o.getPercent(), o.getOpen(), o.getClose(), o.getHigh(), o.getLow(), o.getPb(), o.getPe(), o.getFloatCapital());
+            // List<String> dtoList = objects.stream().map(Object::toString).collect(Collectors.toList());
+            // System.out.println(CollUtil.join(dtoList, "\t"));
+        }
+        return sorted;
+    }
 
-        for (LineDto lineDto : sorted) {
-            System.out.println(lineDto);
+    /**
+     * 选股模型
+     */
+    public static void stockModel(StockInfo stock, List<LineDto> dtos) {
+        if (CollUtil.isEmpty(dtos) || dtos.size() < 3) {
+            return;
+        }
+        // 获取最近的一条数据
+        LineDto dto = dtos.get(0);
+        BigDecimal capital = dto.getFloatCapital();
+        BigDecimal pe = dto.getPe();
+        BigDecimal pcf = dto.getPcf();
+        // 最近三周的涨跌幅
+        BigDecimal p1 = dto.getPercent();
+        BigDecimal p2 = dtos.get(1).getPercent();
+        BigDecimal p3 = dtos.get(2).getPercent();
+        // 判断股票市值, 选择市值大于 50亿元，小于 300亿流动市值的股票
+        if (NumberUtil.isGreater(capital, BigDecimal.valueOf(300)) || NumberUtil.isLess(capital, BigDecimal.valueOf(50))) {
+            return;
+        }
+        // 判断市盈率，小于 15 倍的 或者大于 50倍的排除
+        if (NumberUtil.isGreater(pe, BigDecimal.valueOf(50)) || NumberUtil.isLess(pe, BigDecimal.valueOf(15))) {
+            return;
+        }
+        // 判断市现率，小于 25 即可，数据越大表示公司现金流压力较大
+        if (NumberUtil.isGreater(pcf, BigDecimal.valueOf(25))) {
+            return;
+        }
+        // 近三周涨幅连续递增,涨幅大于0，且小于10，买在起点
+        if (NumberUtil.isGreater(p1, BigDecimal.valueOf(0))
+                && NumberUtil.isLess(p1, BigDecimal.valueOf(10))
+                && NumberUtil.isGreater(p1, p2)
+                && NumberUtil.isGreater(p2, p3)
+        ) {
+            System.out.println("选中 " + stock.getId() + " " + stock.getName());
         }
 
-        return null;
 
     }
 
