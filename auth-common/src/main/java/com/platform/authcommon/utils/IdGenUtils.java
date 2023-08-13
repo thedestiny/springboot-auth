@@ -1,8 +1,11 @@
-package com.platform.orderserver.utils;
+package com.platform.authcommon.utils;
 
 import cn.hutool.core.lang.Snowflake;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * id 生成器
+ */
 @Slf4j
 public class IdGenUtils {
 

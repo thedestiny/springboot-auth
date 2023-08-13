@@ -240,10 +240,18 @@ public class SnowStockUtils {
                 && NumberUtil.isGreater(p2, p3)
         ) {
             System.out.println("选中 " + stock.getId() + " " + stock.getName());
+            // 设置选择标识
+            stock.setChoice(1);
         }
 
 
     }
 
 
+    public static void calculateStockModel(StockInfo node) {
+        // 查询k 线数据
+        List<LineDto> dtoList = queryStockLine(node.getId(), 1691684478473L, "week");
+        // 计算模型
+        stockModel(node, dtoList);
+    }
 }

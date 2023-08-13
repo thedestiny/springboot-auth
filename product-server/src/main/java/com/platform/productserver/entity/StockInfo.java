@@ -127,6 +127,8 @@ public class StockInfo implements Serializable {
      */
     private Integer focus;
 
+    private Integer choice;
+
 
 
     public static void main(String[] args) {

@@ -3,38 +3,48 @@
 <mapper namespace="com.platform.productserver.mapper.StockInfoMapper">
 
 
+    <sql id="base_column">
+
+            `id`, `name`, `amount`, `amplitude`, `chg`, `current`,
+            `current_year_percent`, `dividend_yield`, `eps`, `float_market_capital`,
+            `float_shares`, `total_shares`, `pb`, `pb_ttm`, `pe_ttm`, `percent`, `pe`,
+            `net_value`, `high_year`, `low_year`, `update_time`, `focus`, market_capital, turnover_rate, choice
+
+    </sql>
 
     <insert id="saveStockInfo" parameterType="com.platform.productserver.entity.StockInfo">
 
            INSERT INTO `tb_stock_info` (`id`, `name`, `amount`, `amplitude`, `chg`, `current`,
             `current_year_percent`, `dividend_yield`, `eps`, `float_market_capital`,
             `float_shares`, `total_shares`, `pb`, `pb_ttm`, `pe_ttm`, `percent`, `pe`,
-            `net_value`, `high_year`, `low_year`, `update_time`, `focus`, market_capital, turnover_rate)
+            `net_value`, `high_year`, `low_year`, `update_time`, `focus`, market_capital, turnover_rate, choice)
              VALUES (#{id}, #{name}, #{amount}, #{amplitude}, #{chg}, #{current},
             #{currentYearPercent}, #{dividendYield}, #{eps}, #{floatMarketCapital},
             #{floatShares}, #{totalShares}, #{pb}, #{pbTtm}, #{peTtm}, #{percent}, #{pe},
-             #{netValue}, #{highYear}, #{lowYear}, #{updateTime}, #{focus}, #{marketCapital}, #{turnoverRate})
+             #{netValue}, #{highYear}, #{lowYear}, #{updateTime}, #{focus}, #{marketCapital}, #{turnoverRate} ,#{choice})
              on duplicate key update
-             `name` = #{name},
-             `amount` = #{amount},
-             `amplitude` = #{amplitude},
-             `chg` = #{chg},
-             `current` = #{current},
-             `current_year_percent` = #{currentYearPercent},
-             `dividend_yield` = #{dividendYield},
-             `eps` = #{eps},
-             `float_market_capital` = #{floatMarketCapital},
-             `float_shares` =  #{floatShares},
+             `name` = #{name},`amount` = #{amount}, `amplitude` = #{amplitude},`chg` = #{chg},
+             `current` = #{current}, `current_year_percent` = #{currentYearPercent},
+             `dividend_yield` = #{dividendYield}, `eps` = #{eps},
+             `float_market_capital` = #{floatMarketCapital}, `float_shares` =  #{floatShares},
              `total_shares` = #{totalShares}, `pb` = #{pb}, `pb_ttm` = #{pbTtm},
              `pe_ttm` = #{peTtm}, `percent` = #{percent}, `pe` =  #{pe},
-             `net_value` =   #{netValue}, `high_year` = #{highYear},
-             `low_year` = #{lowYear},
-             `update_time` = #{updateTime}, `focus` = #{focus},
-             `market_capital` = #{marketCapital}, `turnover_rate` = #{turnoverRate}
-
-
+             `net_value` = #{netValue}, `high_year` = #{highYear},
+             `low_year` = #{lowYear}, `update_time` = #{updateTime}, `focus` = #{focus},
+             `market_capital` = #{marketCapital}, `turnover_rate` = #{turnoverRate}, `choice` = #{choice}
 
     </insert>
+
+
+
+    <select id="selectStockList" resultType="com.platform.productserver.entity.StockInfo">
+
+        select
+        /*+parallel(3) */
+        <include refid="base_column"/>
+        from `tb_stock_info`
+
+    </select>
 
 
 </mapper>

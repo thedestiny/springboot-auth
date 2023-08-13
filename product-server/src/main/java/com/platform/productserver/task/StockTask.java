@@ -49,6 +49,7 @@ public class StockTask {
                     node.setHighYear(new BigDecimal(high));
                     node.setLowYear(new BigDecimal(low));
                     // log.info("stock code {} and name {}", node.getId(), node.getName());
+                    SnowStockUtils.calculateStockModel(node);
                     stockInfoMapper.saveStockInfo(node);
                 } catch (Exception e) {
                     log.error("code is error {}", e.getMessage(), e);

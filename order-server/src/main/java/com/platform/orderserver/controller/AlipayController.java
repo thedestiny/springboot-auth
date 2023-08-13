@@ -5,15 +5,14 @@ import com.alipay.api.domain.*;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
-import com.google.common.collect.Lists;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayClient;
 import com.ijpay.alipay.AliPayApi;
+import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.orderserver.business.PayBusiness;
 import com.platform.orderserver.config.AliPayConfig;
 import com.platform.orderserver.dto.PayDto;
-import com.platform.orderserver.utils.IdGenUtils;
 import com.platform.orderserver.utils.ResponseUtils;
 import com.platform.orderserver.utils.ZxingUtils;
 import lombok.extern.slf4j.Slf4j;

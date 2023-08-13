@@ -25,5 +25,6 @@ CREATE TABLE `tb_stock_info` (
      `focus` int(11) DEFAULT NULL COMMENT '关注度',
      `market_capital` decimal(11,3) DEFAULT NULL COMMENT '总市值(亿元)',
      `turnover_rate` decimal(11,3) DEFAULT NULL COMMENT '换手率(%)',
+     `choice` int(11) DEFAULT '0' COMMENT '选择结果 1即选中 0 未选中',
      PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4 COMMENT = 'stock信息表';
