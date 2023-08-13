@@ -6,7 +6,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-
+/**
+ * 订单子单计算对象
+ */
 @Data
 public class OrderCalNode implements Serializable {
 
@@ -16,9 +18,9 @@ public class OrderCalNode implements Serializable {
     private String keyId;
     // 子单总金额
     private BigDecimal total;
-    // 珑珠金额
+    // 积分金额
     private BigDecimal point;
-    // 珑珠实付
+    // 积分实付
     private BigDecimal pointAct;
     // 现金金额
     private BigDecimal cash;
@@ -27,7 +29,7 @@ public class OrderCalNode implements Serializable {
     // 立减金额
     private BigDecimal inflation;
 
-
+    // 计算现金和积分总金额
     public void calculateCashPoint() {
         this.cash = NumberUtil.sub(total, pointAct, expand, inflation);
         this.point = NumberUtil.add(pointAct, expand, inflation);
