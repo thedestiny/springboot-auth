@@ -65,11 +65,11 @@ public class MybatisGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://obmti0vk70rfoej0-mi.oceanbase.aliyuncs.com:3306/treasure?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://localhost:3306/treasure?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUsername("victory");
-        dsc.setPassword("Myroot123!");
+        dsc.setUsername("username");
+        dsc.setPassword("password");
         mpg.setDataSource(dsc);
 
 
