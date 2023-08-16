@@ -5,7 +5,7 @@ package com.platform.authcommon.common;
  */
 public interface ErrorCode {
 
-    long getCode();
+    Integer getCode();
 
     String getMessage();
 }

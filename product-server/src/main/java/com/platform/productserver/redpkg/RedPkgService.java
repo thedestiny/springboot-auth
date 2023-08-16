@@ -8,7 +8,7 @@ public interface RedPkgService {
     /**
      * 红包发送
      */
-     Boolean sendRedPkg(SendPkgReq pkgReq);
+    Boolean sendRedPkg(SendPkgReq pkgReq);
 
     /**
      * 红包领取
