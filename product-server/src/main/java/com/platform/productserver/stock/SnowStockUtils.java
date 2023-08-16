@@ -63,8 +63,11 @@ public class SnowStockUtils {
             stock.setCurrentYearPercent(node.getBigDecimal("current_year_percent"));  // 当年的涨幅
             stock.setTurnoverRate(node.getBigDecimal("turnover_rate"));   // 换手率
             stock.setDividendYield(node.getBigDecimal("dividend_yield"));   // 股息率
-            BigDecimal capital = NumberUtil.div(node.getBigDecimal("market_capital").toBigInteger(), 100_000_000);
-            stock.setMarketCapital(capital.setScale(3, BigDecimal.ROUND_HALF_UP));  // 市值
+            stock.setMarketCapital(trans2Bg(node.getBigDecimal("market_capital"))); // 市值
+            stock.setFloatMarketCapital(trans2Bg(node.getBigDecimal("float_market_capital"))); // 流动市值
+            stock.setAmount(trans2Bg(node.getBigDecimal("amount"))); // 成交额
+            stock.setFloatShares(trans2Bg(node.getBigDecimal("float_shares"))); // 流动股本
+            stock.setTotalShares(trans2Bg(node.getBigDecimal("total_shares"))); // 总股本
             stock.setPb(node.getBigDecimal("pb"));  // 市净率
             stock.setEps(node.getBigDecimal("eps"));   // 每股收益
             stock.setChg(node.getBigDecimal("chg")); // 涨跌(元)
@@ -74,6 +77,11 @@ public class SnowStockUtils {
             resultList.add(stock);
         }
         return resultList;
+    }
+
+    private static BigDecimal trans2Bg(BigDecimal val){
+        // 按 亿单位进行计算
+        return NumberUtil.div(val.toBigInteger(), 100_000_000,3);
     }
 
     public static void main(String[] args) {
@@ -209,6 +217,7 @@ public class SnowStockUtils {
      * 选股模型
      */
     public static void stockModel(StockInfo stock, List<LineDto> dtos) {
+        stock.setChoice(0);
         if (CollUtil.isEmpty(dtos) || dtos.size() < 3) {
             return;
         }

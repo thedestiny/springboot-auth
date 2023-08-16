@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.extern.slf4j.Slf4j;
@@ -56,17 +57,19 @@ public class MybatisGenerator {
         gc.setEnableCache(true);
         gc.setIdType(IdType.AUTO);
         gc.setBaseColumnList(true);
+        // 设置时间类型 为 Date
+        gc.setDateType(DateType.ONLY_DATE);
 
         //gc.setSwagger2(true); // 实体属性 Swagger2 注解
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/treasure?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://obmti0vk70rfoej0-mi.oceanbase.aliyuncs.com:3306/treasure?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUsername("username");
-        dsc.setPassword("passowrd");
+        dsc.setUsername("victory");
+        dsc.setPassword("Myroot123!");
         mpg.setDataSource(dsc);
 
 

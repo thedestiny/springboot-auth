@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.PkgOutLogMapper">
+
+    <!-- 开启二级缓存 -->
+    <cache/>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.PkgOutLog">
+        <id column="id" property="id" />
+        <result column="source" property="source" />
+        <result column="app_id" property="appId" />
+        <result column="order_no" property="orderNo" />
+        <result column="prod_type" property="prodType" />
+        <result column="user_id" property="userId" />
+        <result column="amount" property="amount" />
+        <result column="receive_amount" property="receiveAmount" />
+        <result column="refund_amount" property="refundAmount" />
+        <result column="status" property="status" />
+        <result column="error_msg" property="errorMsg" />
+        <result column="create_time" property="createTime" />
+        <result column="expire_time" property="expireTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="flag" property="flag" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, source, app_id, order_no, prod_type, user_id, amount, receive_amount, refund_amount,
+        status, error_msg, create_time, expire_time, update_time, flag, remark
+    </sql>
+
+</mapper>
