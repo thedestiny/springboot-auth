@@ -55,7 +55,7 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
      * @param orderNo 红包单号
      * @param num 红包数量
      * @param total 红包总金额
-     * @param nodeList 红包列表
+     * @param nodeList 红包列表，需要保存再数据库
      */
     private void handleAverageRedPkg(String orderNo, Integer num, BigDecimal total, List<RedPkgNode> nodeList) {
         BigDecimal ready = BigDecimal.ZERO;
