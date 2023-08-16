@@ -25,6 +25,19 @@ spring:
     url: url
     username: username
     password: password
+
+  redis:
+    host: localhost
+    # password:
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 8
+        max-idle: 8
+
+
 # mybatis-plus 配置
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
@@ -44,6 +57,7 @@ management:
 
 server:
   port: 9501
+
 
 
 

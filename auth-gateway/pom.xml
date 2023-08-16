@@ -29,12 +29,6 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>${hutool-version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.platform</groupId>
             <artifactId>auth-common</artifactId>
             <version>1.0</version>

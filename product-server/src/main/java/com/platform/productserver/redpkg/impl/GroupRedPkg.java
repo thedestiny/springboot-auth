@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.redpkg.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,6 +18,7 @@ import java.util.List;
  * 群红包实现
  */
 @Slf4j
+@Service
 public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService {
 
     // 最低分配红包金额
@@ -76,8 +78,7 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
     }
 
     /**
-     * 处理
-     *
+     * 处理拼手气模式
      * @param orderNo  红包单号
      * @param num      红包数量
      * @param total    红包金额

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.redpkg.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * 个人红包实现
  */
 @Slf4j
+@Service
 public class SingleRedPkg extends AbstractRedPkgService implements RedPkgService {
 
 

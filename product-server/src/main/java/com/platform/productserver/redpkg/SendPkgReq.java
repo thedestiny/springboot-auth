@@ -24,4 +24,13 @@ public class SendPkgReq implements Serializable {
     // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
     private Integer redType;
 
+    // 来源
+    private String source;
+    // 应用id
+    private String appId;
+    // 产品类型
+    private String prodType;
+    // 备注
+    private String remark;
+
 }
