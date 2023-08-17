@@ -18,19 +18,16 @@ import java.util.List;
  * @Date 2023-08-15 10:44 AM
  */
 public abstract class AbstractRedPkgService implements RedPkgService {
-
     @Autowired
     private PkgInLogMapper inLogMapper;
     @Autowired
     private PkgOutLogMapper outLogMapper;
     @Autowired
     private RedisUtils redisClient;
-
     /**
      * 保存红包发送数据到数据库
      */
     public boolean saveRedPkg2Db(SendPkgReq pkgReq) {
-
         PkgOutLog out = new PkgOutLog();
         out.setSource(pkgReq.getSource());
         out.setAppId(pkgReq.getAppId());
@@ -43,15 +40,12 @@ public abstract class AbstractRedPkgService implements RedPkgService {
         out.setExpireTime(DateUtil.tomorrow());
         out.setFlag(0);
         out.setStatus(0);
-        // 保存发送红包信息
-        return SqlHelper.retBool(outLogMapper.insert(out));
+        return SqlHelper.retBool(outLogMapper.insert(out)); // 保存发送红包信息
     }
-
     /**
      * 保存红包数据到缓存
      */
     public boolean saveRedPkg2Redis(String orderNo, List<RedPkgNode> nodeList) {
-
         String value = JSONObject.toJSONString(nodeList);
         String key = Constant.RED_PKG_PREFIX + orderNo;
         // 保存红包列表到 redis 缓存中,过期时间 24h + 1分钟

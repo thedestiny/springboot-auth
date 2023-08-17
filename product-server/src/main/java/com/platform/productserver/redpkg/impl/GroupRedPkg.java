@@ -113,6 +113,8 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
     @Override
     public Boolean receiveRedPkg(ReceivePkgReq pkgReq) {
 
+
+
         return null;
     }
 
@@ -121,6 +123,7 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
 
         List<RedPkgNode> nodeList = new ArrayList<>();
         handleRedPkg("12345", 10, new BigDecimal("1"), nodeList);
+
 
         for (RedPkgNode node : nodeList) {
             System.out.println(node);
