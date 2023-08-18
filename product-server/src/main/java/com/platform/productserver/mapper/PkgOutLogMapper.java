@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface PkgOutLogMapper extends BaseMapper<PkgOutLog> {
 
+    PkgOutLog selectByOrderNo(String orderNo);
 }

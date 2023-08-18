@@ -11,6 +11,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.common.utils.MD5Utils;
 import com.google.common.collect.Lists;
 import com.platform.productserver.dto.LineDto;
 import com.platform.productserver.entity.StockInfo;
@@ -91,6 +92,10 @@ public class SnowStockUtils {
         // info.setId("SZ301388");
         info.setId("SH600519");
 
+        String s = MD5Utils.md5Hex("33333", "UTF-8");
+        System.out.println(s);
+        System.out.println(s.length());
+
         List<StockInfo> stocks = queryStockList(1, 900);
         for (StockInfo stock : stocks) {
             try {
@@ -136,41 +141,47 @@ public class SnowStockUtils {
      * 根据代码查询股票信息
      */
     public static JSONObject queryStockInfo(StockInfo stock) {
-        // 获取股票详情页数据
-        String url = "https://xueqiu.com/S/" + stock.getId();
-        HttpRequest request = HttpUtil.createGet(url);
-        HttpResponse execute = request.execute();
-        Document parse = Jsoup.parse(execute.body()); // 使用 jsoup 解析 html
-        Element element = parse.getElementsByClass("quote-container").get(0); // 获取 节点信息
-        Element focusTime = element.getElementsByClass("stock-time").get(0); // 球友关注和数据时间
-        // 1755 球友关注 休市 08-04 15:34:51 北京时间
-        List<String> split = StrUtil.split(focusTime.text(), " ");
-        // System.out.println(split);
-        String focus = split.get(0);
-        DateTime parse1 = DateUtil.parse(DateUtil.date().year() + "-" + split.get(3), "yyyy-MM-dd");
-        stock.setUpdateTime(parse1);
-        stock.setFocus(handleFocus(focusTime.text(), focus));
-        // System.out.println(focus);
-        // System.out.println(parse1);
-        Element table = element.getElementsByClass("quote-info").get(0);  // 表格
-        Elements tds = table.getElementsByTag("td");
         JSONObject result = new JSONObject();
-        for (int i = 0; i < tds.size(); i++) {
-            Element ele = tds.get(i);
-            // 替换中文符号为英文
-            String text = ele.text().replace("：", ":")
-                    .replace("（", "(").replace("）", ")");
-            if (!text.contains(":")) {
-                continue;
+        try {
+            // 获取股票详情页数据
+            String url = "https://xueqiu.com/S/" + stock.getId();
+            HttpRequest request = HttpUtil.createGet(url);
+            HttpResponse execute = request.execute();
+            Document parse = Jsoup.parse(execute.body()); // 使用 jsoup 解析 html
+            Element element = parse.getElementsByClass("quote-container").get(0); // 获取 节点信息
+            Element focusTime = element.getElementsByClass("stock-time").get(0); // 球友关注和数据时间
+            // 1755 球友关注 休市 08-04 15:34:51 北京时间
+            List<String> split = StrUtil.split(focusTime.text(), " ");
+            // System.out.println(split);
+            String focus = split.get(0);
+            DateTime parse1 = DateUtil.parse(DateUtil.date().year() + "-" + split.get(3), "yyyy-MM-dd");
+            stock.setUpdateTime(parse1);
+            stock.setFocus(handleFocus(focusTime.text(), focus));
+            // System.out.println(focus);
+            // System.out.println(parse1);
+            Element table = element.getElementsByClass("quote-info").get(0);  // 表格
+            Elements tds = table.getElementsByTag("td");
+
+            for (int i = 0; i < tds.size(); i++) {
+                Element ele = tds.get(i);
+                // 替换中文符号为英文
+                String text = ele.text().replace("：", ":")
+                        .replace("（", "(").replace("）", ")");
+                if (!text.contains(":")) {
+                    continue;
+                }
+                String[] arrs = text.split(":");
+                result.put(arrs[0].trim(), arrs[1].trim());
             }
-            String[] arrs = text.split(":");
-            result.put(arrs[0].trim(), arrs[1].trim());
+            // for (Map.Entry<String, Object> entry : result.entrySet()) {
+            //     String key = entry.getKey();
+            //     Object value = entry.getValue();
+            //     System.out.println(key + "  ==  " + value);
+            // }
+        }catch (Exception e){
+
         }
-        // for (Map.Entry<String, Object> entry : result.entrySet()) {
-        //     String key = entry.getKey();
-        //     Object value = entry.getValue();
-        //     System.out.println(key + "  ==  " + value);
-        // }
+
         return result;
 
 
@@ -258,9 +269,17 @@ public class SnowStockUtils {
 
 
     public static void calculateStockModel(StockInfo node) {
-        // 查询k 线数据
-        List<LineDto> dtoList = queryStockLine(node.getId(), 1691684478473L, "week");
-        // 计算模型
-        stockModel(node, dtoList);
+
+        try {
+            // 查询k 线数据
+            List<LineDto> dtoList = queryStockLine(node.getId(), 1691684478473L, "week");
+            // 计算模型
+            stockModel(node, dtoList);
+        }catch (Exception e){
+
+        }
+
     }
+
+
 }
