@@ -139,6 +139,7 @@ public class RedisUtils {
 
     public void listLeftPushAll(String key, Collection value) {
         cacheRedis.opsForList().leftPushAll(assemblyKey(key), value);
+
     }
 
     public Object listLeftPop(String key) {
