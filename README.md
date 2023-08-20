@@ -78,3 +78,13 @@ select DATE_SUB(SYSDATE(),INTERVAL 1 quarter);
 select DATE_SUB(SYSDATE(),INTERVAL 1 year);              
 
 ```
+
+
+1 当前线程池的线程数已经是配置的最大线程数，添加到队列
+2 已经提交的任务和活动的任务是否小于当前的活动的线程数，添加到队列
+3 当前活动的线程数小于最大线程数，返回 false ,添加 worker 任务
+4 其它情况添加到等待队列中
+
+Tomcat 的默认核心线程数是 10，最大线程数 200，队列长度是无限长。
+
+```

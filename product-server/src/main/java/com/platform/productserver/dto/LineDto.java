@@ -74,9 +74,13 @@ public class LineDto implements Serializable {
                 .build();
         BigDecimal turn = dto.getTurn();
         BigDecimal amount = dto.getAmount();
-        BigDecimal div = NumberUtil.div(amount, turn, 2);
-        div = NumberUtil.div(div, 1000000,2); // 转换单位为 亿元
-        dto.setFloatCapital(div);
+        // 换算成流通市值
+        if(NumberUtil.isGreater(turn,BigDecimal.ZERO)){
+            BigDecimal div = NumberUtil.div(amount, turn, 2);
+            div = NumberUtil.div(div, 1000000,2); // 转换单位为 亿元
+            dto.setFloatCapital(div);
+        }
+        
         return dto;
 
     }

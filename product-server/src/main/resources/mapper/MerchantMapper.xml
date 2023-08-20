@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.MerchantMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.Merchant">
+        <id column="id" property="id" />
+        <result column="acc_no" property="accNo" />
+        <result column="source" property="source" />
+        <result column="merchant_no" property="merchantNo" />
+        <result column="status" property="status" />
+        <result column="account_type" property="accountType" />
+        <result column="prod_type" property="prodType" />
+        <result column="balance" property="balance" />
+        <result column="freeze_amount" property="freezeAmount" />
+        <result column="income_amount" property="incomeAmount" />
+        <result column="expense_amount" property="expenseAmount" />
+        <result column="apply_amount" property="applyAmount" />
+        <result column="reversal_amount" property="reversalAmount" />
+        <result column="back_amount" property="backAmount" />
+        <result column="settle_amount" property="settleAmount" />
+        <result column="create_time" property="createTime" />
+        <result column="seq" property="seq" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, acc_no, `source`, merchant_no, status, account_type, prod_type, balance, freeze_amount,
+income_amount, expense_amount, apply_amount, reversal_amount, back_amount, settle_amount, create_time, seq
+    </sql>
+
+</mapper>

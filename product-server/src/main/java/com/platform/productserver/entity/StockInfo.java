@@ -9,10 +9,13 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 
 @Data
 @TableName(value = "tb_stock_info")
 public class StockInfo implements Serializable {
+
+    private static final long serialVersionUID = 9014134377958817083L;
 
     // 股票代码
     @TableId(value = "id", type = IdType.ASSIGN_UUID)
@@ -127,8 +130,14 @@ public class StockInfo implements Serializable {
      */
     private Integer focus;
 
+    /**
+     * 是否选择
+     */
     private Integer choice;
-
+    // issue_date_ts
+    // limitup_days
+    // 上市时间
+    private String issue;
 
 
     public static void main(String[] args) {

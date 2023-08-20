@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.FreezeLogMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.FreezeLog">
+        <id column="id" property="id" />
+        <result column="account_id" property="accountId" />
+        <result column="action_type" property="actionType" />
+        <result column="acc_no" property="accNo" />
+        <result column="freeze_type" property="freezeType" />
+        <result column="freeze_amount" property="freezeAmount" />
+        <result column="request_no" property="requestNo" />
+        <result column="order_no" property="orderNo" />
+        <result column="prod_type" property="prodType" />
+        <result column="app_id" property="appId" />
+        <result column="source" property="source" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, account_id, action_type, acc_no, freeze_type, freeze_amount, request_no,
+order_no, prod_type, app_id, `source`, remark, create_time
+    </sql>
+
+</mapper>

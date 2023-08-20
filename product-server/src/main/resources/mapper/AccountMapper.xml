@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.AccountMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.Account">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="acc_no" property="accNo" />
+        <result column="account_type" property="accountType" />
+        <result column="balance" property="balance" />
+        <result column="status" property="status" />
+        <result column="income_amount" property="incomeAmount" />
+        <result column="expense_amount" property="expenseAmount" />
+        <result column="credit_amount" property="creditAmount" />
+        <result column="seq" property="seq" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, acc_no, account_type, balance, status, income_amount,
+expense_amount, credit_amount, seq, create_time, update_time
+    </sql>
+
+</mapper>

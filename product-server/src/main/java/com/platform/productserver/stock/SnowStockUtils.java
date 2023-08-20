@@ -23,6 +23,7 @@ import org.jsoup.select.Elements;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -74,6 +75,7 @@ public class SnowStockUtils {
             stock.setPeTtm(node.getBigDecimal("pe_ttm"));  // 静态市盈率
             stock.setPbTtm(node.getBigDecimal("pb_ttm"));  // 市净率(ttm)
             stock.setNetValue(node.getBigDecimal("net_value"));  // 每股净资产
+            stock.setIssue(transDate(node.getLong("issue_date_ts")));
             resultList.add(stock);
         }
         return resultList;
@@ -83,25 +85,29 @@ public class SnowStockUtils {
         // 按 亿单位进行计算
         return NumberUtil.div(val.toBigInteger(), 100_000_000,3);
     }
+    // 转换日期格式
+    private static String transDate(Long date){
+        Date dat = new Date(date);
+        return DateUtil.format(dat, "yyyy-MM-dd");
+    }
 
     public static void main(String[] args) {
 
-        List<LineDto> dtoList = queryStockLine("SZ002032", 1691684478473L, "week");
-        StockInfo info = new StockInfo();
-        // info.setId("SZ301388");
-        info.setId("SH600519");
-
-        List<StockInfo> stocks = queryStockList(1, 900);
-        for (StockInfo stock : stocks) {
-            try {
-                List<LineDto> dtoList1 = queryStockLine(stock.getId(), 1691684478473L, "week");
-                stockModel(stock, dtoList1);
-            } catch (Exception e){}
+        System.out.println(transDate(1282838400000L));
 
 
-
-        }
-
+//        StockInfo info = new StockInfo();
+//        // info.setId("SZ301388");
+//        info.setId("SH600519");
+//
+//        List<StockInfo> stocks = queryStockList(1, 900);
+//        for (StockInfo stock : stocks) {
+//            try {
+//                List<LineDto> dtoList1 = queryStockLine(stock.getId(), 1691684478473L, "week");
+//                stockModel(stock, dtoList1);
+//            } catch (Exception e){}
+//        }
+//        List<LineDto> dtoList = queryStockLine("SZ002032", 1691684478473L, "week");
 
         // SZ301388
         // JSONObject infs = queryStockInfo(info);
@@ -145,13 +151,14 @@ public class SnowStockUtils {
         Element focusTime = element.getElementsByClass("stock-time").get(0); // 球友关注和数据时间
         // 1755 球友关注 休市 08-04 15:34:51 北京时间
         List<String> split = StrUtil.split(focusTime.text(), " ");
-        // System.out.println(split);
+
         String focus = split.get(0);
-        DateTime parse1 = DateUtil.parse(DateUtil.date().year() + "-" + split.get(3), "yyyy-MM-dd");
-        stock.setUpdateTime(parse1);
         stock.setFocus(handleFocus(focusTime.text(), focus));
-        // System.out.println(focus);
-        // System.out.println(parse1);
+        if(CollUtil.size(split) > 3){
+            DateTime parse1 = DateUtil.parse(DateUtil.date().year() + "-" + split.get(3), "yyyy-MM-dd");
+            stock.setUpdateTime(parse1);
+        }
+
         Element table = element.getElementsByClass("quote-info").get(0);  // 表格
         Elements tds = table.getElementsByTag("td");
         JSONObject result = new JSONObject();

@@ -52,7 +52,7 @@ public class StockTask {
                     SnowStockUtils.calculateStockModel(node);
                     stockInfoMapper.saveStockInfo(node);
                 } catch (Exception e) {
-                    log.error("code is error {}", e.getMessage(), e);
+                    log.error("code is node {} error {}",JSONObject.toJSONString(node), e.getMessage(), e);
                 }
 
             }
