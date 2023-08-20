@@ -18,7 +18,7 @@ import java.util.List;
  * 群红包实现
  */
 @Slf4j
-@Service
+@Service(value = "groupRedPkg")
 public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService {
 
     // 最低分配红包金额
@@ -115,6 +115,7 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
 
 
 
+
         return null;
     }
 
@@ -123,7 +124,6 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
 
         List<RedPkgNode> nodeList = new ArrayList<>();
         handleRedPkg("12345", 10, new BigDecimal("1"), nodeList);
-
 
         for (RedPkgNode node : nodeList) {
             System.out.println(node);

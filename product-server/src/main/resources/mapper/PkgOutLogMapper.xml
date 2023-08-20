@@ -31,4 +31,13 @@
         status, error_msg, create_time, expire_time, update_time, flag, remark
     </sql>
 
+
+    <select id="selectByOrderNo" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_pkg_out_log where order_no = #{orderNo}
+
+    </select>
+
 </mapper>

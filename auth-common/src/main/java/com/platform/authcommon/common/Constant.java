@@ -19,4 +19,6 @@ public class Constant {
     // 分布式锁的 redis key
     public final static String DIS_KEY = "DIS_KEY:";
 
+
+
 }

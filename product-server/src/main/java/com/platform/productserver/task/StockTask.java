@@ -1,6 +1,7 @@
 package com.platform.productserver.task;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.platform.productserver.entity.StockInfo;
 import com.platform.productserver.mapper.StockInfoMapper;
@@ -46,8 +47,12 @@ public class StockTask {
                     String high = infos.getString("52周最高");
                     String low = infos.getString("52周最低");
                     String yield = infos.getString("股息率(TTM)");
-                    node.setHighYear(new BigDecimal(high));
-                    node.setLowYear(new BigDecimal(low));
+                    if(StrUtil.isNotBlank(high)){
+                        node.setHighYear(new BigDecimal(high));
+                    }
+                    if(StrUtil.isNotBlank(low)){
+                        node.setLowYear(new BigDecimal(low));
+                    }
                     // log.info("stock code {} and name {}", node.getId(), node.getName());
                     SnowStockUtils.calculateStockModel(node);
                     stockInfoMapper.saveStockInfo(node);

@@ -12,7 +12,7 @@ import java.util.List;
  * 个人红包实现
  */
 @Slf4j
-@Service
+@Service(value = "singleRedPkg")
 public class SingleRedPkg extends AbstractRedPkgService implements RedPkgService {
 
 

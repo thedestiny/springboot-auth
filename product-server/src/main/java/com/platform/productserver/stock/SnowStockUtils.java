@@ -11,6 +11,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.common.utils.MD5Utils;
 import com.google.common.collect.Lists;
 import com.platform.productserver.dto.LineDto;
 import com.platform.productserver.entity.StockInfo;
@@ -265,9 +266,17 @@ public class SnowStockUtils {
 
 
     public static void calculateStockModel(StockInfo node) {
-        // 查询k 线数据
-        List<LineDto> dtoList = queryStockLine(node.getId(), 1691684478473L, "week");
-        // 计算模型
-        stockModel(node, dtoList);
+
+        try {
+            // 查询k 线数据
+            List<LineDto> dtoList = queryStockLine(node.getId(), 1691684478473L, "week");
+            // 计算模型
+            stockModel(node, dtoList);
+        }catch (Exception e){
+
+        }
+
     }
+
+
 }
