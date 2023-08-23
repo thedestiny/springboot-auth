@@ -72,10 +72,14 @@ public abstract class AbstractRedPkgService implements RedPkgService {
 
         // 获取红包的 key
         String key = Constant.RED_PKG_PREFIX + pkgReq.getOrderNo();
-        Object value = redisClient.valueGet(key);
-        List<RedPkgNode> nodes = JSONObject.parseArray(value.toString(), RedPkgNode.class);
+        Object value = redisClient.listLeftPop(key);
+        if(ObjectUtil.isEmpty(value)){
+            throw new AppException("红包不存在或已过期!");
+        }
+        // 弹出单个红包
+        RedPkgNode redPkgNode = JSONObject.parseObject(value.toString(), RedPkgNode.class);
         // 判断红包是否存在
-        if(CollUtil.isEmpty(nodes)){
+        if(ObjectUtil.isEmpty(redPkgNode)){
             throw new AppException("红包不存在或已过期!");
         }
         // 查询发红包记录
@@ -86,7 +90,6 @@ public abstract class AbstractRedPkgService implements RedPkgService {
         // 红包类型 100 单个红包  101 拼手气红包
         String prodType = outLog.getProdType();
 
-        RedPkgNode redPkgNode = nodes.get(0);
         PkgInLog inLog = new PkgInLog();
         inLog.setFid(outLog.getId());
         inLog.setSource(pkgReq.getSource());
@@ -119,6 +122,10 @@ public abstract class AbstractRedPkgService implements RedPkgService {
 
         }
         outLogMapper.updateById(outLog);
+
+        // 如果处理失败，需要将红包放回到 redis 中
+
+
 
         return true;
     }
