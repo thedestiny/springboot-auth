@@ -30,10 +30,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SnowStockUtils {
 
+    /**
+     * k 线数据获取接口列表
+     */
+    public static final String kline = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol={}&begin={}&period={}&type=before&count=-294&indicator=kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance";
+
     // 获取stock 列表
     public final static String tmp = "https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={}&size={}&order=desc&orderby=code&order_by=symbol&market=CN&type=sh_sz";
     // cookie
-    public final static String cookie = "xq_a_token=370309a4cfdfe4bc2704623d41715a1159be59eb; xqat=370309a4cfdfe4bc2704623d41715a1159be59eb; xq_r_token=39f1ce2c9cbdf041c8e7e72471a441c2aa4879b2; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5NDIxOTc3NywiY3RtIjoxNjkyNzc5OTgwNTIzLCJjaWQiOiJkOWQwbjRBWnVwIn0.Lh9FJqDlOtaj2jO3PVrlhxTkQFW44otw-CoqdnHghbOgQPNVrq3lsiAveOuguJZRCzOLbWmOvz3NMEB97SwZOIn0v4hTN-1sK2WrnaO5OELZzTmJo288eSN68rGB-YzqFh4K2rOTc6RPzMBj5kJnYfyaQJPkKAeeiQFmOdcyGdUdauDjBWGQ01Iefjm2m0sfthL_qGfhElQm3etWobHC4m-1SYZQOdGU7EicrF_fZcosHWn2iIbBRZMT_xFB9_7eE0cqf_hXq6HPpSXCtkaaVJ1T-ju5KCezHZavP9__LfXi2HkqerWwQ4Ayh3qVs5nSRX6PtEAgJmS4Zx0l_5ncYA; cookiesu=171692779984940; u=171692779984940; device_id=b113b3700ba6f60d2c110d9a9374ab5a; Hm_lvt_1db88642e346389874251b5a1eded6e3=1692779986; is_overseas=0; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1692779988";
+    public final static String cookie =
+            "xq_a_token=370309a4cfdfe4bc2704623d41715a1159be59eb; xqat=370309a4cfdfe4bc2704623d41715a1159be59eb; xq_r_token=39f1ce2c9cbdf041c8e7e72471a441c2aa4879b2; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5NDIxOTc3NywiY3RtIjoxNjkyNzc5OTgwNTIzLCJjaWQiOiJkOWQwbjRBWnVwIn0.Lh9FJqDlOtaj2jO3PVrlhxTkQFW44otw-CoqdnHghbOgQPNVrq3lsiAveOuguJZRCzOLbWmOvz3NMEB97SwZOIn0v4hTN-1sK2WrnaO5OELZzTmJo288eSN68rGB-YzqFh4K2rOTc6RPzMBj5kJnYfyaQJPkKAeeiQFmOdcyGdUdauDjBWGQ01Iefjm2m0sfthL_qGfhElQm3etWobHC4m-1SYZQOdGU7EicrF_fZcosHWn2iIbBRZMT_xFB9_7eE0cqf_hXq6HPpSXCtkaaVJ1T-ju5KCezHZavP9__LfXi2HkqerWwQ4Ayh3qVs5nSRX6PtEAgJmS4Zx0l_5ncYA; cookiesu=171692779984940; u=171692779984940; device_id=b113b3700ba6f60d2c110d9a9374ab5a; Hm_lvt_1db88642e346389874251b5a1eded6e3=1692779986; s=bw11pg4v6g; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1692851814";
 
     /**
      * 获取股票列表信息
@@ -80,12 +86,13 @@ public class SnowStockUtils {
         return resultList;
     }
 
-    private static BigDecimal trans2Bg(BigDecimal val){
+    private static BigDecimal trans2Bg(BigDecimal val) {
         // 按 亿单位进行计算
-        return NumberUtil.div(val.toBigInteger(), 100_000_000,3);
+        return NumberUtil.div(val.toBigInteger(), 100_000_000, 3);
     }
+
     // 转换日期格式
-    private static String transDate(Long date){
+    private static String transDate(Long date) {
         Date dat = new Date(date);
         return DateUtil.format(dat, "yyyy-MM-dd");
     }
@@ -153,7 +160,7 @@ public class SnowStockUtils {
 
         String focus = split.get(0);
         stock.setFocus(handleFocus(focusTime.text(), focus));
-        if(CollUtil.size(split) > 3){
+        if (CollUtil.size(split) > 3) {
             DateTime parse1 = DateUtil.parse(DateUtil.date().year() + "-" + split.get(3), "yyyy-MM-dd");
             stock.setUpdateTime(parse1);
         }
@@ -182,10 +189,10 @@ public class SnowStockUtils {
 
     }
 
-    /**
-     * k 线数据获取接口列表
-     */
-    public static final String kline = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol={}&begin={}&period={}&type=before&count=-284&indicator=kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance";
+    public static List<LineDto> queryStockLine(String code, String period) {
+        DateTime date = DateUtil.date();
+        return queryStockLine(code, date.getTime(), period);
+    }
 
     /**
      * 查询股票 k 线数据
@@ -270,7 +277,7 @@ public class SnowStockUtils {
             List<LineDto> dtoList = queryStockLine(node.getId(), 1691684478473L, "week");
             // 计算模型
             stockModel(node, dtoList);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 

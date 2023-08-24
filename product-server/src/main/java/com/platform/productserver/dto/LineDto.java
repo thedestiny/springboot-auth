@@ -62,30 +62,37 @@ public class LineDto implements Serializable {
      * 13-pb
      * 14-ps
      * 15-pcf
+     *
      * @return
      */
-    public static LineDto build(JSONArray ele){
+    public static LineDto build(JSONArray ele) {
         Long aLong = ele.getLong(0);
         String date = DateUtil.format(DateUtil.date(aLong), "yyyy-MM-dd");
         LineDto dto = LineDto.builder()
-                .timestamp(date).volume(bg(ele,1)).open(bg(ele,2)).high(bg(ele,3)).low(bg(ele,4)).close(bg(ele,5))
-                .chg(bg(ele, 6)).percent(bg(ele, 7)).turn(bg(ele, 8)).amount(bg(ele, 9))
+                .timestamp(date).volume(bgs(ele, 1)).open(bg(ele, 2)).high(bg(ele, 3)).low(bg(ele, 4)).close(bg(ele, 5))
+                .chg(bg(ele, 6)).percent(bg(ele, 7)).turn(bg(ele, 8)).amount(bgs(ele, 9))
                 .pe(bg(ele, 12)).pb(bg(ele, 13)).ps(bg(ele, 14)).pcf(bg(ele, 15))
                 .build();
         BigDecimal turn = dto.getTurn();
         BigDecimal amount = dto.getAmount();
         // 换算成流通市值
-        if(NumberUtil.isGreater(turn,BigDecimal.ZERO)){
+        if (NumberUtil.isGreater(turn, BigDecimal.ZERO)) {
             BigDecimal div = NumberUtil.div(amount, turn, 2);
-            div = NumberUtil.div(div, 1000000,2); // 转换单位为 亿元
+            div = NumberUtil.div(div, 1000000, 2); // 转换单位为 亿元
             dto.setFloatCapital(div);
         }
-        
+
         return dto;
 
     }
 
-    public static BigDecimal bg(JSONArray ele, Integer idx){
+    public static BigDecimal bg(JSONArray ele, Integer idx) {
         return ele.getBigDecimal(idx);
+    }
+
+    public static BigDecimal bgs(JSONArray ele, Integer idx) {
+        BigDecimal bg = bg(ele, idx);
+
+        return NumberUtil.div(bg.toBigInteger(), 100_000_000, 3);
     }
 }
