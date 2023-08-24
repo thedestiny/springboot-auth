@@ -11,7 +11,6 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.nacos.common.utils.MD5Utils;
 import com.google.common.collect.Lists;
 import com.platform.productserver.dto.LineDto;
 import com.platform.productserver.entity.StockInfo;
@@ -27,7 +26,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 public class SnowStockUtils {
@@ -35,7 +33,7 @@ public class SnowStockUtils {
     // 获取stock 列表
     public final static String tmp = "https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={}&size={}&order=desc&orderby=code&order_by=symbol&market=CN&type=sh_sz";
     // cookie
-    public final static String cookie = "device_id=2b38bc16558c7136729b7ca56964df25; s=af11m6tu48; xq_a_token=5ebe9dee46079c18ce86d1b568ceb4f4a6f40ed6; xqat=5ebe9dee46079c18ce86d1b568ceb4f4a6f40ed6; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOjgxNTg3ODA5NDYsImlzcyI6InVjIiwiZXhwIjoxNjk0MDEwNjc0LCJjdG0iOjE2OTE0MTg2NzQzMDQsImNpZCI6ImQ5ZDBuNEFadXAifQ.iAU87KeSQnhNLNzZbiTH5w-X20PYvqdm2w19PUF7cDBcMCp91-HN2W4izwqbNCxhCpUJF5lrjNTDlgOfORpvwCSFU8eUQXeGrvONa2k-YZFYNMZfFDkE66JWYfXbBj7nZMp4WuDVB3ByCIUuDSBXM_bkaIuA2Tbxib2MoHpaqhnMIMSzsYg6jxgoLOLbQOLYP0YOZ2ud_xOg5ufSqTD4BzQg016mGNS6r55DPUYVQX_WF5iJQyTCwZnaHWblwF5QNpYxE9EvZ_cb3sGRM1dF9R14B9ZzBmY7g5rbfXtj9Jw7AwkAIKmEMfJgu06zfLMviWbU5rw01y_nePHltbv8Pw; xq_r_token=7c7bb53ce65f0eb34bbf61a2de4e68778f33f960; xq_is_login=1; u=8158780946; bid=db8e4f1e50c43c68f8fff28eae72dd3f_ll3vxqz5; Hm_lvt_1db88642e346389874251b5a1eded6e3=1691298436,1691414145,1691594916,1691673376; is_overseas=0; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1691673420";
+    public final static String cookie = "xq_a_token=370309a4cfdfe4bc2704623d41715a1159be59eb; xqat=370309a4cfdfe4bc2704623d41715a1159be59eb; xq_r_token=39f1ce2c9cbdf041c8e7e72471a441c2aa4879b2; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5NDIxOTc3NywiY3RtIjoxNjkyNzc5OTgwNTIzLCJjaWQiOiJkOWQwbjRBWnVwIn0.Lh9FJqDlOtaj2jO3PVrlhxTkQFW44otw-CoqdnHghbOgQPNVrq3lsiAveOuguJZRCzOLbWmOvz3NMEB97SwZOIn0v4hTN-1sK2WrnaO5OELZzTmJo288eSN68rGB-YzqFh4K2rOTc6RPzMBj5kJnYfyaQJPkKAeeiQFmOdcyGdUdauDjBWGQ01Iefjm2m0sfthL_qGfhElQm3etWobHC4m-1SYZQOdGU7EicrF_fZcosHWn2iIbBRZMT_xFB9_7eE0cqf_hXq6HPpSXCtkaaVJ1T-ju5KCezHZavP9__LfXi2HkqerWwQ4Ayh3qVs5nSRX6PtEAgJmS4Zx0l_5ncYA; cookiesu=171692779984940; u=171692779984940; device_id=b113b3700ba6f60d2c110d9a9374ab5a; Hm_lvt_1db88642e346389874251b5a1eded6e3=1692779986; is_overseas=0; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1692779988";
 
     /**
      * 获取股票列表信息

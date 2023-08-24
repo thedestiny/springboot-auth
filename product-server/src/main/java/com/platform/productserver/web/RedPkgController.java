@@ -33,7 +33,7 @@ public class RedPkgController {
     }
 
 
-    @PostMapping(value = "/send")
+    @PostMapping(value = "/receive")
     public Result<Boolean> receivePkg(@RequestBody ReceivePkgReq pkgReq){
         log.info("领取红包参数 {}", JSONObject.toJSONString(pkgReq));
         boolean result = pkgBusiness.receiveRedPkg(pkgReq);

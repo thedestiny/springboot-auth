@@ -7,6 +7,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
+import com.platform.productserver.dto.LineDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -45,6 +46,28 @@ public class PrintTableUtils {
 
     }
 
+    /**
+     * 表格打印信息
+     * @param calList
+     * @param klass
+     */
+    public static void printResultTab(List calList, Class klass) {
+        // 获取对象的信息
+        Map<String, Field> fieldMap = ReflectUtil.getFieldMap(klass);
+        Set<String> strings = fieldMap.keySet();
+        // 去除字段 serialVersionUID
+        strings.remove("serialVersionUID");
+        strings.remove("log");
+        // 数据的表头信息和数据行信息list
+        List<String> fields = Lists.newArrayList(strings);
+        List<List<String>> dataList = new ArrayList<>();
+        for (Object cal : calList) {
+            // 获取每个字段的列表数据
+            dataList.add(getObjValueList(cal, fields));
+        }
+        // 打印拆单结果
+        printResult(fields, dataList);
+    }
 
 
     public static void printResult(List<OrderCalNode> calList, Class klass) {
@@ -53,6 +76,7 @@ public class PrintTableUtils {
         Set<String> strings = fieldMap.keySet();
         // 去除字段 serialVersionUID
         strings.remove("serialVersionUID");
+        strings.remove("log");
         // 数据的表头信息和数据行信息list
         List<String> fields = Lists.newArrayList(strings);
         List<List<String>> dataList = new ArrayList<>();
@@ -66,7 +90,7 @@ public class PrintTableUtils {
 
 
     // 获取数据行信息
-    private static List<String> getObjValueList(OrderCalNode cal, List<String> fields) {
+    private static List<String> getObjValueList(Object cal, List<String> fields) {
         List<String> dats = new ArrayList<>();
         for (String field : fields) {
             Object val = ReflectUtil.getFieldValue(cal, field);

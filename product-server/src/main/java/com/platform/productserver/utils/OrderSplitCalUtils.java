@@ -88,7 +88,9 @@ public class OrderSplitCalUtils {
      * 开始计算
      */
     public void calculate() {
-        if (CollUtil.isEmpty(calList)) { return; }
+        if (CollUtil.isEmpty(calList)) {
+            return;
+        }
         CollUtil.sort(calList, Comparator.comparing(OrderCalNode::getTotal).reversed()); // 按照金额倒序排列
         // 膨胀金 立减 积分实付 累计之和
         BigDecimal expandAcc = BigDecimal.ZERO;
@@ -98,19 +100,28 @@ public class OrderSplitCalUtils {
         for (int i = 0; i < calList.size(); i++) {
             OrderCalNode node = calList.get(i);
             BigDecimal sub = node.getTotal(); // 子订单总金额
-            if (i == calList.size() - 1) {
-                // 最后一行使用减法
-                node.setExpand(NumberUtil.sub(expand, expandAcc)); // 计算膨胀金
-                node.setInflation(NumberUtil.sub(inflation, inflationAcc)); // 计算立减
-                node.setPointAct(NumberUtil.sub(pointAct, pointActAcc)); // 计算积分实付
-            } else {
-                node.setExpand(handleIfNull(sub, total, node.getExpand(), expand)); // 计算膨胀金
+            if (i < calList.size() - 1) {
+                // 每单的订单明细可分配金额 和 实际分配金额
+                BigDecimal residue, actual;
+                BigDecimal calExpand = handleIfNull(sub, total, node.getExpand(), expand);
+                // 每单剩余可分配金额表示取计算值
+                residue = node.getExpand() != null ? node.getExpand() : calNodeRemainAmount(node);
+                // 横向约束值 计算值 纵向约束值
+                actual = NumberUtil.min(residue, calExpand, NumberUtil.sub(expand, expandAcc));
+                node.setExpand(actual); // 计算膨胀金
                 node.setInflation(handleIfNull(sub, total, node.getInflation(), inflation)); // 计算立减
                 node.setPointAct(handleIfNull(sub, total, node.getPointAct(), pointAct)); // 计算积分实付
                 // 计算累计分配金额
                 expandAcc = NumberUtil.add(expandAcc, node.getExpand());
                 inflationAcc = NumberUtil.add(inflationAcc, node.getInflation());
                 pointActAcc = NumberUtil.add(pointActAcc, node.getPointAct());
+
+            } else {
+
+                // 最后一行使用减法
+                node.setExpand(NumberUtil.sub(expand, expandAcc)); // 计算膨胀金
+                node.setInflation(NumberUtil.sub(inflation, inflationAcc)); // 计算立减
+                node.setPointAct(NumberUtil.sub(pointAct, pointActAcc)); // 计算积分实付
             }
             node.calculateCashPoint(); // 计算现金金额, 现金计算使用减法
         }
@@ -125,7 +136,15 @@ public class OrderSplitCalUtils {
         PrintTableUtils.printResult(calList, OrderCalNode.class);
     }
 
-
+    /**
+     * 计算每个子单的剩余可分配金额
+     *
+     * @param node
+     * @return BigDecimal
+     */
+    private BigDecimal calNodeRemainAmount(OrderCalNode node) {
+        return NumberUtil.sub(node.getTotal(), node.getExpand(), node.getInflation(), node.getPointAct(), node.getCash());
+    }
 
 
     // result = (sub / deno) * cal
@@ -136,7 +155,6 @@ public class OrderSplitCalUtils {
         BigDecimal div = NumberUtil.div(sub, deno, 4);
         return NumberUtil.mul(div, cal).setScale(0, BigDecimal.ROUND_HALF_UP);
     }
-
 
 
     public static void main(String[] args) {
@@ -159,13 +177,7 @@ public class OrderSplitCalUtils {
         }
 
 
-
-
-
     }
-
-
-
 
 
 }

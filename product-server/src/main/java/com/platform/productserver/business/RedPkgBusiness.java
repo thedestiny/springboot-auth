@@ -1,5 +1,6 @@
 package com.platform.productserver.business;
 
+import cn.hutool.core.util.StrUtil;
 import com.platform.authcommon.common.Constant;
 import com.platform.authcommon.common.aop.annotation.DistributedLock;
 import com.platform.authcommon.exception.AppException;
@@ -50,13 +51,11 @@ public class RedPkgBusiness {
     public boolean receiveRedPkg(ReceivePkgReq req) {
         // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
         PkgOutLog pkgOutLog = outLogMapper.selectByOrderNo(req.getOrderNo());
-        pkgOutLog.getp
-
-        Integer redType = req.getRedType();
-        RedPkgEnum redPkgEnum = RedPkgEnum.queryPkgByType(redType);
-        if(redPkgEnum == null){
+        String prodType = pkgOutLog.getProdType();
+        if(StrUtil.equalsAny(prodType, "100", "101")){
             throw new AppException("红包类型不存在");
         }
 
+        return true;
     }
 }
