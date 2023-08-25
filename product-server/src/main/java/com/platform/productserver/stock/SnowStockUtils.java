@@ -52,6 +52,9 @@ public class SnowStockUtils {
         HttpResponse execute = request.execute();
         JSONObject json = JSONObject.parseObject(execute.body());
         JSONObject data = json.getJSONObject("data");
+        if(data == null){
+            return resultList;
+        }
         JSONArray list = data.getJSONArray("list");
         if (list == null) {
             return resultList;
