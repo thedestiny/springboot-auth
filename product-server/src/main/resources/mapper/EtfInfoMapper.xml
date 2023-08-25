@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.EtfInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.EtfInfo">
+        <id column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="brief" property="brief" />
+        <result column="week" property="week" />
+        <result column="month" property="month" />
+        <result column="month3" property="month3" />
+        <result column="half" property="half" />
+        <result column="year" property="year" />
+        <result column="since" property="since" />
+        <result column="fund_type" property="fundType" />
+        <result column="manager" property="manager" />
+        <result column="company" property="company" />
+        <result column="issue" property="issue" />
+        <result column="baseline" property="baseline" />
+        <result column="tracking" property="tracking" />
+        <result column="fund_size" property="fundSize" />
+        <result column="share_size" property="shareSize" />
+        <result column="update_date" property="updateDate" />
+        <result column="fee" property="fee" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        code, name, brief, week, month, month3, half, year, since, fund_type, manager, company,
+         issue, baseline, tracking, fund_size, share_size, update_date, fee
+    </sql>
+
+</mapper>

@@ -2,6 +2,8 @@ package com.platform.productserver.entity;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -142,12 +144,10 @@ public class StockInfo implements Serializable {
 
     public static void main(String[] args) {
 
-        BigDecimal bigDecimal = new BigDecimal("1.326072113E9");
-        System.out.println(bigDecimal);
-        int year = DateUtil.date().year();
-        System.out.println(year);
-        DateTime parse1 = DateUtil.parse("08-04", "MM-dd");
-        System.out.println(parse1);
+
+        String dt = "2023年04月14日";
+        String replace = ReUtil.replaceAll(dt, "[年月]", "-").replace("日", "");
+        System.out.println(replace);
     }
 
 

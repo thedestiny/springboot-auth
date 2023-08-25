@@ -2,6 +2,7 @@ package com.platform.productserver.service;
 
 
 import com.platform.productserver.dto.FundDto;
+import com.platform.productserver.entity.EtfInfo;
 
 import java.util.List;
 
@@ -13,4 +14,7 @@ public interface StockService{
 
 
     Integer saveFundInfoList(List<FundDto> fundDtos);
+
+
+    Integer saveEtfInfoList(List<EtfInfo> etfs);
 }

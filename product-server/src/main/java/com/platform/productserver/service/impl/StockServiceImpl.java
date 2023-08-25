@@ -2,7 +2,9 @@ package com.platform.productserver.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.platform.productserver.dto.FundDto;
+import com.platform.productserver.entity.EtfInfo;
 import com.platform.productserver.entity.FundInfo;
+import com.platform.productserver.mapper.EtfInfoMapper;
 import com.platform.productserver.mapper.FundInfoMapper;
 import com.platform.productserver.mapper.StockInfoMapper;
 import com.platform.productserver.service.StockService;
@@ -26,6 +28,8 @@ public class StockServiceImpl implements StockService {
     private StockInfoMapper stockInfoMapper;
     @Autowired
     private FundInfoMapper fundInfoMapper;
+    @Autowired
+    private EtfInfoMapper etfInfoMapper;
 
 
     @Override
@@ -40,6 +44,21 @@ public class StockServiceImpl implements StockService {
                 cnt += fundInfoMapper.insert(info);
             } else {
                 cnt += fundInfoMapper.updateById(info);
+            }
+
+        }
+        return cnt;
+    }
+
+    @Override
+    public Integer saveEtfInfoList(List<EtfInfo> etfs) {
+        Integer cnt = 0;
+        for (EtfInfo fund : etfs) {
+            EtfInfo info1 = etfInfoMapper.selectById(fund.getCode());
+            if(ObjectUtil.isNull(info1)){
+                cnt += etfInfoMapper.insert(fund);
+            } else {
+                cnt += etfInfoMapper.updateById(fund);
             }
 
         }

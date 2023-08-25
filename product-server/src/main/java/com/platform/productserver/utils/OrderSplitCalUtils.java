@@ -103,14 +103,30 @@ public class OrderSplitCalUtils {
             if (i < calList.size() - 1) {
                 // 每单的订单明细可分配金额 和 实际分配金额
                 BigDecimal residue, actual;
+                // 计算膨胀金
                 BigDecimal calExpand = handleIfNull(sub, total, node.getExpand(), expand);
                 // 每单剩余可分配金额表示取计算值
                 residue = node.getExpand() != null ? node.getExpand() : calNodeRemainAmount(node);
                 // 横向约束值 计算值 纵向约束值
                 actual = NumberUtil.min(residue, calExpand, NumberUtil.sub(expand, expandAcc));
                 node.setExpand(actual); // 计算膨胀金
-                node.setInflation(handleIfNull(sub, total, node.getInflation(), inflation)); // 计算立减
-                node.setPointAct(handleIfNull(sub, total, node.getPointAct(), pointAct)); // 计算积分实付
+
+                // 计算立减金额
+                BigDecimal calInflation = handleIfNull(sub, total, node.getInflation(), inflation);
+                // 每单剩余可分配金额表示取计算值
+                residue = node.getInflation() != null ? node.getInflation() : calNodeRemainAmount(node);
+                // 横向约束值 计算值 纵向约束值
+                actual = NumberUtil.min(residue, calInflation, NumberUtil.sub(inflation, inflationAcc));
+                node.setInflation(actual); // 计算立减
+
+                // 计算积分实付金额
+                BigDecimal calPoint = handleIfNull(sub, total, node.getPointAct(), pointAct);
+                // 每单剩余可分配金额表示取计算值
+                residue = node.getPointAct() != null ? node.getPointAct() : calNodeRemainAmount(node);
+                // 横向约束值 计算值 纵向约束值
+                actual = NumberUtil.min(residue, calPoint, NumberUtil.sub(pointAct, pointActAcc));
+                node.setPointAct(actual); // 计算积分实付
+
                 // 计算累计分配金额
                 expandAcc = NumberUtil.add(expandAcc, node.getExpand());
                 inflationAcc = NumberUtil.add(inflationAcc, node.getInflation());
