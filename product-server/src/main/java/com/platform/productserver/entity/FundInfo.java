@@ -113,6 +113,9 @@ public class FundInfo implements Serializable {
      */
     private String fee;
 
-
+    // 赎回费率
+    private String sellFee;
+    // 买入费率
+    private String buyFee;
 
 }

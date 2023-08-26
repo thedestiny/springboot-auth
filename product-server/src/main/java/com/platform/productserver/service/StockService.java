@@ -13,8 +13,17 @@ import java.util.List;
 public interface StockService{
 
 
-    Integer saveFundInfoList(List<FundDto> fundDtos);
+    /**
+     * 保存场外基金信息
+     * @param funds
+     * @return
+     */
+    Integer saveFundInfoList(List<FundDto> funds);
 
-
+    /**
+     * 保存 etf 信息
+     * @param etfs
+     * @return
+     */
     Integer saveEtfInfoList(List<EtfInfo> etfs);
 }

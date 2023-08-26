@@ -30,7 +30,7 @@ public class FundDto implements Serializable {
     // 今年来 14
     private BigDecimal since;
     // 手续费 22
-    private BigDecimal fee;
+    private String fee;
 
     // 基金类型 大类
     private String type;
@@ -52,6 +52,10 @@ public class FundDto implements Serializable {
     private String fundSize;
     // 基金份额 亿份
     private String shareSize;
+    // 赎回费率
+    private String sellFee;
+    // 买入费率
+    private String buyFee;
 
 
 }

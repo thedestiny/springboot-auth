@@ -8,4 +8,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface FundInfoMapper extends BaseMapper<FundInfo> {
 
+    /**
+     * 保存基金信息
+     */
+    Integer saveFundInfo(FundInfo fund);
+
 }

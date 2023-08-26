@@ -30,53 +30,46 @@ public class FundTask {
     private StockService stockService;
 
     /**
-     *  gp-股票型
-     *  hh-混合型
-     *  zq-债券型
-     *  zs-指数型
-     *  qdii-qdii
-     *  lof-lof
-     *  fof-fof
+     * gp-股票型
+     * hh-混合型
+     * zq-债券型
+     * zs-指数型
+     * qdii-qdii
+     * lof-lof
+     * fof-fof
      */
     @Scheduled(cron = "20 1/1 * * * ?")
     public void task() {
         log.info("start fund task !");
         Integer total = 0;
+        handleFundInfoList("hh", "混合型");
+        handleFundInfoList("gp", "股票型");
+        //
+        handleFundInfoList("zq", "债券型");
+        handleFundInfoList("zs", "指数型");
 
-
-        handleFundInfoList("gp","股票型" );
-        // handleFundInfoList("hh","混合型" );
-        handleFundInfoList("zq","债券型" );
-        handleFundInfoList("zs","指数型" );
-
-        handleFundInfoList("qdii","qdii" );
-        handleFundInfoList("lof","lof" );
-        handleFundInfoList("fof","fof" );
-
-
-
-
+        handleFundInfoList("qdii", "qdii");
+        handleFundInfoList("lof", "lof");
+        handleFundInfoList("fof", "fof");
     }
 
-
-    private void handleFundInfoList(String typ, String tp){
+    // 存储基金信息
+    private void handleFundInfoList(String typ, String tp) {
 
         for (int i = 0; i < 100; i++) {
             try {
-                log.info(" start page {}", i);
+                log.info("{} start page {}", tp, i);
                 List<FundDto> funds = TianFundUtils.fundList(i + 1, typ, tp);
                 if (CollUtil.isNotEmpty(funds)) {
                     stockService.saveFundInfoList(funds);
                 } else {
                     break;
                 }
-            }catch (Exception e){
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
         }
     }
-
 
 
 }

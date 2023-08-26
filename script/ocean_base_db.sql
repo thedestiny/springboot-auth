@@ -44,25 +44,32 @@ CREATE TABLE `tb_fund_info` (
       `manager` varchar(80)  NOT NULL DEFAULT '' COMMENT '基金经理',
       `company` varchar(80)  NOT NULL DEFAULT '' COMMENT '基金公司',
       `issue` varchar(32)  NOT NULL DEFAULT '' COMMENT '发行日期',
-      `baseline` varchar(100)  NOT NULL DEFAULT '' COMMENT '业绩比较基准',
+      `baseline` varchar(150)  NOT NULL DEFAULT '' COMMENT '业绩比较基准',
       `tracking` varchar(100)  NOT NULL DEFAULT '' COMMENT '跟踪标的',
       `fund_size` varchar(100)  NOT NULL DEFAULT '' COMMENT '基金规模',
       `share_size` varchar(100)  NOT NULL DEFAULT '' COMMENT '基金份额',
       `update_date` varchar(20) NOT NULL DEFAULT '0' COMMENT '数据更新日期',
       `fee` varchar(32)  NOT NULL DEFAULT '' COMMENT '手续费',
+      `buy_fee` varchar(150)  NOT NULL DEFAULT '' COMMENT '申购手续费',
+      `sell_fee` varchar(150)  NOT NULL DEFAULT '' COMMENT '赎回手续费',
       PRIMARY KEY (`code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='基金基本信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='场外基金信息表';
 
 CREATE TABLE `tb_etf_info` (
       `code` varchar(20) NOT NULL COMMENT 'code',
       `name` varchar(100) NOT NULL COMMENT '基金名称',
       `brief` varchar(100) NOT NULL COMMENT '基金简称',
+      `price` decimal(18,4) NULL COMMENT '价格',
+      `rate` decimal(18,4) NULL COMMENT '涨跌幅%',
       `week` decimal(18,2) NULL COMMENT '近一周涨幅',
       `month` decimal(18,2) NULL COMMENT '近一月涨幅',
       `month3` decimal(18,2) NULL COMMENT '近三月涨幅',
       `half` decimal(18,2) NULL COMMENT '近6月涨幅',
-      `year` decimal(18,2) NULL COMMENT '近一年涨幅',
-      `since` decimal(18,2) NULL COMMENT '今年来涨幅',
+      `year` decimal(18,2) NULL COMMENT '今年涨幅',
+      `year1` decimal(18,2) NULL COMMENT '近一年涨幅',
+      `year2` decimal(18,2) NULL COMMENT '近一年涨幅',
+      `year3` decimal(18,2) NULL COMMENT '近一年涨幅',
+      `since` decimal(18,2) NULL COMMENT '成立以来涨幅',
       `fund_type` varchar(32)  NOT NULL DEFAULT '' COMMENT '基金类型',
       `manager` varchar(80)  NOT NULL DEFAULT '' COMMENT '基金经理',
       `company` varchar(80)  NOT NULL DEFAULT '' COMMENT '基金公司',
@@ -72,9 +79,8 @@ CREATE TABLE `tb_etf_info` (
       `fund_size` varchar(100)  NOT NULL DEFAULT '' COMMENT '基金规模',
       `share_size` varchar(100)  NOT NULL DEFAULT '' COMMENT '基金份额',
       `update_date` varchar(20) NOT NULL DEFAULT '0' COMMENT '数据更新日期',
-      `fee` varchar(32)  NOT NULL DEFAULT '' COMMENT '手续费',
       PRIMARY KEY (`code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='基金基本信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='ETF场内基金基本信息表';
 
 
 

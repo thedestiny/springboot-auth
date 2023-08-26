@@ -15,17 +15,13 @@ import com.google.common.collect.Lists;
 import com.platform.productserver.dto.FundDto;
 import com.platform.productserver.entity.EtfInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -57,49 +53,50 @@ public class TianFundUtils {
 //
 //        }
 
-        List<EtfInfo> etfInfos = etfInfoList();
+        // List<EtfInfo> etfInfos = etfInfoList();
+        FundDto dd = new FundDto();
+        dd.setCode("001437");
+        // 001437
+        buySellFee(dd);
     }
 
     /**
-     * etf list
-     *
-     * @return
+     * etf 信息列表
      */
     public static List<EtfInfo> etfInfoList() {
 
         HttpRequest request = HttpUtil.createGet(etf_list);
-        request.header("Host", "fund.eastmoney.com");
         request.header("Referer", "http://fund.eastmoney.com/data/fundranking.html");
+        request.header("Host", "fund.eastmoney.com");
         HttpResponse execute = request.execute();
         String body = execute.body();
         String replace = body.replace("var rankData = ", "").trim();
         JSONObject json = JSONObject.parseObject(replace);
         JSONArray datas = json.getJSONArray("datas");
-
         List<EtfInfo> dtoList = Lists.newArrayList();
-
         System.out.println(" \n" + datas.size() + "\n");
         for (int i = 0; i < datas.size(); i++) {
             String node = datas.getString(i).replace("\"", "");
-            System.out.println(node);
             EtfInfo dto = new EtfInfo();
             String[] split = node.split(",");
             dto.setCode(split[0]);
             dto.setName(split[1]);
             dto.setBrief(capEtfBriefName(split[0]));
+            dto.setPrice(bg(split[4]));
             dto.setUpdateDate(split[3]);
-            dto.setWeek(bg(split[7]));
-            dto.setMonth(bg(split[8]));
-            dto.setMonth3(bg(split[9]));
-            dto.setHalf(bg(split[10]));
-            dto.setYear(bg(split[11]));
+            dto.setWeek(bg(split[6]));
+            dto.setMonth(bg(split[7]));
+            dto.setMonth3(bg(split[8]));
+            dto.setHalf(bg(split[9]));
+            dto.setYear1(bg(split[10]));
+            dto.setYear2(bg(split[11]));
+            dto.setYear3(bg(split[12]));
+            dto.setYear(bg(split[13]));
             dto.setSince(bg(split[14]));
-            // dto.setFee(bg(split[22]));
             // 基金基本信息
             try {
                 etfInfo(dto);
             } catch (Exception e) {
-
             }
             dtoList.add(dto);
         }
@@ -114,9 +111,7 @@ public class TianFundUtils {
         if (StrUtil.isEmpty(code)) {
             return "";
         }
-
         try {
-
             String secid = formatStock(code);
             String response = HttpUtil.get("http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=1&fields=f58&secid=" + secid);
             JSONObject jsonObject = JSONObject.parseObject(response);
@@ -146,19 +141,12 @@ public class TianFundUtils {
 
     /**
      * 查询基金数据
-     *
-     * @param page 1
-     * @param typ  hh
      */
     public static List<FundDto> fundList(Integer page, String typ, String tp) {
 
         List<FundDto> dtoList = Lists.newArrayList();
-        DateTime date1 = DateUtil.date().offset(DateField.YEAR, -1);
-        DateTime date2 = DateUtil.date();
-
-        String start = DateUtil.format(date1, "yyyy-MM-dd");
-        String end = DateUtil.format(date2, "yyyy-MM-dd");
-
+        String start = DateUtil.format(DateUtil.date().offset(DateField.YEAR, -1), "yyyy-MM-dd"); // 获取时间
+        String end = DateUtil.format(DateUtil.date(), "yyyy-MM-dd");
         HttpRequest request = HttpUtil.createGet(StrUtil.format(fund_list, typ, start, end, page));
         request.header("Host", "fund.eastmoney.com");
         request.header("Referer", "http://fund.eastmoney.com/data/fundranking.html");
@@ -172,7 +160,6 @@ public class TianFundUtils {
         }
         for (int i = 0; i < datas.size(); i++) {
             String node = datas.getString(i).replace("\"", "");
-            // log.info(node.replace("\"", ""));
             String[] split = node.split(",");
             FundDto dto = new FundDto();
             dto.setCode(split[0]);
@@ -185,16 +172,8 @@ public class TianFundUtils {
             dto.setHalf(bg(split[10]));
             dto.setYear(bg(split[11]));
             dto.setSince(bg(split[14]));
-            // dto.setFee(bg(split[22]));
-            // 基金基本信息
-            try {
-                fundInfo(dto);
-            } catch (Exception e) {
-
-            }
-
+            dto.setFee("");
             dtoList.add(dto);
-
         }
 
         return dtoList;
@@ -211,8 +190,8 @@ public class TianFundUtils {
         fund.setManager(listMap.getOrDefault("基金经理人", ""));
         String issue = listMap.getOrDefault("成立日期/规模", "");
         fund.setIssue(transIssue(issue));
-        fund.setFundSize(listMap.getOrDefault("资产规模", "").split("（" )[0]);
-        fund.setShareSize(listMap.getOrDefault("份额规模", "").split("（" )[0]);
+        fund.setFundSize(listMap.getOrDefault("资产规模", "").split("（")[0]);
+        fund.setShareSize(listMap.getOrDefault("份额规模", "").split("（")[0]);
     }
 
 
@@ -226,40 +205,51 @@ public class TianFundUtils {
 
     }
 
+
     /**
-     * 基金信息概况
-     * http://fundf10.eastmoney.com/jbgk_260112.html
+     * 获取基金的基本信息
      */
-    public static void fundInfo(FundDto fund) {
-        // 260112
-        Map<String, String> listMap = fundBaseInfo(fund.getCode());
-
-//        for (Map.Entry<String, String> entry : listMap.entrySet()) {
-//            System.out.println(entry.getKey() + " " + entry.getValue());
-//        }
-        fund.setBaseline(listMap.getOrDefault("业绩比较基准", "").trim());
-        fund.setTracking(listMap.getOrDefault("跟踪标的", "").trim().replace("该基金无跟踪标的", ""));
-        fund.setFundType(listMap.getOrDefault("基金类型", ""));
-        fund.setCompany(listMap.getOrDefault("基金管理人", ""));
-        fund.setManager(listMap.getOrDefault("基金经理人", ""));
-        String issue = listMap.getOrDefault("成立日期/规模", "");
-        fund.setIssue(transIssue(issue));
-        fund.setFundSize(listMap.getOrDefault("资产规模", ""));
-        fund.setShareSize(listMap.getOrDefault("份额规模", ""));
-
-    }
-
     private static Map<String, String> fundBaseInfo(String fund) {
         HttpRequest request = HttpUtil.createGet(StrUtil.format("http://fundf10.eastmoney.com/jbgk_{}.html", fund));
         HttpResponse execute = request.execute();
         String body = execute.body();
         Document parse = Jsoup.parse(body);
-        // 获取第一个表格
-        Element table = parse.getElementsByTag("table").get(1);
-        List<String> keys = capTagList(table, "th");
-        List<String> values = capTagList(table, "td");
-        return keys.stream().collect(Collectors.toMap(key -> key, key -> values.get(keys.indexOf(key))));
+        Element table = parse.getElementsByTag("table").get(1);  // 获取第一个表格
+        List<String> keys = capTagList(table, "th"); // 获取所有的 th
+        List<String> values = capTagList(table, "td"); // 获取所有的 td
+        return keys.stream().collect(Collectors.toMap(key -> key, key -> values.get(keys.indexOf(key)))); // 将两个 list 组成一个 map
     }
+    private static List<String> capTagList(Element table, String tag) {
+        Elements tds = table.getElementsByTag(tag);
+        List<String> dts = new ArrayList<>();
+        for (int i = 0; i < tds.size(); i++) {
+            dts.add(tds.get(i).text());
+        }
+        return dts;
+    }
+    /**
+     * 基金信息概况
+     * http://fundf10.eastmoney.com/jbgk_260112.html
+     */
+    public static void fundInfo(FundDto fund) {
+        try {
+            Map<String, String> listMap = fundBaseInfo(fund.getCode());
+            fund.setBaseline(listMap.getOrDefault("业绩比较基准", "").trim());
+            fund.setTracking(listMap.getOrDefault("跟踪标的", "").trim().replace("该基金无跟踪标的", ""));
+            fund.setCompany(listMap.getOrDefault("基金管理人", ""));
+            fund.setFundType(listMap.getOrDefault("基金类型", ""));
+            fund.setManager(listMap.getOrDefault("基金经理人", ""));
+            String issue = listMap.getOrDefault("成立日期/规模", "");
+            fund.setIssue(transIssue(issue));
+            fund.setFundSize(listMap.getOrDefault("资产规模", "").split("（")[0]);
+            fund.setShareSize(listMap.getOrDefault("份额规模", "").split("（")[0]);
+        } catch (Exception e) {
+
+        }
+
+
+    }
+
 
     private static String transIssue(String issue) {
 
@@ -274,13 +264,77 @@ public class TianFundUtils {
 
     }
 
-    private static List<String> capTagList(Element table, String tag) {
-        Elements tds = table.getElementsByTag(tag);
-        List<String> dts = new ArrayList<>();
-        for (int i = 0; i < tds.size(); i++) {
-            dts.add(tds.get(i).text());
+
+
+    /**
+     * 买卖费率
+     */
+    public static void buySellFee(FundDto fund) {
+
+        try {
+            // String url1 = "http://fundf10.eastmoney.com/jjfl_002147.html";
+            String response = HttpUtil.get(StrUtil.format("http://fundf10.eastmoney.com/jjfl_{}.html", fund.getCode()));
+            Document body = Jsoup.parse(response);
+            Element txtIn = body.getElementsByClass("txt_in").get(0);
+            Elements boxs = txtIn.getElementsByClass("box");
+
+            for (int i = 0; i < boxs.size(); i++) {
+                Element element = boxs.get(i);
+                String h4 = element.getElementsByTag("h4").text();
+                if ("赎回费率".equalsIgnoreCase(h4)) {
+                    try {
+                        Element table = element.getElementsByTag("table").get(0);
+                        String sellFee = sellRate(table);
+                        fund.setSellFee(sellFee);
+                        System.out.println("赎回费率 " + sellFee);
+                    } catch (Exception e) {
+                    }
+                }
+                if (h4.contains("申购费率")) {
+                    try {
+                        Element table = element.getElementsByTag("table").get(0);
+                        String buyFee = buyRate(table);
+                        fund.setBuyFee(buyFee);
+                        System.out.println("申购费率 " + buyFee);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        } catch (Exception e) {
         }
-        return dts;
+
+    }
+
+
+    /**
+     * 买入费率 7
+     */
+    private static String buyRate(Element element) {
+        Element tbody = element.getElementsByTag("tbody").get(0);
+        String tmp = tbody.getElementsByTag("td").get(2).text().split("\\|")[0];
+        return StrUtil.trim(tmp);
+    }
+
+    /**
+     * 卖出费率 8
+     */
+    private static String sellRate(Element element) {
+        Element tbody = element.getElementsByTag("tbody").get(0);
+        Elements elements = tbody.getElementsByTag("tr");
+        String result = "";
+        for (int i = 0; i < elements.size(); i++) {
+            Elements element1 = elements.get(i).getElementsByTag("td");
+            String temp = element1.get(1).text().replace("大于等于", ">=")
+                    .replace("大于等于", ">=")
+                    .replace("小于等于", "<=")
+                    .replace("小于", "<") + ":" + element1.get(2).text();
+            if (StrUtil.isNotBlank(result)) {
+                result += "|";
+            }
+            result += temp;
+        }
+        return result.replace("，", "至");
+
     }
 
 
