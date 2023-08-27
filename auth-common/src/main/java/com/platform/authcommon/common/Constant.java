@@ -1,5 +1,7 @@
 package com.platform.authcommon.common;
 
+import cn.hutool.core.date.DateUtil;
+
 /**
  * @Description 常量
  * @Date 2023-08-15 10:52 AM
@@ -19,6 +21,15 @@ public class Constant {
     // 分布式锁的 redis key
     public final static String DIS_KEY = "DIS_KEY:";
 
+    public final static Long DEFAULT_SEQ = 0L;
 
+
+    public static void main(String[] args) {
+
+        String time = DateUtil.format(DateUtil.date(), "yyMMdd");
+        System.out.println(time);
+        String format = String.format("%05d", 1);
+        System.out.println(format);
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.platform.productserver.service;
 
+import com.platform.productserver.dto.AccountDto;
 import com.platform.productserver.dto.TradeDto;
 import com.platform.productserver.entity.Account;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,8 +15,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AccountService extends IService<Account> {
 
+
     /**
-     * 账户出账
+     * 账户开户
+     */
+    boolean openAccount(AccountDto account);
+
+    /**
+     * 账户交易操作
      */
     boolean trade(TradeDto tradeDto);
 

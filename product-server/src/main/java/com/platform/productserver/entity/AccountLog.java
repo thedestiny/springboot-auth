@@ -27,7 +27,7 @@ public class AccountLog implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.NONE)
     private Long id;
 
     /**
@@ -53,7 +53,7 @@ public class AccountLog implements Serializable {
     /**
      * 用户id
      */
-    private Long userId;
+    private String userId;
 
     /**
      * 账户类型: 1-内部 2-外部 3-超管

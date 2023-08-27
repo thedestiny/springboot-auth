@@ -46,7 +46,7 @@ public class AccountServiceImplTest {
         tradeDto.setTransId(0L);
         tradeDto.setAmount(new BigDecimal("0.00"));
         tradeDto.setRequestNo("requestNo");
-        tradeDto.setOtherId(0L);
+        // tradeDto.setOtherId(0L);
         tradeDto.setProdType("prodType");
         tradeDto.setTransType(0);
         tradeDto.setSource("source");

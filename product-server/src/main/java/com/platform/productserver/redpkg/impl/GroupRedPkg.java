@@ -112,11 +112,7 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
 
     @Override
     public Boolean receiveRedPkg(ReceivePkgReq pkgReq) {
-
-
-
-
-        return null;
+        return super.receiveRedPkg(pkgReq);
     }
 
     public static void main(String[] args) {

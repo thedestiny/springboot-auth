@@ -34,7 +34,7 @@ public class RedPkgBusiness {
      * 红包发送
      * @param req
      */
-    @DistributedLock(prefix = "redis-red", key = "#req.orderNo", cacheValue = "test")
+    @DistributedLock(prefix = "redis-red-send", key = "#req.orderNo", cacheValue = "test")
     public boolean sendRedPkg(SendPkgReq req) {
         // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
         Integer redType = req.getRedType();
@@ -47,7 +47,7 @@ public class RedPkgBusiness {
         return redPkg;
     }
 
-    @DistributedLock(prefix = "redis-red", key = "#req.requestNo", cacheValue = "test")
+    @DistributedLock(prefix = "redis-red-receive", key = "#req.requestNo", cacheValue = "test")
     public boolean receiveRedPkg(ReceivePkgReq req) {
         // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
         PkgOutLog pkgOutLog = outLogMapper.selectByOrderNo(req.getOrderNo());
@@ -55,7 +55,9 @@ public class RedPkgBusiness {
         if(StrUtil.equalsAny(prodType, "100", "101")){
             throw new AppException("红包类型不存在");
         }
-
-        return true;
+        RedPkgEnum redPkgEnum = RedPkgEnum.queryPkgByCode(prodType);
+        RedPkgService redPkgService = redPkgServiceMap.get(redPkgEnum.name);
+        Boolean redPkg = redPkgService.receiveRedPkg(req);
+        return redPkg;
     }
 }

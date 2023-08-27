@@ -1,9 +1,5 @@
 package com.platform.productserver.redpkg;
-import java.math.BigDecimal;
-import java.util.Date;
 
-
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -25,6 +21,7 @@ import java.util.List;
  * @Date 2023-08-15 10:44 AM
  */
 public abstract class AbstractRedPkgService implements RedPkgService {
+
     @Autowired
     private PkgInLogMapper inLogMapper;
     @Autowired

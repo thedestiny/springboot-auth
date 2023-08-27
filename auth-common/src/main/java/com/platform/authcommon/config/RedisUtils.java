@@ -67,6 +67,13 @@ public class RedisUtils {
         return lock;
     }
 
+    /**
+     * 自增
+     */
+    public long increment(String key){
+        return cacheRedis.opsForValue().increment(key);
+    }
+
     public Boolean hasKey(String key) {
         return cacheRedis.hasKey(key);
     }

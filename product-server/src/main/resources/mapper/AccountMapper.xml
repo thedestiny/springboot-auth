@@ -25,4 +25,22 @@
 expense_amount, credit_amount, seq, create_time, update_time
     </sql>
 
+
+    <select id="queryAccount" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_account
+        where user_id = #{userId} and account_type = #{accountType}
+
+    </select>
+
+    <select id="queryAccountForUpdate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_account
+        where id = #{id} for update
+
+    </select>
+
 </mapper>

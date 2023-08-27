@@ -1,5 +1,6 @@
 package com.platform.authcommon.exception;
 
+import com.platform.authcommon.common.ResultCode;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -39,7 +40,14 @@ public class AppException extends RuntimeException implements Serializable {
         this.code = code;
     }
 
+    public AppException(ResultCode code) {
+        this.msg = code.getMessage();
+        this.code = code.getCode();
+    }
 
-
+    public AppException(ResultCode code, String msg) {
+        this.msg = msg;
+        this.code = code.getCode();
+    }
 
 }
