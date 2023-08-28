@@ -2,7 +2,6 @@ package com.platform.productserver.stock;
 
 
 import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -81,7 +80,6 @@ public class TianFundUtils {
             String[] split = node.split(",");
             dto.setCode(split[0]);
             dto.setName(split[1]);
-            dto.setBrief(capEtfBriefName(split[0]));
             dto.setPrice(bg(split[4]));
             dto.setUpdateDate(split[3]);
             dto.setWeek(bg(split[6]));
@@ -93,6 +91,7 @@ public class TianFundUtils {
             dto.setYear3(bg(split[12]));
             dto.setYear(bg(split[13]));
             dto.setSince(bg(split[14]));
+            // capEtfTradeInfo(dto);
             // 基金基本信息
             try {
                 etfInfo(dto);
@@ -104,21 +103,41 @@ public class TianFundUtils {
     }
 
     /**
-     * 查询 ETF 简码信息
+     * 查询 ETF 交易信息
      */
-    public static String capEtfBriefName(String code) {
+    public static void capEtfTradeInfo(EtfInfo dto) {
 
-        if (StrUtil.isEmpty(code)) {
-            return "";
+        if (StrUtil.isEmpty(dto.getCode())) {
+            return ;
         }
         try {
-            String secid = formatStock(code);
-            String response = HttpUtil.get("http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=1&fields=f58&secid=" + secid);
+            String secid = formatStock(dto.getCode());
+            // f58 基金简称
+            // f43 基金最新价格
+            // f170 当日涨跌幅
+            // f44 最高价
+            // f45 最低价
+            // f46 开盘价
+            // f60 昨日收盘价
+            // f119 5日涨跌
+            // f120 20日涨跌
+            // f121 60日涨跌
+            // f122 今年以来涨跌
+            String response = HttpUtil.get("http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&fields=f58,f43,f170,f44,f45,f46,f60,f119,f120,f121,f122&secid=" + secid);
             JSONObject jsonObject = JSONObject.parseObject(response);
-            return jsonObject.getJSONObject("data").getString("f58");
+            JSONObject data = jsonObject.getJSONObject("data");
+            String brief = data.getString("f58");
+            dto.setBrief(brief);
+            if(data.containsKey("f43") && data.getString("f43") != null){
+                dto.setPrice(data.getBigDecimal("f43"));
+            }
+            if(data.containsKey("170") && data.getString("170") != null){
+                dto.setRate(data.getBigDecimal("f170"));
+            }
+
+
         } catch (Exception e) {
-            log.error(" error  code {} e {}", code, e);
-            return "";
+            log.error(" error  code {} e {}", dto.getCode(), e);
         }
     }
 

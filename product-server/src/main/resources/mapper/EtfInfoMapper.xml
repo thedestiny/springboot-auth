@@ -22,13 +22,13 @@
         <result column="fund_size" property="fundSize" />
         <result column="share_size" property="shareSize" />
         <result column="update_date" property="updateDate" />
-        <result column="fee" property="fee" />
+        <result column="rate" property="rate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        code, name, brief, week, month, month3, half, year, since, fund_type, manager, company,
-         issue, baseline, tracking, fund_size, share_size, update_date, fee
+         code, `name`, brief, week, `month`, month3, half, `year`, `year1`,`year2`,`year3`, since, fund_type, manager, company,
+         issue, baseline, tracking, fund_size, share_size, update_date, rate
     </sql>
 
 </mapper>

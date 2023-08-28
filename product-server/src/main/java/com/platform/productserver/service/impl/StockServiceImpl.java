@@ -3,6 +3,7 @@ package com.platform.productserver.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.platform.productserver.dto.FundDto;
 import com.platform.productserver.entity.EtfInfo;
 import com.platform.productserver.entity.FundInfo;
@@ -90,5 +91,15 @@ public class StockServiceImpl implements StockService {
             }
         }
         return cnt;
+    }
+
+    @Override
+    public List<EtfInfo> queryEtfInfoList() {
+        return etfInfoMapper.selectList(new QueryWrapper<>());
+    }
+
+    @Override
+    public Integer updateEtfInfo(EtfInfo etfInfo) {
+        return etfInfoMapper.updateById(etfInfo);
     }
 }

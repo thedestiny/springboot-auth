@@ -22,8 +22,17 @@ public interface StockService{
 
     /**
      * 保存 etf 信息
-     * @param etfs
-     * @return
      */
     Integer saveEtfInfoList(List<EtfInfo> etfs);
+
+    /**
+     * 查询 ETF 列表信息
+     * @return
+     */
+    List<EtfInfo> queryEtfInfoList();
+
+    /**
+     * 更新 etf 信息
+     */
+    Integer updateEtfInfo(EtfInfo etfInfo);
 }

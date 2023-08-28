@@ -30,6 +30,7 @@ public class EtfInfo implements Serializable {
      * 基金名称
      */
     private String name;
+
     // 单位净值
     private BigDecimal price;
 
@@ -127,6 +128,11 @@ public class EtfInfo implements Serializable {
      * 数据更新日期
      */
     private String updateDate;
+
+    /**
+     * 更新涨跌幅
+     */
+    private BigDecimal rate;
 
 
 

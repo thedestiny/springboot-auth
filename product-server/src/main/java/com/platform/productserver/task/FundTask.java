@@ -1,19 +1,15 @@
 package com.platform.productserver.task;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.platform.productserver.dto.FundDto;
-import com.platform.productserver.entity.StockInfo;
+import com.platform.productserver.entity.EtfInfo;
 import com.platform.productserver.service.StockService;
-import com.platform.productserver.stock.SnowStockUtils;
 import com.platform.productserver.stock.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -29,7 +25,33 @@ public class FundTask {
     @Autowired
     private StockService stockService;
 
+
     /**
+     * 更新 ETF 交易信息
+     */
+    @Scheduled(cron = "20 2/1 * * * ?")
+    public void etfUpdateTask() {
+        log.info("update etf trade task !");
+
+        List<EtfInfo> etfInfos = stockService.queryEtfInfoList();
+        for (EtfInfo etfInfo : etfInfos) {
+            // 更新交易信息并保存
+            TianFundUtils.capEtfTradeInfo(etfInfo);
+            stockService.updateEtfInfo(etfInfo);
+        }
+    }
+
+    /**
+     * 更新 ETF 列表信息
+     */
+    @Scheduled(cron = "20 20 * * * ?")
+    public void etfInfo() {
+        List<EtfInfo> etfs = TianFundUtils.etfInfoList();
+        stockService.saveEtfInfoList(etfs);
+    }
+
+    /**
+     * 场外基金信息更新
      * gp-股票型
      * hh-混合型
      * zq-债券型
@@ -38,8 +60,8 @@ public class FundTask {
      * lof-lof
      * fof-fof
      */
-    @Scheduled(cron = "20 1/1 * * * ?")
-    public void task() {
+    @Scheduled(cron = "20 1 * * * ?")
+    public void fundInfo() {
         log.info("start fund task !");
         Integer total = 0;
         handleFundInfoList("hh", "混合型");

@@ -27,10 +27,11 @@ public class StockTask {
     private StockInfoMapper stockInfoMapper;
 
     /**
+     * 沪深 stock 信息更新
      * 沪深股市一览表，每页90条，一共 57页数据
      * https://xueqiu.com/hq#exchange=CN&firstName=1&secondName=1_0
      */
-    @Scheduled(cron = "20 1/2 * * * ?")
+    @Scheduled(cron = "20 17 * * * ?")
     public void task() {
         log.info("start task !");
         Integer total = 0;
