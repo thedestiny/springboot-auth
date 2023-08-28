@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.google.common.collect.Lists;
 import com.platform.authcommon.common.Constant;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
@@ -50,13 +51,17 @@ public abstract class AbstractRedPkgService implements RedPkgService {
      * 保存红包数据到缓存
      */
     public boolean saveRedPkg2Redis(String orderNo, List<RedPkgNode> nodeList) {
-        String value = JSONObject.toJSONString(nodeList);
         String key = Constant.RED_PKG_PREFIX + orderNo;
         // 保存红包列表到 redis 缓存中,过期时间 24h + 1分钟
-        // redisClient.valueSet(key, value, 24 * 60 * 60 + 60);
-        // 使用 list 结构存储红包
-        redisClient.listLeftPushAll(key, nodeList);
 
+        List<String> dataList = Lists.newArrayList();
+
+        for (RedPkgNode node : nodeList) {
+            dataList.add(JSONObject.toJSONString(node));
+        }
+
+        redisClient.listLeftPushAll(key, dataList);
+        redisClient.expire(key,  24 * 60 * 60 + 60);
         return true;
     }
 

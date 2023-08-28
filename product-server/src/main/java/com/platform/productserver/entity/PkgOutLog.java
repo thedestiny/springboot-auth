@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.platform.authcommon.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("tb_pkg_out_log")
-public class PkgOutLog implements Serializable {
+public class PkgOutLog extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 2362586341888330623L;
 
@@ -83,19 +84,9 @@ public class PkgOutLog implements Serializable {
     private String errorMsg;
 
     /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
      * 红包到期时间
      */
     private Date expireTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     /**
      * 完成标识 0-未完成  1-已完成

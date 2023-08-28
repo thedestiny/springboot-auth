@@ -34,7 +34,7 @@ public class RedPkgBusiness {
      * 红包发送
      * @param req
      */
-    @DistributedLock(prefix = "redis-red-send", key = "#req.orderNo", cacheValue = "test")
+    @DistributedLock(prefix = "redis-red-send", key = "#req.orderNo")
     public boolean sendRedPkg(SendPkgReq req) {
         // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
         Integer redType = req.getRedType();
@@ -47,7 +47,7 @@ public class RedPkgBusiness {
         return redPkg;
     }
 
-    @DistributedLock(prefix = "redis-red-receive", key = "#req.requestNo", cacheValue = "test")
+    @DistributedLock(prefix = "redis-red-receive", key = "#req.requestNo")
     public boolean receiveRedPkg(ReceivePkgReq req) {
         // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
         PkgOutLog pkgOutLog = outLogMapper.selectByOrderNo(req.getOrderNo());

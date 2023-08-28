@@ -31,8 +31,8 @@ public class RedisUtils {
     @Autowired
     private RedissonClient redissonClient;
 
-    @Value("${app.prefix:auth}")
-    private String prefix = "auth";
+    @Value("${app.prefix:app}")
+    private String prefix = "app";
 
     private String assemblyKey(String key) {
         StrBuilder sb = new StrBuilder();
@@ -95,12 +95,21 @@ public class RedisUtils {
         cacheRedis.opsForZSet().removeRange(assemblyKey(key), v1, v2);
     }
 
+    /**
+     * 设置缓存的过期时间
+     * @param key 缓存 key
+     * @param expires 过期时间 s
+     */
+    public void expire(String key,  int expires){
+        cacheRedis.expire(key, expires, TimeUnit.SECONDS);
+    }
 
     public Object valueGet(String key) {
         return cacheRedis.opsForValue().get(assemblyKey(key));
     }
 
     public void valueSet(String key, String value, int expires) {
+
         if (expires <= 0) {
             cacheRedis.opsForValue().set(assemblyKey(key), value);
         } else {
