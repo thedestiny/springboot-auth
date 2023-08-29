@@ -39,7 +39,7 @@ public class SnowStockUtils {
     public final static String tmp = "https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={}&size={}&order=desc&orderby=code&order_by=symbol&market=CN&type=sh_sz";
     // cookie
     public final static String cookie =
-            "xq_a_token=370309a4cfdfe4bc2704623d41715a1159be59eb; xqat=370309a4cfdfe4bc2704623d41715a1159be59eb; xq_r_token=39f1ce2c9cbdf041c8e7e72471a441c2aa4879b2; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5NDIxOTc3NywiY3RtIjoxNjkyNzc5OTgwNTIzLCJjaWQiOiJkOWQwbjRBWnVwIn0.Lh9FJqDlOtaj2jO3PVrlhxTkQFW44otw-CoqdnHghbOgQPNVrq3lsiAveOuguJZRCzOLbWmOvz3NMEB97SwZOIn0v4hTN-1sK2WrnaO5OELZzTmJo288eSN68rGB-YzqFh4K2rOTc6RPzMBj5kJnYfyaQJPkKAeeiQFmOdcyGdUdauDjBWGQ01Iefjm2m0sfthL_qGfhElQm3etWobHC4m-1SYZQOdGU7EicrF_fZcosHWn2iIbBRZMT_xFB9_7eE0cqf_hXq6HPpSXCtkaaVJ1T-ju5KCezHZavP9__LfXi2HkqerWwQ4Ayh3qVs5nSRX6PtEAgJmS4Zx0l_5ncYA; cookiesu=171692779984940; u=171692779984940; device_id=b113b3700ba6f60d2c110d9a9374ab5a; Hm_lvt_1db88642e346389874251b5a1eded6e3=1692779986; s=bw11pg4v6g; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1692851814";
+            "cookiesu=171692779984940; device_id=b113b3700ba6f60d2c110d9a9374ab5a; s=bw11pg4v6g; xq_a_token=a0f5e0d91bc0846f43452e89ae79e08167c42068; xqat=a0f5e0d91bc0846f43452e89ae79e08167c42068; xq_r_token=76ed99965d5bffa08531a6a47501f096f61108e8; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5NTUxNTc5NCwiY3RtIjoxNjkzMjg0MzQ1NzM4LCJjaWQiOiJkOWQwbjRBWnVwIn0.AFn93LyOiNyrjehw_EJ7pBQpw1GyruaMI6ke7Bu9swWOYabZO6Wy84p-wYvNbKz0inGy_1Na2mtgX0JNO-hv8NRV-_i6nXHljAyL3VVxdzGkVxFR6JM2nnaxZyQ3AbGK8Q7Hcoau8Zhvbj1dJEQZ1XFY2t4SUs2I7bXg_hGghBNmbCgRUqSskzZ5DEw4suNkoWArG1Z-zPve8TTVznEm9jCCSloOcjBdptjMEXB3Abt2Bo5zsua6lQiVXUIcafo3rsO-U3B1w-v2cSWqWoKqhcbRK-TN5bXyMMOqOyBpN7ZLCvD_MYE500RfAoM0i8SOqLTJrSFbsxJ9YFBP6HTwAw; u=171692779984940; Hm_lvt_1db88642e346389874251b5a1eded6e3=1692779986,1693284347; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1693284350";
 
     /**
      * 获取股票列表信息
@@ -52,7 +52,7 @@ public class SnowStockUtils {
         HttpResponse execute = request.execute();
         JSONObject json = JSONObject.parseObject(execute.body());
         JSONObject data = json.getJSONObject("data");
-        if(data == null){
+        if (data == null) {
             return resultList;
         }
         JSONArray list = data.getJSONArray("list");
@@ -90,8 +90,13 @@ public class SnowStockUtils {
     }
 
     private static BigDecimal trans2Bg(BigDecimal val) {
-        // 按 亿单位进行计算
-        return NumberUtil.div(val.toBigInteger(), 100_000_000, 3);
+        try {
+            // 按 亿单位进行计算
+            return NumberUtil.div(val.toBigInteger(), 100_000_000, 3);
+        } catch (Exception e) {
+            log.error("error {} , e ", val, e);
+            return BigDecimal.ZERO;
+        }
     }
 
     // 转换日期格式

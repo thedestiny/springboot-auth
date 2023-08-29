@@ -30,4 +30,14 @@
          error_msg, create_time, update_time, prod_type, action_type, remark
     </sql>
 
+
+    <select id="queryPkgInLogList" resultMap="BaseResultMap">
+
+        select <include refid="Base_Column_List"/>
+        from tb_pkg_in_log
+        where fid = #{fid} and status = 1
+
+
+    </select>
+
 </mapper>

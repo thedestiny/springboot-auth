@@ -51,7 +51,7 @@ public class TradeDto implements Serializable {
     private String appId;
 
     // 记否记录欠款
-    private Boolean credit;
+    private Boolean credit = false;
 
 
 

@@ -48,7 +48,6 @@ public class GroupRedPkg extends AbstractRedPkgService implements RedPkgService 
         // 存入缓存中
         saveRedPkg2Redis(orderNo, nodeList);
         saveRedPkg2Db(pkgReq);
-
         return true;
     }
 

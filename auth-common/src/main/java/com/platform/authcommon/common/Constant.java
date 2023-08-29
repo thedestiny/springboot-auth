@@ -22,6 +22,8 @@ public class Constant {
     public final static String DIS_KEY = "DIS_KEY:";
 
     public final static Long DEFAULT_SEQ = 0L;
+    // 单次查询数据量
+    public final static Integer BATCH_SIZE = 200;
 
 
     public static void main(String[] args) {

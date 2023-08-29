@@ -15,7 +15,6 @@ import java.util.List;
 @Service(value = "singleRedPkg")
 public class SingleRedPkg extends AbstractRedPkgService implements RedPkgService {
 
-
     @Override
     public Boolean sendRedPkg(SendPkgReq pkgReq) {
 
@@ -25,17 +24,15 @@ public class SingleRedPkg extends AbstractRedPkgService implements RedPkgService
         node.setAmount(pkgReq.getTotal());
         node.setOrderNo(pkgReq.getOrderNo());
         node.setId(id);
-
         // 存入缓存中
         saveRedPkg2Redis(pkgReq.getOrderNo(), nodeList);
         // 保存到数据库
         saveRedPkg2Db(pkgReq);
-
-        return null;
+        return true;
     }
 
     @Override
     public Boolean receiveRedPkg(ReceivePkgReq pkgReq) {
-        return null;
+        return super.receiveRedPkg(pkgReq);
     }
 }

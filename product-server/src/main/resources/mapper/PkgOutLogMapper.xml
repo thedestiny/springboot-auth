@@ -40,4 +40,14 @@
 
     </select>
 
+
+    <select id="queryPkgOutTimeList" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_pkg_out_log
+        where status = 1 and expire_time &lt;= now() and id > #{startId} order by id asc limit #{fetchSize}
+
+    </select>
+
 </mapper>
