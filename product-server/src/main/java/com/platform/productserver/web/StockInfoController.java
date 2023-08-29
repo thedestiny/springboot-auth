@@ -3,7 +3,9 @@ package com.platform.productserver.web;
 import cn.hutool.core.collection.CollUtil;
 import com.platform.productserver.dto.FundDto;
 import com.platform.productserver.entity.EtfInfo;
+import com.platform.productserver.entity.StockInfo;
 import com.platform.productserver.service.StockService;
+import com.platform.productserver.stock.SnowStockUtils;
 import com.platform.productserver.stock.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +41,27 @@ public class StockInfoController {
     public String etfInfoList() {
 
         List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
-        service.submit(()->{
+        service.submit(() -> {
             stockService.saveEtfInfoList(etfInfos);
         });
         return "success";
+    }
 
+    /**
+     * localhost:9501/api/stock/info/list
+     */
+    @GetMapping(value = "stock/info/list")
+    public String stockInfoList() {
+
+
+        for (int i = 0; i < 100; i++) {
+            List<StockInfo> stockInfos = SnowStockUtils.queryStockList(i + 1, 100);
+            log.info("page is {}",i );
+            if (CollUtil.isNotEmpty(stockInfos)) {
+                stockService.saveStockInfoList(stockInfos);
+            }
+        }
+        return "success";
     }
 
 

@@ -108,8 +108,9 @@ public class TianFundUtils {
     public static void capEtfTradeInfo(EtfInfo dto) {
 
         if (StrUtil.isEmpty(dto.getCode())) {
-            return ;
+            return;
         }
+        JSONObject data = new JSONObject();
         try {
             String secid = formatStock(dto.getCode());
             // f58 基金简称
@@ -125,19 +126,18 @@ public class TianFundUtils {
             // f122 今年以来涨跌
             String response = HttpUtil.get("http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&fields=f58,f43,f170,f44,f45,f46,f60,f119,f120,f121,f122&secid=" + secid);
             JSONObject jsonObject = JSONObject.parseObject(response);
-            JSONObject data = jsonObject.getJSONObject("data");
+            data = jsonObject.getJSONObject("data");
             String brief = data.getString("f58");
             dto.setBrief(brief);
-            if(data.containsKey("f43") && data.getString("f43") != null){
+            if (data.containsKey("f43") && !StrUtil.equalsAny(data.getString("f43"), "-", null, "")) {
                 dto.setPrice(data.getBigDecimal("f43"));
             }
-            if(data.containsKey("170") && data.getString("170") != null){
+            if (data.containsKey("170") && !StrUtil.equalsAny(data.getString("f170"), "-", null, "")) {
                 dto.setRate(data.getBigDecimal("f170"));
             }
 
-
         } catch (Exception e) {
-            log.error(" error  code {} e {}", dto.getCode(), e);
+            log.error(" error  code {} data {} e {}", dto.getCode(), data, e);
         }
     }
 
@@ -238,6 +238,7 @@ public class TianFundUtils {
         List<String> values = capTagList(table, "td"); // 获取所有的 td
         return keys.stream().collect(Collectors.toMap(key -> key, key -> values.get(keys.indexOf(key)))); // 将两个 list 组成一个 map
     }
+
     private static List<String> capTagList(Element table, String tag) {
         Elements tds = table.getElementsByTag(tag);
         List<String> dts = new ArrayList<>();
@@ -246,6 +247,7 @@ public class TianFundUtils {
         }
         return dts;
     }
+
     /**
      * 基金信息概况
      * http://fundf10.eastmoney.com/jbgk_260112.html
@@ -282,7 +284,6 @@ public class TianFundUtils {
         }
 
     }
-
 
 
     /**

@@ -3,6 +3,7 @@ package com.platform.productserver.service;
 
 import com.platform.productserver.dto.FundDto;
 import com.platform.productserver.entity.EtfInfo;
+import com.platform.productserver.entity.StockInfo;
 
 import java.util.List;
 
@@ -35,4 +36,9 @@ public interface StockService{
      * 更新 etf 信息
      */
     Integer updateEtfInfo(EtfInfo etfInfo);
+
+    /**
+     * 保存 stock 信息
+     */
+    Integer saveStockInfoList(List<StockInfo> list);
 }

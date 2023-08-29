@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.platform.productserver.dto.FundDto;
 import com.platform.productserver.entity.EtfInfo;
 import com.platform.productserver.entity.FundInfo;
+import com.platform.productserver.entity.StockInfo;
 import com.platform.productserver.mapper.EtfInfoMapper;
 import com.platform.productserver.mapper.FundInfoMapper;
 import com.platform.productserver.mapper.StockInfoMapper;
@@ -49,22 +50,22 @@ public class StockServiceImpl implements StockService {
         List<String> collect = funds.stream().map(FundDto::getCode).collect(Collectors.toList());
         List<FundInfo> fundInfos = fundInfoMapper.selectBatchIds(collect);
         Map<String, FundInfo> infos = new HashMap<>();
-        if(CollUtil.isNotEmpty(fundInfos)){
+        if (CollUtil.isNotEmpty(fundInfos)) {
             infos = fundInfos.stream().collect(Collectors.toMap(FundInfo::getCode, Function.identity()));
         }
 
         for (FundDto fund : funds) {
             // 循环基金代码，并判断数据库中是否存在
             FundInfo info1 = infos.get(fund.getCode());
-            if(ObjectUtil.isNull(info1) || StrUtil.isBlank(info1.getSellFee())){
+            if (ObjectUtil.isNull(info1) || StrUtil.isBlank(info1.getSellFee())) {
                 TianFundUtils.buySellFee(fund); // 买入卖出手续费
             }
-            if(ObjectUtil.isNull(info1) || StrUtil.isBlank(info1.getManager())){
+            if (ObjectUtil.isNull(info1) || StrUtil.isBlank(info1.getManager())) {
                 TianFundUtils.fundInfo(fund); // 基金基本信息
             }
             FundInfo info = new FundInfo();
             BeanUtils.copyProperties(fund, info); // 存在则更新 不存在则插入
-            if(ObjectUtil.isNull(info1)){
+            if (ObjectUtil.isNull(info1)) {
                 cnt += fundInfoMapper.insert(info);
             } else {
                 cnt += fundInfoMapper.updateById(info);
@@ -80,11 +81,11 @@ public class StockServiceImpl implements StockService {
         List<String> collect = etfs.stream().map(EtfInfo::getCode).collect(Collectors.toList());
         List<EtfInfo> fundInfos = etfInfoMapper.selectBatchIds(collect);
         Map<String, EtfInfo> infos = new HashMap<>();
-        if(CollUtil.isNotEmpty(fundInfos)){
+        if (CollUtil.isNotEmpty(fundInfos)) {
             infos = fundInfos.stream().collect(Collectors.toMap(EtfInfo::getCode, Function.identity()));
         }
         for (EtfInfo fund : etfs) {
-            if(infos.containsKey(fund.getCode())){
+            if (infos.containsKey(fund.getCode())) {
                 cnt += etfInfoMapper.updateById(fund);
             } else {
                 cnt += etfInfoMapper.insert(fund);
@@ -101,5 +102,16 @@ public class StockServiceImpl implements StockService {
     @Override
     public Integer updateEtfInfo(EtfInfo etfInfo) {
         return etfInfoMapper.updateById(etfInfo);
+    }
+
+    @Override
+    public Integer saveStockInfoList(List<StockInfo> list) {
+        Integer cnt = 0;
+        if (CollUtil.isNotEmpty(list)) {
+            for (StockInfo stockInfo : list) {
+                cnt += stockInfoMapper.saveStockInfo(stockInfo);
+            }
+        }
+        return cnt;
     }
 }

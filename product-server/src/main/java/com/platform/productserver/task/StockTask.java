@@ -3,8 +3,10 @@ package com.platform.productserver.task;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.platform.productserver.entity.StockInfo;
 import com.platform.productserver.mapper.StockInfoMapper;
+import com.platform.productserver.service.StockService;
 import com.platform.productserver.stock.SnowStockUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ import java.util.List;
 public class StockTask {
 
     @Autowired
-    private StockInfoMapper stockInfoMapper;
+    private StockService service;
 
     /**
      * 沪深 stock 信息更新
@@ -56,7 +58,7 @@ public class StockTask {
                     }
                     // log.info("stock code {} and name {}", node.getId(), node.getName());
                     SnowStockUtils.calculateStockModel(node);
-                    stockInfoMapper.saveStockInfo(node);
+                    service.saveStockInfoList(Lists.newArrayList(node));
                 } catch (Exception e) {
                     log.error("code is node {} error {}",JSONObject.toJSONString(node), e.getMessage(), e);
                 }
