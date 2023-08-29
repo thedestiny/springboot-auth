@@ -1,5 +1,8 @@
 package com.platform.authcommon.config;
 
+import cn.hutool.db.Db;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,6 +35,22 @@ public class ThreadPoolConfig {
                 new LinkedBlockingQueue(maxQueueNum),
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
+
+
+    public static void main(String[] args) {
+        
+        // 数据库连接配置
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/my_database");
+        config.setUsername("my_user");
+        config.setPassword("my_password");
+        config.addDataSourceProperty("maximumPoolSize", 10);
+        // hikari 数据库连接池
+        HikariDataSource dataSource = new HikariDataSource(config);
+        Db use = Db.use(dataSource, "com.mysql.cj.jdbc.Driver");
+    }
+
+
 
 
 }
