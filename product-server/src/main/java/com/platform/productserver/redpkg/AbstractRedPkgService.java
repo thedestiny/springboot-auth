@@ -18,6 +18,7 @@ import com.platform.productserver.entity.PkgOutLog;
 import com.platform.productserver.mapper.PkgInLogMapper;
 import com.platform.productserver.mapper.PkgOutLogMapper;
 import com.platform.productserver.service.AccountService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -42,6 +43,21 @@ public abstract class AbstractRedPkgService implements RedPkgService {
      */
     public boolean saveRedPkg2Db(SendPkgReq pkgReq) {
 
+        PkgOutLog out = buildPkgOutLog(pkgReq);
+        Integer result = outLogMapper.insert(out); // 保存发送红包信息
+        if (result <= 0) {
+            throw new AppException(ResultCode.FAILED, "红包发送失败！");
+        }
+        // 调用 C 端 出账接口
+        tradeAccountOut(pkgReq);
+        // 修改红包出账记录
+        out.setStatus(1);
+        int i = outLogMapper.updateById(out);
+        return SqlHelper.retBool(i);
+
+    }
+
+    private PkgOutLog buildPkgOutLog(SendPkgReq pkgReq) {
         PkgOutLog out = new PkgOutLog();
         out.setSource(pkgReq.getSource());
         out.setAppId(pkgReq.getAppId());
@@ -54,11 +70,14 @@ public abstract class AbstractRedPkgService implements RedPkgService {
         out.setExpireTime(DateUtil.tomorrow());
         out.setFlag(0);
         out.setStatus(0);
-        Integer result = outLogMapper.insert(out); // 保存发送红包信息
-        if (result <= 0) {
-            throw new AppException(ResultCode.FAILED, "红包发送失败！");
-        }
-        // 调用 C 端 出账接口
+        return out;
+    }
+
+    /**
+     * 调用 出账接口
+     * @param pkgReq
+     */
+    private void tradeAccountOut(SendPkgReq pkgReq) {
         TradeDto tradeDto = new TradeDto();
         tradeDto.setUserId(pkgReq.getSenderId());
         tradeDto.setAccountType(AccountTypeEnum.INNER.getCode());
@@ -78,11 +97,6 @@ public abstract class AbstractRedPkgService implements RedPkgService {
         if (!trade) {
             throw new AppException(ResultCode.FAILED, "红包发送失败！");
         }
-        // 修改红包出账记录
-        out.setStatus(1);
-        int i = outLogMapper.updateById(out);
-        return SqlHelper.retBool(i);
-
     }
 
 
@@ -106,7 +120,6 @@ public abstract class AbstractRedPkgService implements RedPkgService {
      * 红包领取
      */
     public Boolean receiveRedPkg(ReceivePkgReq pkgReq) {
-
         // 获取红包的 key
         String key = Constant.RED_PKG_PREFIX + pkgReq.getOrderNo();
         Object value = redisClient.listLeftPop(key);
@@ -126,21 +139,22 @@ public abstract class AbstractRedPkgService implements RedPkgService {
         }
         // 红包类型 100 个人红包  101 群红包
         String prodType = outLog.getProdType();
-        PkgInLog inLog = new PkgInLog();
-        inLog.setFid(outLog.getId());
-        inLog.setSource(pkgReq.getSource());
-        inLog.setRequestNo(pkgReq.getRequestNo());
-        inLog.setOrderNo(pkgReq.getOrderNo());
-        inLog.setUserId(pkgReq.getReceiverId());
-        inLog.setAmount(redPkgNode.getAmount());
-        inLog.setStatus(0);
-        inLog.setErrorMsg("");
-        inLog.setProdType("");
-        inLog.setActionType(0);
-        inLog.setRemark(pkgReq.getRemark());
+        PkgInLog inLog = buildPkgInLog(pkgReq, redPkgNode, outLog);
         // 保存红包领取记录
-        int insert = inLogMapper.insert(inLog);
+        inLogMapper.insert(inLog);
         // 调用 C 端入账接口
+        tradeAccountIn(pkgReq, key, redPkgNode, outLog);
+        // 入账成功修改领取记录并发红包记录
+        inLog.setStatus(1);
+        inLogMapper.updateById(inLog);
+
+        return true;
+    }
+
+    /**
+     * 调用账户入账
+     */
+    private void tradeAccountIn(ReceivePkgReq pkgReq, String key, RedPkgNode redPkgNode, PkgOutLog outLog) {
         TradeDto tradeDto = new TradeDto();
         tradeDto.setUserId(pkgReq.getReceiverId());
         tradeDto.setAccountType(AccountTypeEnum.INNER.getCode());
@@ -161,11 +175,23 @@ public abstract class AbstractRedPkgService implements RedPkgService {
             redisClient.listLeftPush(key, JSONObject.toJSONString(redPkgNode));
             throw new AppException(ResultCode.FAILED, "红包领取失败");
         }
-        // 入账成功修改领取记录并发红包记录
-        inLog.setStatus(1);
-        inLogMapper.updateById(inLog);
+    }
 
-        return true;
+    @NotNull
+    private PkgInLog buildPkgInLog(ReceivePkgReq pkgReq, RedPkgNode redPkgNode, PkgOutLog outLog) {
+        PkgInLog inLog = new PkgInLog();
+        inLog.setFid(outLog.getId());
+        inLog.setSource(pkgReq.getSource());
+        inLog.setRequestNo(pkgReq.getRequestNo());
+        inLog.setOrderNo(pkgReq.getOrderNo());
+        inLog.setUserId(pkgReq.getReceiverId());
+        inLog.setAmount(redPkgNode.getAmount());
+        inLog.setStatus(0);
+        inLog.setErrorMsg("");
+        inLog.setProdType("");
+        inLog.setActionType(0);
+        inLog.setRemark(pkgReq.getRemark());
+        return inLog;
     }
 
 }

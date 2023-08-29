@@ -22,6 +22,7 @@ import com.platform.productserver.redpkg.RedPkgEnum;
 import com.platform.productserver.redpkg.RedPkgService;
 import com.platform.productserver.redpkg.SendPkgReq;
 import com.platform.productserver.service.AccountService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +36,6 @@ import java.util.Map;
  */
 @Service
 public class RedPkgBusiness {
-
-
     @Autowired
     private Map<String, RedPkgService> redPkgServiceMap;
     @Autowired
@@ -89,87 +88,78 @@ public class RedPkgBusiness {
         PkgOutLogExt ext = new PkgOutLogExt();
         ext.setFetchSize(Constant.BATCH_SIZE);
         ext.setStartId(0L);
-
         while (true) {
-            List<PkgOutLog> logs = outLogMapper.queryPkgOutTimeList(ext);
-            if (CollUtil.isEmpty(logs)) {
-                return;
-            }
-            // 设置下次查询的id
-            ext.setStartId(logs.get(logs.size() - 1).getId());
-
+            List<PkgOutLog> logs = outLogMapper.queryPkgOutTimeList(ext);   // 查询超时未领取的红包
+            if (CollUtil.isEmpty(logs)) {return;}
+            ext.setStartId(logs.get(logs.size() - 1).getId()); // 设置下次查询的id
             for (PkgOutLog log : logs) {
                 // 删除 redis 中红包信息
                 String key = Constant.RED_PKG_PREFIX + log.getOrderNo();
                 redisUtils.delete(key);
-
-                Long id = log.getId();
                 PkgInLog query = new PkgInLog();
-                query.setFid(id);
+                query.setFid(log.getId());
                 List<PkgInLog> pkgInLogs = inLogMapper.queryPkgInLogList(query);
-                // 红包已领取金额
-                BigDecimal receiveAmt = BigDecimal.ZERO;
+                BigDecimal receiveAmt = BigDecimal.ZERO;  // 红包已领取金额
                 if (CollUtil.isNotEmpty(pkgInLogs)) {
                     receiveAmt = pkgInLogs.stream().map(PkgInLog::getAmount).reduce(BigDecimal.ZERO, NumberUtil::add);
                 }
                 // 红包需要退回金额
                 BigDecimal refund = NumberUtil.sub(log.getAmount(), receiveAmt);
                 if (NumberUtil.isGreater(refund, BigDecimal.ZERO)) {
-
-                    PkgInLog inLog = new PkgInLog();
-                    inLog.setFid(log.getId());
-                    inLog.setSource(log.getSource());
-                    inLog.setRequestNo(IdGenUtils.orderNo());
-                    inLog.setOrderNo(log.getOrderNo());
-                    inLog.setUserId(log.getUserId());
-                    inLog.setAmount(refund);
-                    inLog.setStatus(0);
-                    inLog.setErrorMsg("红包超时退回");
-                    inLog.setProdType(log.getProdType());
-                    inLog.setActionType(1);
-                    inLog.setRemark("红包超时退回");
-                    // 保存红包领取记录
-                    int insert = inLogMapper.insert(inLog);
-
-                    // 调用 C 端入账接口
-                    TradeDto tradeDto = new TradeDto();
-                    tradeDto.setUserId(log.getUserId());
-                    tradeDto.setAccountType(AccountTypeEnum.INNER.getCode());
-                    tradeDto.setAmount(refund);
-                    tradeDto.setRequestNo(inLog.getRequestNo());
-                    tradeDto.setOrderNo(log.getOrderNo());
-                    tradeDto.setOtherAccount(log.getUserId());
-                    tradeDto.setOtherAccountType(AccountTypeEnum.INNER.getCode());
-                    tradeDto.setProdType(log.getProdType());
-                    tradeDto.setTransType(TransTypeEnum.TRANS_IN.getCode());
-                    tradeDto.setSource(log.getSource());
-                    tradeDto.setRemark(inLog.getRemark());
-                    tradeDto.setAppId(log.getAppId());
-                    // 调用C端出账接口
-                    boolean trade = accountService.trade(tradeDto);
-                    if (!trade) {
-                        throw new AppException(ResultCode.FAILED, "红包领取失败");
-                    }
+                    PkgInLog inLog = buildPkgInLog(log, refund);   // 创建红包退回记录
+                    int insert = inLogMapper.insert(inLog); // 保存红包领取记录
+                    tradeAccountIn(log, refund, inLog);
                     // 插入数据成功后，调用
                     inLog.setStatus(1);
                     inLogMapper.updateById(inLog);
-
                 }
-
                 log.setReceiveAmount(receiveAmt);
                 log.setRefundAmount(refund);
                 // 标记该红包已经处理过
                 log.setFlag(1);
                 // 更新红包发送表的状态
                 outLogMapper.updateById(log);
-
-
             }
-
-
         }
+    }
 
+    private void tradeAccountIn(PkgOutLog log, BigDecimal refund, PkgInLog inLog) {
+        // 调用 C 端入账接口
+        TradeDto tradeDto = new TradeDto();
+        tradeDto.setUserId(log.getUserId());
+        tradeDto.setAccountType(AccountTypeEnum.INNER.getCode());
+        tradeDto.setAmount(refund);
+        tradeDto.setRequestNo(inLog.getRequestNo());
+        tradeDto.setOrderNo(log.getOrderNo());
+        tradeDto.setOtherAccount(log.getUserId());
+        tradeDto.setOtherAccountType(AccountTypeEnum.INNER.getCode());
+        tradeDto.setProdType(log.getProdType());
+        tradeDto.setTransType(TransTypeEnum.TRANS_IN.getCode());
+        tradeDto.setSource(log.getSource());
+        tradeDto.setRemark(inLog.getRemark());
+        tradeDto.setAppId(log.getAppId());
+        // 调用C端出账接口
+        boolean trade = accountService.trade(tradeDto);
+        if (!trade) {
+            throw new AppException(ResultCode.FAILED, "红包领取失败");
+        }
+    }
 
+    @NotNull
+    private PkgInLog buildPkgInLog(PkgOutLog log, BigDecimal refund) {
+        PkgInLog inLog = new PkgInLog();
+        inLog.setFid(log.getId());
+        inLog.setSource(log.getSource());
+        inLog.setRequestNo(IdGenUtils.orderNo());
+        inLog.setOrderNo(log.getOrderNo());
+        inLog.setUserId(log.getUserId());
+        inLog.setAmount(refund);
+        inLog.setStatus(0);
+        inLog.setErrorMsg("红包超时退回");
+        inLog.setProdType(log.getProdType());
+        inLog.setActionType(1);
+        inLog.setRemark("红包超时退回");
+        return inLog;
     }
 
 
