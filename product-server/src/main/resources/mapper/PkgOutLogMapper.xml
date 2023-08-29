@@ -3,7 +3,7 @@
 <mapper namespace="com.platform.productserver.mapper.PkgOutLogMapper">
 
     <!-- 开启二级缓存 -->
-    <cache/>
+
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.platform.productserver.entity.PkgOutLog">
@@ -46,7 +46,7 @@
         select
         <include refid="Base_Column_List"/>
         from tb_pkg_out_log
-        where status = 1 and expire_time &lt;= now() and id > #{startId} order by id asc limit #{fetchSize}
+        where status = 1 and flag = 0 and expire_time &lt;= now() and id > #{startId} order by id asc limit #{fetchSize}
 
     </select>
 

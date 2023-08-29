@@ -69,10 +69,10 @@ public class RedPkgBusiness {
 
     @DistributedLock(prefix = "redis-red-receive", key = "#req.requestNo")
     public boolean receiveRedPkg(ReceivePkgReq req) {
-        // 红包类型 1-个人红包 2-群红包平分模式 2群红包拼手气
+
         PkgOutLog pkgOutLog = outLogMapper.selectByOrderNo(req.getOrderNo());
         String prodType = pkgOutLog.getProdType();
-        if (StrUtil.equalsAny(prodType, "100", "101")) {
+        if (!StrUtil.equalsAny(prodType, "100", "101")) {
             throw new AppException("红包类型不存在");
         }
         RedPkgEnum redPkgEnum = RedPkgEnum.queryPkgByCode(prodType);
@@ -158,6 +158,7 @@ public class RedPkgBusiness {
 
                 log.setReceiveAmount(receiveAmt);
                 log.setRefundAmount(refund);
+                // 标记该红包已经处理过
                 log.setFlag(1);
                 // 更新红包发送表的状态
                 outLogMapper.updateById(log);

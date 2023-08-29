@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.platform.authcommon.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -22,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("tb_pkg_in_log")
-public class PkgInLog implements Serializable {
+public class PkgInLog extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 4975972017839942843L;
 
@@ -71,16 +72,6 @@ public class PkgInLog implements Serializable {
      * 异常原因
      */
     private String errorMsg;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     /**
      * 产品类型：个人红包-100 群红包-101

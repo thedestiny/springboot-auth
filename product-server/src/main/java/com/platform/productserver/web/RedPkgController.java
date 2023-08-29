@@ -5,12 +5,10 @@ import com.platform.authcommon.common.Result;
 import com.platform.productserver.business.RedPkgBusiness;
 import com.platform.productserver.redpkg.ReceivePkgReq;
 import com.platform.productserver.redpkg.SendPkgReq;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description 红包业务控制器
@@ -41,7 +39,11 @@ public class RedPkgController {
     }
 
 
-
+    @GetMapping(value = "/timeout")
+    public Result<Boolean> timeout(){
+        pkgBusiness.handleRedPkgOverTime();
+        return Result.success(true);
+    }
 
 
 

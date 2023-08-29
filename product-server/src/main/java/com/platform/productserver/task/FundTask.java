@@ -29,7 +29,7 @@ public class FundTask {
     /**
      * 更新 ETF 交易信息
      */
-    @Scheduled(cron = "20 2/1 * * * ?")
+    @Scheduled(cron = "20 59/1 * * * ?")
     public void etfUpdateTask() {
         log.info("update etf trade task !");
 

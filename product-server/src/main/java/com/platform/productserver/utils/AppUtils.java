@@ -26,8 +26,7 @@ public class AppUtils {
             // 支出金额 = 原支出金额 + 交易金额
             account.setExpenseAmount(NumberUtil.add(account.getExpenseAmount(), amount));
             if(NumberUtil.isGreaterOrEqual(balance, amount)){
-                account.setBalance(NumberUtil.add(balance, amount));
-
+                account.setBalance(NumberUtil.sub(balance, amount));
             } else {
                 // 允许欠款
                 if(credit){

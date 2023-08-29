@@ -88,5 +88,9 @@ feign:
     max-connections-per-route: 50
     ok-http:
       read-timeout: 70s
+# 日志记录
+logging:
+  level:
+     com.platform: debug
 
 

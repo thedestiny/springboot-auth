@@ -23,6 +23,7 @@ public class RedPkgTask {
      */
     @Scheduled(cron = "30 1/2 * * * ?")
     public void task() {
+        log.info("红包超时定时任务处理");
         business.handleRedPkgOverTime();
     }
 
