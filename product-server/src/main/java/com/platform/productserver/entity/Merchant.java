@@ -103,6 +103,11 @@ public class Merchant extends BaseEntity implements Serializable {
     private BigDecimal settleAmount;
 
     /**
+     * 欠款金额
+     */
+    private BigDecimal creditAmount;
+
+    /**
      * 序号
      */
     private Long seq;

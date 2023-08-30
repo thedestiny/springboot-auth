@@ -1,33 +1,32 @@
 package com.platform.productserver.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.platform.authcommon.common.AccountTypeEnum;
 import com.platform.authcommon.common.Constant;
 import com.platform.authcommon.common.ResultCode;
+import com.platform.authcommon.common.TransTypeEnum;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
 import com.platform.authcommon.utils.IdGenUtils;
-import com.platform.productserver.dto.AccountDto;
 import com.platform.productserver.dto.BusinessDto;
 import com.platform.productserver.dto.MerchantDto;
-import com.platform.productserver.dto.TradeDto;
 import com.platform.productserver.entity.Merchant;
+import com.platform.productserver.entity.MerchantLog;
 import com.platform.productserver.entity.User;
 import com.platform.productserver.mapper.*;
 import com.platform.productserver.service.MerchantService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.platform.productserver.utils.AppUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.math.BigDecimal;
 
 /**
  * 商户账户表 服务实现类
@@ -112,12 +111,63 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
 
     @Override
     public boolean trade(BusinessDto trade) {
+        // 校验交易类型
+        TransTypeEnum transTypeEnum = TransTypeEnum.checkTransType(trade.getTransType());
 
+        Merchant merchant = merchantMapper.queryMerchantInfo(trade.getMerchantNo(), trade.getAccountType());
+        if (ObjectUtil.isNull(merchant)) {
+            throw new AppException(ResultCode.NOT_EXIST);
+        }
+        // 交易类型和交易金额 是否允许欠款
+        Integer transType = trade.getTransType();
+        BigDecimal amount = trade.getAmount();
+        Boolean credit = trade.getCredit();
 
+        // 构建流水日志
+        MerchantLog transLog = buildMerchantLog(trade, merchant, transType, amount);
 
+        Object obj = template.execute(status -> {
+            try {
 
+                Merchant update = merchantMapper.queryMerchantForUpdate(merchant.getId());
+                AppUtils.opt(update, amount, transTypeEnum.getOpt(), credit);
+                transLog.setBalance(update.getBalance());
+                // 记录交易记录 更新交易流水表
+                merchantLogMapper.insert(transLog);
+                merchantMapper.updateById(update);
+                return true;
+            } catch (Exception e) {
+                log.error("账户交易失败 {} log {} error", JSONObject.toJSONString(trade), JSONObject.toJSONString(transLog), e);
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+        if (obj instanceof Exception) {
+            throw new AppException(ResultCode.SAVE_FAILURE, "操作账户数据失败！");
+        }
 
-        return false;
+        return (Boolean) obj;
+
+    }
+
+    private MerchantLog buildMerchantLog(BusinessDto trade, Merchant merchant, Integer transType, BigDecimal amount) {
+        MerchantLog transLog = new MerchantLog();
+        transLog.setId(IdGenUtils.pid());
+        transLog.setAccountId(merchant.getId());
+        transLog.setMerchantNo(merchant.getMerchantNo());
+        transLog.setAccNo(merchant.getAccNo());
+        transLog.setAccountType(merchant.getAccountType());
+        transLog.setRequestNo(trade.getRequestNo());
+        transLog.setOrderNo(trade.getOrderNo());
+        transLog.setOtherAccount(trade.getOtherAccount());
+        transLog.setOtherAccountType(trade.getOtherAccountType());
+        transLog.setActionType(transType);
+        transLog.setProdType(trade.getProdType());
+        transLog.setTransAmount(amount);
+        transLog.setRemark(trade.getRemark());
+        transLog.setSource(trade.getSource());
+        transLog.setAppId(trade.getAppId());
+        return transLog;
     }
 
 

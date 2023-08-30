@@ -27,7 +27,26 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, acc_no, `source`, merchant_no, status, account_type, prod_type, balance, freeze_amount,
-income_amount, expense_amount, apply_amount, reversal_amount, back_amount, settle_amount, create_time, seq
+        income_amount, expense_amount, apply_amount, reversal_amount, back_amount, settle_amount, create_time, seq
     </sql>
+
+
+    <select id="queryMerchantInfo" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_merchant
+        where merchant_no = #{merchantNo} and account_type = #{accountType} and seq = 0
+
+    </select>
+
+
+    <select id="queryMerchantForUpdate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_merchant
+        where id = #{id} for update
+
+    </select>
 
 </mapper>

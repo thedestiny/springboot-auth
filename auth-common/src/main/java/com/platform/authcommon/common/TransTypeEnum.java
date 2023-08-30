@@ -39,7 +39,7 @@ public enum TransTypeEnum {
                 return node;
             }
         }
-        throw new AppException(ResultCode.NOT_EXIST, "交易交易类型不存在");
+        throw new AppException(ResultCode.NOT_EXIST, "交易类型不存在");
     }
 
 

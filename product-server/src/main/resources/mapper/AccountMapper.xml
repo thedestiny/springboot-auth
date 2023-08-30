@@ -31,7 +31,7 @@ expense_amount, credit_amount, seq, create_time, update_time
         select
         <include refid="Base_Column_List"/>
         from tb_account
-        where user_id = #{userId} and account_type = #{accountType}
+        where user_id = #{userId} and account_type = #{accountType} and seq = 0
 
     </select>
 
