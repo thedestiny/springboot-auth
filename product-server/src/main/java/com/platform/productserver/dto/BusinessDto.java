@@ -7,18 +7,21 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * c 端交易参数
+ * B 端交易参数
  */
 @Data
-public class TradeDto implements Serializable {
+public class BusinessDto implements Serializable {
 
     private static final long serialVersionUID = 2787588891032132609L;
 
-    // 交易账户id
-    private Long transId;
+    @ApiModelProperty(value = "订单号")
+    private String orderNo;
 
-    @ApiModelProperty(value = "userId")
-    private String userId;
+    @ApiModelProperty(value = "流水号")
+    private String requestNo;
+
+    @ApiModelProperty(value = "商户号")
+    private String merchantNo;
 
     @ApiModelProperty(value = "账户类型")
     private Integer accountType;
@@ -26,12 +29,6 @@ public class TradeDto implements Serializable {
     // 交易金额
     @ApiModelProperty(value = "交易金额")
     private BigDecimal amount;
-
-    @ApiModelProperty(value = "流水号")
-    private String requestNo;
-
-    @ApiModelProperty(value = "订单号")
-    private String orderNo;
 
     // 对方账户
     private String otherAccount;
@@ -55,6 +52,7 @@ public class TradeDto implements Serializable {
 
     // 记否记录欠款
     private Boolean credit = false;
+
 
 
 

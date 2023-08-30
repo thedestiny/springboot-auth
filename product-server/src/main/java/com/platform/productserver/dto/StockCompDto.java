@@ -3,6 +3,7 @@ package com.platform.productserver.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @Description stock 对比
@@ -17,6 +18,10 @@ public class StockCompDto implements Serializable {
     private String code;
 
     private String name;
+
+    private BigDecimal price;
+
+    private BigDecimal rate;
 
     public StockCompDto(String code, String name) {
         this.code = code;

@@ -6,8 +6,13 @@ import lombok.Getter;
 @Getter
 public enum TransTypeEnum {
 
-    TRANS_IN(1, "转入", "+"),
-    TRANS_OUT(2, "转出", "-"),
+    TRANS_IN(101, "转入", "+"),
+    TRANS_OUT(102, "转出", "-"),
+
+    FREEZE(201, "冻结", "|"),
+    UNFREEZE(202, "解冻", "|"),
+    FREEZE_OUT(203, "解冻并出账", "-"),
+
 
     ;
 

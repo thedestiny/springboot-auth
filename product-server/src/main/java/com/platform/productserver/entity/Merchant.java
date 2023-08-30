@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.platform.authcommon.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,14 +22,14 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("tb_merchant")
-public class Merchant implements Serializable {
+public class Merchant extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 商户账户id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.NONE)
     private Long id;
 
     /**
@@ -99,11 +101,6 @@ public class Merchant implements Serializable {
      * 累计结算
      */
     private BigDecimal settleAmount;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
     /**
      * 序号

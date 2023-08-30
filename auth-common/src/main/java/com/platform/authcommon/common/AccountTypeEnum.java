@@ -11,10 +11,12 @@ import lombok.Getter;
 @Getter
 public enum AccountTypeEnum {
 
+    // 10-内部账户 11-外部账户 12-管理者
     INNER(10,"内部账户", "I"),
     OUTER(11,"外部账户", "O"),
     MANAGE(12,"管理账户", "M"),
 
+    // 30-发放账户 31-商户账户 32-结算账户
     GRANT(30,"发放账户", "G"),
     BUSINESS(31,"商户账户", "B"),
     SETTLE(32,"结算账户", "S"),

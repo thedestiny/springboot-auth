@@ -38,7 +38,7 @@ public class ThreadPoolConfig {
 
 
     public static void main(String[] args) {
-        
+
         // 数据库连接配置
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://localhost:3306/my_database");
