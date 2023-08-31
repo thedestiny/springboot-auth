@@ -33,7 +33,7 @@ public class Merchant extends BaseEntity implements Serializable {
     private Long id;
 
     /**
-     * 账户号
+     * 账户编号
      */
     private String accNo;
 

@@ -14,6 +14,7 @@ import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
 import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.dto.BusinessDto;
+import com.platform.productserver.dto.FreezeDto;
 import com.platform.productserver.dto.MerchantDto;
 import com.platform.productserver.entity.Merchant;
 import com.platform.productserver.entity.MerchantLog;
@@ -49,6 +50,49 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
     private UserMapper userMapper;
     @Autowired
     private RedisUtils redisClient;
+
+
+    @Override
+    public boolean freeze(FreezeDto freezeDto) {
+
+        /**
+         * 根据商户号查询商户信息
+         */
+        Merchant merchant = merchantMapper.queryMerchantByNo(freezeDto.getAccNo());
+        // 判断商户状态
+
+
+
+
+        return false;
+
+
+    }
+
+    @Override
+    public boolean unFreeze(FreezeDto freezeDto) {
+        return false;
+    }
+
+    @Override
+    public boolean freezeIn(FreezeDto freezeDto) {
+        return false;
+    }
+
+    @Override
+    public boolean unFreezeOut(FreezeDto freezeDto) {
+        return false;
+    }
+
+    @Override
+    public boolean batchTradeIn() {
+        return false;
+    }
+
+    @Override
+    public boolean batchTradeOut() {
+        return false;
+    }
 
     public String genAccNo(String prefix) {
         String time = DateUtil.format(DateUtil.date(), "yyMMdd");

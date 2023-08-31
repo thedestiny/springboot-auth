@@ -23,4 +23,9 @@ public interface MerchantMapper extends BaseMapper<Merchant> {
      * 查询商户信息 读锁
      */
     Merchant queryMerchantForUpdate(Long id);
+
+    /**
+     * 根据账户编号查询商户信息
+     */
+    Merchant queryMerchantByNo(String accNo);
 }
