@@ -6,8 +6,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.platform.productserver.dto.LineDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -98,7 +98,14 @@ public class PrintTableUtils {
             if (val != null) {
                 if (val instanceof Date) {
                     dat = DateUtil.format((Date) val, "yyyy-MM-dd HH:mm:ss");
-                } else {
+                } else if(val instanceof List){
+                    List dts = (List) val;
+                    List<String> tmps = new ArrayList<>();
+                    for (Object dt : dts) {
+                        tmps.add(JSONObject.toJSONString(dt));
+                    }
+                    dat = CollUtil.join(tmps,"  ");
+                }else {
                     dat = val.toString();
                 }
             }
