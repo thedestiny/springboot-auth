@@ -270,3 +270,7 @@ CREATE TABLE `tb_freeze_log` (
     KEY `idx_acc_no` (`acc_no`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='冻结流水表';
 
+
+
+
+
