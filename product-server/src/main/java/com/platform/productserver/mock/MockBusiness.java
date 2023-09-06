@@ -11,13 +11,19 @@ import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 单元测试综合运用
+ *
  * @Description
  * @Date 2023-09-06 5:05 PM
  */
@@ -35,29 +41,44 @@ public class MockBusiness {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    // 设置 属性
     @Value("${app.name:''}")
     private String name;
 
     public UserDto mockTest(UserDto dto) throws InterruptedException {
 
+        log.info("name is {}", name);
         UserDto result = new UserDto();
-        // mock 1
+        // 1 单测点 mock 静态方法
         String id = IdGenUtils.id();
-        // mock 2
+        // 2 单测点 mock 分布式锁
         RLock lock = redisUtils.getLock("order" + id);
         if (!lock.tryLock(1, TimeUnit.MINUTES)) {
             return result;
         }
-        // mock 3
+        // 3 单测点 mock userMapper
         User query = userMapper.selectByUserId(String.valueOf(dto.getId()));
         if (query == null) {
             log.info("info not exist ! {}", JSONObject.toJSONString(dto));
             return null;
         }
-        // mock 4  获取自增值
+        // 设置请求头和报文
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("username", "zhangsan");
+        //用HttpEntity封装整个请求报文
+        HttpEntity<HashMap<String, Object>> request = new HttpEntity<>(map, headers);
+        JSONObject response = restTemplate.postForObject("http://baidu.com", request, JSONObject.class);
+        log.info("response is {}", response);
+
+        // 4 单测点 mock redisTemplate opsForValue().increment
         Long increment = redisTemplate.opsForValue().increment(id);
         if (increment != null && increment > 0) {
-
+            // 5 单测点  transaction.execute
             Object obj = transaction.execute(status -> {
                 try {
                     User user = userMapper.selectByUserId(String.valueOf(dto.getId()));

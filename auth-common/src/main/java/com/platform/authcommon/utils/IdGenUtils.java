@@ -1,7 +1,6 @@
 package com.platform.authcommon.utils;
 
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
+
 import cn.hutool.core.lang.Snowflake;
 import lombok.extern.slf4j.Slf4j;
 

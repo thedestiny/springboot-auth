@@ -62,6 +62,7 @@ public class RedPkgBusiness {
             throw new AppException("红包类型不存在");
         }
         RedPkgService redPkgService = redPkgServiceMap.get(redPkgEnum.name);
+        // Get the redPkgService from the map based on the redPkgEnum name
         Boolean redPkg = redPkgService.sendRedPkg(req);
         return redPkg;
     }

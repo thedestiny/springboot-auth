@@ -1,15 +1,20 @@
 package com.platform.productserver.mock;
 
 import com.platform.authcommon.config.RedisUtils;
+import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.dto.UserDto;
 import com.platform.productserver.entity.User;
 import com.platform.productserver.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.redisson.api.RLock;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,10 +31,11 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@Slf4j
+@PrepareForTest(value = {IdGenUtils.class})
 @RunWith(PowerMockRunner.class)
 public class MockBusinessTest {
 
@@ -58,13 +64,17 @@ public class MockBusinessTest {
         dto.setId(0L);
         dto.setUsername("username");
         dto.setPassword("password");
-        dto.setRoles(Arrays.asList("value"));
+        dto.setRoles(Lists.newArrayList("value"));
 
         final UserDto expectedResult = new UserDto();
         expectedResult.setId(0L);
         expectedResult.setUsername("username");
         expectedResult.setPassword("password");
-        expectedResult.setRoles(Arrays.asList("value"));
+        expectedResult.setRoles(Lists.newArrayList("value"));
+
+        // PowerMockito.mockStatic(SpringContextUtil.class);
+        PowerMockito.mockStatic(IdGenUtils.class);
+        PowerMockito.when(IdGenUtils.id()).thenReturn("2222");
 
         RLock mock = mock(RLock.class);
         when(mock.tryLock(anyLong(), eq(TimeUnit.MINUTES))).thenReturn(Boolean.TRUE);
