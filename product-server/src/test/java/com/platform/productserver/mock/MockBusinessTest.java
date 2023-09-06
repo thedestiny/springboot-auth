@@ -1,5 +1,6 @@
 package com.platform.productserver.mock;
 
+import com.alibaba.fastjson.JSONObject;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.dto.UserDto;
@@ -19,10 +20,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.redisson.api.RLock;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -47,6 +50,8 @@ public class MockBusinessTest {
     private TransactionTemplate mockTransaction;
     @Mock
     private UserMapper mockUserMapper;
+    @Mock
+    private RestTemplate restTemplate;
 
     @InjectMocks
     private MockBusiness mockBusinessUnderTest;
@@ -79,6 +84,10 @@ public class MockBusinessTest {
         RLock mock = mock(RLock.class);
         when(mock.tryLock(anyLong(), eq(TimeUnit.MINUTES))).thenReturn(Boolean.TRUE);
         when(mockRedisUtils.getLock(anyString())).thenReturn(mock);
+
+        JSONObject body = new JSONObject();
+        body.put("code", "0000");
+        when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(JSONObject.class))).thenReturn(body);
 
         final User user = new User();
         user.setId(0L);
