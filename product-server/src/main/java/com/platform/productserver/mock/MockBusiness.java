@@ -51,13 +51,12 @@ public class MockBusiness {
     public UserDto mockTest(UserDto dto) throws InterruptedException {
 
         log.info("name is {}", name);
-        UserDto result = new UserDto();
         // 1 单测点 mock 静态方法
         String id = IdGenUtils.id();
         // 2 单测点 mock 分布式锁
         RLock lock = redisUtils.getLock("order" + id);
         if (!lock.tryLock(1, TimeUnit.MINUTES)) {
-            return result;
+            return dto;
         }
         // 3 单测点 mock userMapper
         User query = userMapper.selectByUserId(String.valueOf(dto.getId()));
@@ -98,7 +97,7 @@ public class MockBusiness {
                 throw new RuntimeException("保存数据失败!");
             }
             boolean flag = (Boolean) obj;
-            return flag ? result : null;
+            return flag ? dto : null;
 
         }
 
