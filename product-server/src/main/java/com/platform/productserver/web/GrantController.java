@@ -1,7 +1,14 @@
 package com.platform.productserver.web;
 
+import com.platform.authcommon.common.Result;
+import com.platform.productserver.grant.GrantBusiness;
+import com.platform.productserver.dto.AccountDto;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "api/point/give")
 public class GrantController {
 
+    @Autowired
+    private GrantBusiness grantBusiness;
 
-
+    @ApiOperation(value = "积分分发-单笔")
+    @PostMapping(value = "single")
+    public Result<Boolean> point(@RequestBody AccountDto account){
+        boolean result = grantBusiness.point(account);
+        return Result.success(result);
+    }
 
 
 

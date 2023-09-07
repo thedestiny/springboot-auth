@@ -1,5 +1,6 @@
-package com.platform.productserver.business;
+package com.platform.productserver.grant;
 
+import com.platform.productserver.dto.AccountDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class GrantBusiness {
 
 
-
-
-
+    public boolean point(AccountDto account) {
+        return true;
+    }
 }

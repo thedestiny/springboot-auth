@@ -3,6 +3,7 @@ package com.platform.productserver.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -20,4 +21,8 @@ public class UserDto implements Serializable {
     private String password;
 
     private List<String> roles;
+
+    private BigDecimal weight;
+
+
 }
