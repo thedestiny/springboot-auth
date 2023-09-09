@@ -13,4 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface FreezeLogMapper extends BaseMapper<FreezeLog> {
 
+    FreezeLog queryFreezeLog(String requestNo);
+
+
 }

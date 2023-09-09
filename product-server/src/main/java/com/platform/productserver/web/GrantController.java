@@ -1,8 +1,8 @@
 package com.platform.productserver.web;
 
 import com.platform.authcommon.common.Result;
+import com.platform.productserver.grant.GiveReq;
 import com.platform.productserver.grant.GrantBusiness;
-import com.platform.productserver.dto.AccountDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class GrantController {
 
     @ApiOperation(value = "积分分发-单笔")
     @PostMapping(value = "single")
-    public Result<Boolean> point(@RequestBody AccountDto account){
-        boolean result = grantBusiness.point(account);
+    public Result<Boolean> point(@RequestBody GiveReq giveReq){
+        boolean result = grantBusiness.point(giveReq);
         return Result.success(result);
     }
 

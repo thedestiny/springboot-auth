@@ -3,9 +3,10 @@ package com.platform.productserver.entity;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.platform.authcommon.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,9 +21,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("tb_freeze")
-public class Freeze implements Serializable {
+public class Freeze extends BaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5411920656490667304L;
 
     /**
      * ID
@@ -45,15 +46,6 @@ public class Freeze implements Serializable {
      */
     private BigDecimal freezeAmount;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
 
 }

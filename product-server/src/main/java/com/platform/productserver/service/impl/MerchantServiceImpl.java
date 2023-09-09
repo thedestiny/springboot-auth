@@ -1,24 +1,22 @@
 package com.platform.productserver.service.impl;
 
+import java.util.Date;
+
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.platform.authcommon.common.AccountTypeEnum;
-import com.platform.authcommon.common.Constant;
-import com.platform.authcommon.common.ResultCode;
-import com.platform.authcommon.common.TransTypeEnum;
+import com.platform.authcommon.common.*;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
 import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.dto.BusinessDto;
 import com.platform.productserver.dto.FreezeDto;
 import com.platform.productserver.dto.MerchantDto;
-import com.platform.productserver.entity.Merchant;
-import com.platform.productserver.entity.MerchantLog;
-import com.platform.productserver.entity.User;
+import com.platform.productserver.entity.*;
 import com.platform.productserver.mapper.*;
 import com.platform.productserver.service.MerchantService;
 import com.platform.productserver.utils.AppUtils;
@@ -27,7 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+
+import static com.sun.tools.doclint.Entity.trade;
 
 /**
  * 商户账户表 服务实现类
@@ -55,23 +57,148 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
     @Override
     public boolean freeze(FreezeDto freezeDto) {
 
-        /**
-         * 根据商户号查询商户信息
-         */
         Merchant merchant = merchantMapper.queryMerchantByNo(freezeDto.getAccNo());
+        // 校验商户信息
+        checkMerchantInfo(merchant);
+        // 冻结金额 和冻结类型
+        BigDecimal amount = freezeDto.getAmount();
+        String activityType = freezeDto.getActivityType();
+        // 构建流水日志
+        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, 0);
+
+        Object obj = template.execute(status -> {
+            try {
+
+                Merchant update = merchantMapper.queryMerchantForUpdate(merchant.getId());
+                // 可用余额
+                BigDecimal available = NumberUtil.sub(update.getBalance(), update.getFreezeAmount(), update.getCreditAmount());
+                // 冻结金额需要小于可用余额
+                if (!NumberUtil.isGreaterOrEqual(amount, available)) {
+                    throw new AppException(ResultCode.NOT_EXIST, "商户冻结金额不足!");
+                }
+                // 设置用户冻结金额
+                update.setFreezeAmount(NumberUtil.add(update.getFreezeAmount(), amount));
+                merchantMapper.updateById(update);
+                // 查询冻结账户
+                Freeze freeze = freezeMapper.queryFreezeAccount(update.getId(), activityType);
+                BigDecimal freezeAmt = amount;
+                if (ObjectUtil.isNotEmpty(freeze)) {
+                    freezeAmt = NumberUtil.add(freezeAmt, freeze.getFreezeAmount());
+                    freeze.setFreezeAmount(freezeAmt);
+                    freezeMapper.updateById(freeze);
+                    transLog.setAccountId(freeze.getId());
+                } else {
+                    Freeze freez = new Freeze();
+                    freez.setId(IdGenUtils.pid());
+                    freez.setAccountId(merchant.getId());
+                    freez.setFreezeType(activityType);
+                    freez.setFreezeAmount(amount);
+                    freezeMapper.insert(freez);
+                    transLog.setAccountId(freez.getId());
+                }
+
+                freezeLogMapper.insert(transLog);
+
+
+                return true;
+            } catch (Exception e) {
+                log.error("冻结账户交易失败 {} log {} error", JSONObject.toJSONString(trade), JSONObject.toJSONString(transLog), e);
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+        if (obj instanceof Exception) {
+            throw new AppException(ResultCode.SAVE_FAILURE, "操作账户数据失败！");
+        }
+
+        return (Boolean) obj;
+
+
+    }
+
+    private FreezeLog buildFreezeLog(Merchant merchant, FreezeDto freezeDto, Integer actionType) {
+
+        FreezeLog log = new FreezeLog();
+        log.setAccountId(merchant.getId());
+        log.setActionType(actionType);
+        log.setAccNo(merchant.getAccNo());
+        log.setFreezeType(freezeDto.getActivityType());
+        log.setFreezeAmount(freezeDto.getAmount());
+        log.setRequestNo(freezeDto.getRequestNo());
+        log.setOrderNo(freezeDto.getOrderNo());
+        log.setProdType(freezeDto.getProdType());
+        log.setAppId(freezeDto.getAppId());
+        log.setSource(freezeDto.getSource());
+        log.setRemark(freezeDto.getRemark());
+        return log;
+    }
+
+    private void checkMerchantInfo(Merchant merchant) {
+
         // 判断商户状态
-
-
-
-
-        return false;
-
+        if (ObjectUtil.isEmpty(merchant)) {
+            throw new AppException(ResultCode.NOT_EXIST, "商户信息不存在!");
+        }
+        if (!NumberUtil.equals(merchant.getStatus(), StatusEnum.ENABLE.code)) {
+            throw new AppException(ResultCode.NOT_EXIST, "商户状态未启用!");
+        }
 
     }
 
     @Override
     public boolean unFreeze(FreezeDto freezeDto) {
-        return false;
+
+        Merchant merchant = merchantMapper.queryMerchantByNo(freezeDto.getAccNo());
+        // 校验商户信息
+        checkMerchantInfo(merchant);
+        // 冻结金额 和冻结类型
+        BigDecimal amount = freezeDto.getAmount();
+        String activityType = freezeDto.getActivityType();
+        // 构建流水日志
+        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, 1);
+
+        Object obj = template.execute(status -> {
+            try {
+
+                Merchant update = merchantMapper.queryMerchantForUpdate(merchant.getId());
+                // 查询冻结账户
+                Freeze freeze = freezeMapper.queryFreezeAccount(update.getId(), activityType);
+                if (ObjectUtil.isEmpty(freeze)) {
+                    throw new AppException(ResultCode.NOT_EXIST, "冻结类型不存在!");
+                }
+                // 查询原冻结流水
+                FreezeLog freezeLog = freezeLogMapper.queryFreezeLog(freezeDto.getRequestNo());
+                if (ObjectUtil.isEmpty(freezeLog)) {
+                    throw new AppException(ResultCode.NOT_EXIST, "原冻结流水不存在!");
+                }
+                // 冻结类型中的冻结金额
+                BigDecimal freezeAmount = freeze.getFreezeAmount();
+                if (!NumberUtil.isGreaterOrEqual(freezeAmount, amount)) {
+                    throw new AppException(ResultCode.NOT_EXIST, "冻结金额不足!");
+                }
+                // 设置用户冻结金额
+                update.setFreezeAmount(NumberUtil.sub(update.getFreezeAmount(), amount));
+                merchantMapper.updateById(update);
+                // 解冻冻结账户资金
+                freeze.setFreezeAmount(NumberUtil.sub(freezeAmount, amount));
+                freezeMapper.updateById(freeze);
+
+                transLog.setAccountId(freeze.getId());
+                freezeLogMapper.insert(transLog);
+
+                return true;
+            } catch (Exception e) {
+                log.error("解冻账户交易失败 {} log {} error", JSONObject.toJSONString(trade), JSONObject.toJSONString(transLog), e);
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+        if (obj instanceof Exception) {
+            throw new AppException(ResultCode.SAVE_FAILURE, "操作账户数据失败！");
+        }
+
+        return (Boolean) obj;
+
     }
 
     @Override

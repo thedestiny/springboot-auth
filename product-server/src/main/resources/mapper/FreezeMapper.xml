@@ -18,4 +18,15 @@
         id, account_id, freeze_type, freeze_amount, create_time, update_time
     </sql>
 
+
+    <select id="queryFreezeAccount" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_freeze
+        where account_id = #{accountId} and freeze_type = #{freezeType}
+
+
+    </select>
+
 </mapper>

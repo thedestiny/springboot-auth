@@ -1,13 +1,17 @@
 package com.platform.productserver.entity;
 
 import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -22,8 +26,7 @@ import lombok.EqualsAndHashCode;
 @TableName("tb_freeze_log")
 public class FreezeLog implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -352077470174968860L;
     /**
      * ID
      */
@@ -38,7 +41,7 @@ public class FreezeLog implements Serializable {
     /**
      * 交易类型：0-冻结 1-解冻 2-解冻出账 3-入账冻结
      */
-    private Boolean actionType;
+    private Integer actionType;
 
     /**
      * 账户号
@@ -88,6 +91,10 @@ public class FreezeLog implements Serializable {
     /**
      * 创建时间
      */
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
 

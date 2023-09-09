@@ -40,7 +40,7 @@ public class FreezeDto implements Serializable {
 
     @NotBlank(message = "业务类型不能为空")
     @ApiModelProperty("业务类型")
-    private String businessType;
+    private String prodType;
 
     @NotBlank(message = "业务系统Id不能为空")
     @ApiModelProperty("业务系统Id")

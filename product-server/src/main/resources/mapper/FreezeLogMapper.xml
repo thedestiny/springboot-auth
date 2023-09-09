@@ -26,4 +26,16 @@
 order_no, prod_type, app_id, `source`, remark, create_time
     </sql>
 
+
+    <select id="queryFreezeLog" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_freeze_log
+        where request_no = #{requestNo}
+
+    </select>
+
+
+
 </mapper>

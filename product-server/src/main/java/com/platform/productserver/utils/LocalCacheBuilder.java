@@ -28,4 +28,13 @@ public class LocalCacheBuilder {
             .build();
 
 
+    public static void main(String[] args) {
+
+        LocalCacheBuilder.localCache.put("234", "456");
+        String value = LocalCacheBuilder.localCache.getIfPresent("345");
+        System.out.println(value);
+
+
+    }
+
 }
