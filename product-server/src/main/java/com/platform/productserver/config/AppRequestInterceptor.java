@@ -5,6 +5,10 @@ import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * openfeign 添加请求头
+ */
 @Slf4j
 @Component
 public class AppRequestInterceptor implements RequestInterceptor {

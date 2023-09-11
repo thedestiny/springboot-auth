@@ -25,9 +25,6 @@ import java.lang.reflect.Method;
 
 /**
  * Redisson分布式锁注解解析器
- *
- * @author lyl
- * @date 2021/11/11 3:27 下午
  */
 @Aspect
 @Component
@@ -40,9 +37,9 @@ public class DistributedLockAspect {
 
     @Autowired
     private RedisUtils redisClient;
-
+    // expression 解析
     private final ExpressionParser parser = new SpelExpressionParser();
-
+    // 读取请求参数
     private final LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
 
     @Around("lockPoint()")
@@ -57,7 +54,7 @@ public class DistributedLockAspect {
         Object[] args = pjp.getArgs();
         String keyName = prefix + parse(key, method, args);
         log.info("Redis分布式锁的key为 : {}", cacheKeyName);
-        RLock lock = getLock(keyName, distributedLock);
+        RLock lock = getLock(keyName, distributedLock); // 根据锁的类型获取分布式锁
         log.info("[开始]执行RedisLock环绕通知,获取Redis分布式锁开始");
         if (lock.tryLock(distributedLock.waitTime(), distributedLock.expireTime(), distributedLock.unit())) {
             try {

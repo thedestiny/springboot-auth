@@ -33,47 +33,50 @@ public class AuthenticationFilter extends OncePerRequestFilter {
      * 2. 将解密之后的信息封装放入到request中
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         //获取请求头中的加密的用户信息
         String token = request.getHeader("TOKEN_NAME");
         String queryStr = request.getQueryString();
         log.info(" query str {}", queryStr);
         log.info(" url {}", request.getRequestURL());
         Enumeration<String> headerNames = request.getHeaderNames();
-
-        while (headerNames.hasMoreElements()){
+        while (headerNames.hasMoreElements()) {
             String header = headerNames.nextElement();
             log.info(" header is {} and value {}", header, request.getHeader(header));
         }
-
         Map<String, String[]> parameterMap = request.getParameterMap();
-        parameterMap.forEach((k, v)-> {
-            log.info("params key {} and value {}", k, v );
+        parameterMap.forEach((k, v) -> {
+            log.info("params key {} and value {}", k, v);
         });
 
         log.info("filter token {}", token);
-        if (StrUtil.isNotBlank(token)){
-            //解密
-            String json = Base64.decodeStr(token);
-            JSONObject jsonObject = JSON.parseObject(json);
-            //获取用户身份信息、权限信息
-            String principal = jsonObject.getString(TokenConstant.PRINCIPAL_NAME);
-            String userId=jsonObject.getString(TokenConstant.USER_ID);
-            String jti = jsonObject.getString(TokenConstant.JTI);
-            Long expireIn = jsonObject.getLong(TokenConstant.EXPR);
-            JSONArray tempJsonArray = jsonObject.getJSONArray(TokenConstant.AUTHORITIES_NAME);
-            //权限
-            List<String> authorities = tempJsonArray.toJavaList(String.class);
-            //放入LoginVal
-            LoginDto loginVal = new LoginDto();
-            loginVal.setUserId(userId);
-            loginVal.setUsername(principal);
-            loginVal.setAuthorities(authorities);
-            loginVal.setJti(jti);
-            loginVal.setExpireIn(expireIn);
-            //放入request的attribute中
-            request.setAttribute(TokenConstant.LOGIN_ATTRIBUTE, loginVal);
+        if (StrUtil.isNotBlank(token)) {
+            // 处理请求头中的 token 信息
+            handleTokenInfo(request, token);
         }
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
+    }
+
+    private void handleTokenInfo(HttpServletRequest request, String token) {
+        String json = Base64.decodeStr(token);
+        JSONObject jsonObject = JSON.parseObject(json);
+        //获取用户身份信息、权限信息
+        String principal = jsonObject.getString(TokenConstant.PRINCIPAL_NAME);
+        String userId = jsonObject.getString(TokenConstant.USER_ID);
+        String jti = jsonObject.getString(TokenConstant.JTI);
+        Long expireIn = jsonObject.getLong(TokenConstant.EXPR);
+        JSONArray tempJsonArray = jsonObject.getJSONArray(TokenConstant.AUTHORITIES_NAME);
+        //权限
+        List<String> authorities = tempJsonArray.toJavaList(String.class);
+        //放入LoginVal
+        LoginDto loginVal = new LoginDto();
+        loginVal.setUserId(userId);
+        loginVal.setUsername(principal);
+        loginVal.setAuthorities(authorities);
+        loginVal.setJti(jti);
+        loginVal.setExpireIn(expireIn);
+        //放入request的attribute中
+        request.setAttribute(TokenConstant.LOGIN_ATTRIBUTE, loginVal);
     }
 }
