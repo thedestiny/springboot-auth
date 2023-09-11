@@ -4,11 +4,14 @@ import com.platform.authcommon.base.BaseReq;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @Description 积分分发请求-批量
@@ -19,6 +22,9 @@ import java.math.BigDecimal;
 public class BatchGiveReq extends BaseReq implements Serializable {
 
     private static final long serialVersionUID = -265042973076246885L;
+
+    @ApiModelProperty("批次号")
+    private String batchNo;
 
     @ApiModelProperty("回调地址")
     private String callBackUrl;
@@ -64,8 +70,13 @@ public class BatchGiveReq extends BaseReq implements Serializable {
     @ApiModelProperty("渠道信息")
     private String channel;
 
-    @ApiModelProperty("业务系统编号")
+    @ApiModelProperty("分发数据类型")
     private Integer grantDataType = 1;
+
+    @Valid
+    @NotEmpty(message = "发放列表不能为空")
+    private List<GiveUserDto> userList;
+
 
 
 

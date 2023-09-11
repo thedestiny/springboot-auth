@@ -13,7 +13,6 @@ public enum ResultCode implements ErrorCode {
     NOT_EXIST(1003, "账户不存在"),
     SAVE_FAILURE(1004, "数据保存失败"),
 
-
     ;
 
 

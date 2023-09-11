@@ -155,7 +155,7 @@ public class MybatisGenerator {
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id");
         // strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-         strategy.setInclude("tb_fund_info");
+         strategy.setInclude("tb_give_log","tb_give_batch_info","tb_give_refund_log");
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix("tb_");

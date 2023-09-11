@@ -14,8 +14,6 @@ public class AppRequestInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate template) {
         // feign 调用添加请求头
         template.header("app-server","product-server");
-
-
     }
 
 

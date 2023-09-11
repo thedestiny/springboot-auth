@@ -5,9 +5,7 @@ import com.google.common.collect.Lists;
 import com.platform.productserver.order.OrderInfoDto;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,6 +25,10 @@ public class Java8Utils {
         OrderInfoDto dto4 = new OrderInfoDto("345", BigDecimal.valueOf(2), "345");
 
         List<OrderInfoDto> dtoList = Lists.newArrayList(dto1, dto2, dto3, dto4);
+
+        // 根据订单号去重
+        List<OrderInfoDto> filterList = dtoList.stream().
+                collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(OrderInfoDto::getOrderNo))), ArrayList::new));
 
         // 根据 订单号做映射
         Map<String, OrderInfoDto> collect1 = dtoList.parallelStream()

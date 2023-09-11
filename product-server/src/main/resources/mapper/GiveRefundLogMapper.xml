@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.GiveRefundLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.GiveRefundLog">
+        <id column="id" property="id" />
+        <result column="app_id" property="appId" />
+        <result column="batch_no" property="batchNo" />
+        <result column="refund_no" property="refundNo" />
+        <result column="request_no" property="requestNo" />
+        <result column="amount" property="amount" />
+        <result column="refunded_amount" property="refundedAmount" />
+        <result column="status" property="status" />
+        <result column="error_msg" property="errorMsg" />
+        <result column="remark" property="remark" />
+        <result column="refund_type" property="refundType" />
+        <result column="account_type" property="accountType" />
+        <result column="handle_debit" property="handleDebit" />
+        <result column="handle_settle" property="handleSettle" />
+        <result column="auto_refund" property="autoRefund" />
+        <result column="user_id" property="userId" />
+        <result column="trans_out" property="transOut" />
+        <result column="trans_in" property="transIn" />
+        <result column="trade_summary" property="tradeSummary" />
+        <result column="source" property="source" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_id, batch_no, refund_no, request_no, amount, refunded_amount, status, error_msg,
+         remark, refund_type, account_type, handle_debit, handle_settle, auto_refund, user_id, trans_out,
+         trans_in, trade_summary, source, create_time, update_time
+    </sql>
+
+</mapper>

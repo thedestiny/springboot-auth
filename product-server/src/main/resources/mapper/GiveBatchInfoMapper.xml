@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.GiveBatchInfoMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.GiveBatchInfo">
+        <id column="id" property="id" />
+        <result column="app_id" property="appId" />
+        <result column="batch_no" property="batchNo" />
+        <result column="activity_type" property="activityType" />
+        <result column="merchant_no" property="merchantNo" />
+        <result column="serial_no" property="serialNo" />
+        <result column="give_count" property="giveCount" />
+        <result column="receive_count" property="receiveCount" />
+        <result column="result_type" property="resultType" />
+        <result column="status" property="status" />
+        <result column="error_msg" property="errorMsg" />
+        <result column="amount" property="amount" />
+        <result column="channel" property="channel" />
+        <result column="activity_no" property="activityNo" />
+        <result column="out_acc_no" property="outAccNo" />
+        <result column="source" property="source" />
+        <result column="deal_count" property="dealCount" />
+        <result column="asyn_flag" property="asynFlag" />
+        <result column="callback_url" property="callbackUrl" />
+        <result column="callback_identity" property="callbackIdentity" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="expire_time" property="expireTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_id, batch_no, activity_type, merchant_no, serial_no, give_count,
+         receive_count, result_type, status, error_msg, amount, channel, activity_no,
+          out_acc_no, source, deal_count, asyn_flag, callback_url, callback_identity, create_time, update_time, expire_time
+    </sql>
+
+
+    <select id="selectBatchInfo" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_give_batch_info
+        where batch_no = #{batchNo}
+
+
+    </select>
+
+</mapper>

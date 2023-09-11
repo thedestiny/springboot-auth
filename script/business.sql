@@ -93,5 +93,5 @@ CREATE TABLE `tb_give_refund_log` (
   KEY `idx_create_time` (`create_time`) USING BTREE,
   KEY `idx_status` (`status`) USING BTREE,
   KEY `idx_refundno` (`refund_no`) USING BTREE,
-  KEY `idx_refundamt` (`ac_refund_amount`) USING BTREE
+  KEY `idx_refundamt` (`refunded_amount`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT= 200000000 DEFAULT CHARSET=utf8mb4 COMMENT='发放撤回表';

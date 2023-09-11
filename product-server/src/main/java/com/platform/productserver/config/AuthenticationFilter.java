@@ -1,6 +1,12 @@
 package com.platform.productserver.config;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.platform.authcommon.common.TokenConstant;
+import com.platform.authcommon.dto.LoginDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -11,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,38 +44,35 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         while (headerNames.hasMoreElements()){
             String header = headerNames.nextElement();
             log.info(" header is {} and value {}", header, request.getHeader(header));
-
         }
-
 
         Map<String, String[]> parameterMap = request.getParameterMap();
         parameterMap.forEach((k, v)-> {
             log.info("params key {} and value {}", k, v );
         });
 
-
         log.info("filter token {}", token);
         if (StrUtil.isNotBlank(token)){
             //解密
-//            String json = Base64.decodeStr(token);
-//            JSONObject jsonObject = JSON.parseObject(json);
-//            //获取用户身份信息、权限信息
-//            String principal = jsonObject.getString(TokenConstant.PRINCIPAL_NAME);
-//            String userId=jsonObject.getString(TokenConstant.USER_ID);
-//            String jti = jsonObject.getString(TokenConstant.JTI);
-//            Long expireIn = jsonObject.getLong(TokenConstant.EXPR);
-//            JSONArray tempJsonArray = jsonObject.getJSONArray(TokenConstant.AUTHORITIES_NAME);
-//            //权限
-//            String[] authorities =  tempJsonArray.toArray(new String[0]);
-//            //放入LoginVal
-//            LoginVal loginVal = new LoginVal();
-//            loginVal.setUserId(userId);
-//            loginVal.setUsername(principal);
-//            loginVal.setAuthorities(authorities);
-//            loginVal.setJti(jti);
-//            loginVal.setExpireIn(expireIn);
-//            //放入request的attribute中
-//            request.setAttribute(RequestConstant.LOGIN_VAL_ATTRIBUTE,loginVal);
+            String json = Base64.decodeStr(token);
+            JSONObject jsonObject = JSON.parseObject(json);
+            //获取用户身份信息、权限信息
+            String principal = jsonObject.getString(TokenConstant.PRINCIPAL_NAME);
+            String userId=jsonObject.getString(TokenConstant.USER_ID);
+            String jti = jsonObject.getString(TokenConstant.JTI);
+            Long expireIn = jsonObject.getLong(TokenConstant.EXPR);
+            JSONArray tempJsonArray = jsonObject.getJSONArray(TokenConstant.AUTHORITIES_NAME);
+            //权限
+            List<String> authorities = tempJsonArray.toJavaList(String.class);
+            //放入LoginVal
+            LoginDto loginVal = new LoginDto();
+            loginVal.setUserId(userId);
+            loginVal.setUsername(principal);
+            loginVal.setAuthorities(authorities);
+            loginVal.setJti(jti);
+            loginVal.setExpireIn(expireIn);
+            //放入request的attribute中
+            request.setAttribute(TokenConstant.LOGIN_ATTRIBUTE, loginVal);
         }
         chain.doFilter(request,response);
     }

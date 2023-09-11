@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.GiveLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.GiveLog">
+        <id column="id" property="id" />
+        <result column="request_no" property="requestNo" />
+        <result column="order_no" property="orderNo" />
+        <result column="batch_no" property="batchNo" />
+        <result column="amount" property="amount" />
+        <result column="merchant_no" property="merchantNo" />
+        <result column="out_acc_no" property="outAccNo" />
+        <result column="in_acc_no" property="inAccNo" />
+        <result column="user_id" property="userId" />
+        <result column="account_type" property="accountType" />
+        <result column="data_type" property="dataType" />
+        <result column="give_type" property="giveType" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="failure_msg" property="failureMsg" />
+        <result column="activity_no" property="activityNo" />
+        <result column="prod_type" property="prodType" />
+        <result column="trade_summary" property="tradeSummary" />
+        <result column="exclusive_no" property="exclusiveNo" />
+        <result column="channel" property="channel" />
+        <result column="app_id" property="appId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="source" property="source" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, request_no, order_no, batch_no, amount, merchant_no, out_acc_no, in_acc_no, user_id,
+        account_type, data_type, give_type, status, remark, failure_msg, activity_no, prod_type,
+         trade_summary, exclusive_no, channel, app_id, create_time, update_time, source
+    </sql>
+
+</mapper>
