@@ -1,5 +1,7 @@
 
 
+
+
 CREATE TABLE `tb_give_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `request_no` varchar(64) NOT NULL COMMENT '请求号',

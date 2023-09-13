@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- * 用户账户表 服务类
+ * C端账户 服务
  * </p>
  *
  * @author destiny

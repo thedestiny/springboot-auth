@@ -6,3 +6,4 @@
 target
 application-prod.yml
 application-dev.yml
+product-server/src/test/java/com/platform/productserver/MybatisGenerator.java

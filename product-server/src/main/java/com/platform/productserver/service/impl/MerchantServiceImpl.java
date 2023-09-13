@@ -1,7 +1,5 @@
 package com.platform.productserver.service.impl;
 
-import java.util.Date;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -25,11 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-import static com.sun.tools.doclint.Entity.trade;
 
 /**
  * 商户账户表 服务实现类
@@ -102,7 +97,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
 
                 return true;
             } catch (Exception e) {
-                log.error("冻结账户交易失败 {} log {} error", JSONObject.toJSONString(trade), JSONObject.toJSONString(transLog), e);
+                log.error("冻结账户交易失败 {} log {} error", JSONObject.toJSONString(freezeDto), JSONObject.toJSONString(transLog), e);
                 status.setRollbackOnly();
                 throw e;
             }
@@ -188,7 +183,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
 
                 return true;
             } catch (Exception e) {
-                log.error("解冻账户交易失败 {} log {} error", JSONObject.toJSONString(trade), JSONObject.toJSONString(transLog), e);
+                log.error("解冻账户交易失败 {} log {} error", JSONObject.toJSONString(freezeDto), JSONObject.toJSONString(transLog), e);
                 status.setRollbackOnly();
                 throw e;
             }
