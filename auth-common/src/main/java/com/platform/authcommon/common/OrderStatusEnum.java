@@ -1,9 +1,13 @@
 package com.platform.authcommon.common;
 
+import lombok.Getter;
+
 /**
  * @Description 订单状态
  * @Date 2023-09-08 4:21 PM
  */
+
+@Getter
 public enum  OrderStatusEnum {
 
     PROCESSING(0, "PROCESSING", "处理中"),
@@ -15,6 +19,9 @@ public enum  OrderStatusEnum {
     private final Integer code;
     private final String msg;
     private final String detail;
+
+
+
 
     OrderStatusEnum(int status, String showCode, String detail) {
         this.code = status;

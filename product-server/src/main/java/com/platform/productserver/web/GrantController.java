@@ -3,6 +3,7 @@ package com.platform.productserver.web;
 import com.platform.authcommon.common.Result;
 import com.platform.productserver.grant.BatchGiveReq;
 import com.platform.productserver.grant.GiveReq;
+import com.platform.productserver.grant.GiveResp;
 import com.platform.productserver.grant.GrantBusiness;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,16 +31,16 @@ public class GrantController {
 
     @ApiOperation(value = "积分分发-单笔")
     @PostMapping(value = "single")
-    public Result<Boolean> point(@RequestBody GiveReq giveReq){
-        boolean result = grantBusiness.point(giveReq);
+    public Result<GiveResp> point(@RequestBody GiveReq giveReq){
+        GiveResp result = grantBusiness.point(giveReq);
         return Result.success(result);
     }
 
 
     @ApiOperation(value = "积分分发-批量")
     @PostMapping(value = "batch")
-    public Result<Boolean> pointBatch(@RequestBody BatchGiveReq batchReq){
-        boolean result = grantBusiness.pointBatch(batchReq);
+    public Result<GiveResp> pointBatch(@RequestBody BatchGiveReq batchReq){
+        GiveResp result = grantBusiness.pointBatch(batchReq);
         return Result.success(result);
     }
 

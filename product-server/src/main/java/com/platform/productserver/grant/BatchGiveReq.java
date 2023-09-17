@@ -70,8 +70,14 @@ public class BatchGiveReq extends BaseReq implements Serializable {
     @ApiModelProperty("渠道信息")
     private String channel;
 
-    @ApiModelProperty("分发数据类型")
+    @ApiModelProperty("分发数据类型 1-同步 2-异步")
     private Integer grantDataType = 1;
+
+    @ApiModelProperty("分发结果 1-部分成功 2-整体成功")
+    private Integer resultType = 1;
+
+    @ApiModelProperty("专款专用编号")
+    private String exclusiveNo;
 
     @Valid
     @NotEmpty(message = "发放列表不能为空")

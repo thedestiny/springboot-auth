@@ -22,6 +22,7 @@ import com.platform.productserver.redpkg.RedPkgEnum;
 import com.platform.productserver.redpkg.RedPkgService;
 import com.platform.productserver.redpkg.SendPkgReq;
 import com.platform.productserver.service.AccountService;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,11 @@ import java.util.Map;
  * @Description 红包业务
  * @Date 2023-08-17 9:41 AM
  */
+
+@Slf4j
 @Service
 public class RedPkgBusiness {
+
     @Autowired
     private Map<String, RedPkgService> redPkgServiceMap;
     @Autowired
@@ -46,7 +50,6 @@ public class RedPkgBusiness {
     private RedisUtils redisUtils;
     @Autowired
     private AccountService accountService;
-
 
     /**
      * 红包发送

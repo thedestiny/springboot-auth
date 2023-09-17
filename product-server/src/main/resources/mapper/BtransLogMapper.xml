@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.BtransLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.BtransLog">
+        <id column="id" property="id" />
+        <result column="source" property="source" />
+        <result column="fid" property="fid" />
+        <result column="request_no" property="requestNo" />
+        <result column="acc_no" property="accNo" />
+        <result column="action_type" property="actionType" />
+        <result column="prod_type" property="prodType" />
+        <result column="amount" property="amount" />
+        <result column="status" property="status" />
+        <result column="error_msg" property="errorMsg" />
+        <result column="remark" property="remark" />
+        <result column="app_id" property="appId" />
+        <result column="exclusive_no" property="exclusiveNo" />
+        <result column="activity_type" property="activityType" />
+        <result column="other_acc_no" property="otherAccNo" />
+        <result column="seq" property="seq" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, `source`, fid, request_no, acc_no, action_type, prod_type, amount, status,
+        error_msg, remark, app_id, exclusive_no, activity_type, other_acc_no, seq, create_time, update_time
+    </sql>
+
+</mapper>

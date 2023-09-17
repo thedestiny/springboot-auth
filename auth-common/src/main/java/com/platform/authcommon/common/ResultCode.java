@@ -12,6 +12,7 @@ public enum ResultCode implements ErrorCode {
     FORBIDDEN(403, "没有相关权限"),
     NOT_EXIST(1003, "账户不存在"),
     SAVE_FAILURE(1004, "数据保存失败"),
+    // SAVE_FAILURE(1005, "数据不存在"),
 
     ;
 

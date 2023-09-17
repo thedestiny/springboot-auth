@@ -21,7 +21,7 @@ CREATE TABLE `tb_give_log` (
   `activity_no` varchar(64) DEFAULT NULL COMMENT '活动编号',
   `prod_type` varchar(32) DEFAULT NULL COMMENT '业务类型编号',
   `trade_summary` varchar(256) DEFAULT NULL COMMENT '分发摘要',
-  `exclusive_no` varchar(64) DEFAULT NULL COMMENT '专款专用编号',
+  `exclusive_no` varchar(64) DEFAULT NULL COMMENT '专用编号',
   `channel` varchar(100) DEFAULT NULL COMMENT '渠道信息',
   `app_id` varchar(50) NOT NULL COMMENT 'app id',
   `create_time` datetime(6) DEFAULT NULL COMMENT '创建时间',
@@ -97,3 +97,52 @@ CREATE TABLE `tb_give_refund_log` (
   KEY `idx_refundno` (`refund_no`) USING BTREE,
   KEY `idx_refundamt` (`refunded_amount`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT= 200000000 DEFAULT CHARSET=utf8mb4 COMMENT='发放撤回表';
+
+
+CREATE TABLE `tb_ctrans_log` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `source` varchar(32) NOT NULL COMMENT '来源',
+    `fid` bigint(20) NOT NULL COMMENT '记录Id',
+    `request_no` varchar(64) NOT NULL COMMENT '订单明细号',
+    `user_id` varchar(64) DEFAULT NULL COMMENT 'userId',
+    `account_type` tinyint(4) NOT NULL COMMENT '账户类型 10:内部 11:外部 12:管理 31:商户',
+    `prod_type` varchar(64) DEFAULT NULL COMMENT '业务类型',
+    `action_type` tinyint(4) NOT NULL COMMENT '操作类型',
+    `amount` decimal(18,2) unsigned NOT NULL COMMENT '交易金额',
+    `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '流水状态:0-处理中、1-成功、2-失败',
+    `error_msg` varchar(255) DEFAULT NULL COMMENT '失败原因',
+    `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+    `create_time` datetime(6) NOT NULL COMMENT '创建时间',
+    `update_time` datetime(6) NOT NULL COMMENT '更新时间',
+    `seq` bigint(20) NOT NULL DEFAULT '0' COMMENT '序号',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_fid_source_action_type` (`fid`,`source`,`action_type`),
+    KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=200000000 DEFAULT CHARSET=utf8mb4 COMMENT='C端操作流水';
+
+
+CREATE TABLE `tb_btrans_log` (
+   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+   `source` varchar(32) NOT NULL COMMENT '来源',
+   `fid` bigint(20) NOT NULL COMMENT '记录Id',
+   `request_no` varchar(64) NOT NULL COMMENT '订单明细号',
+   `acc_no` varchar(32) NOT NULL COMMENT '出账账户',
+   `action_type` tinyint(2) NOT NULL COMMENT '操作类型',
+   `prod_type` varchar(64) DEFAULT NULL COMMENT '业务类型',
+   `amount` decimal(15,1) unsigned NOT NULL COMMENT '交易金额',
+   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态: 0-处理中、1-成功、2-失败',
+   `error_msg` varchar(255) DEFAULT NULL COMMENT '失败原因',
+   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+   `app_id` varchar(64) DEFAULT NULL COMMENT 'appId',
+   `exclusive_no` varchar(64) DEFAULT NULL COMMENT '专用编号',
+   `activity_type` varchar(64) DEFAULT NULL COMMENT '活动类型',
+   `other_acc_no` varchar(64) DEFAULT NULL COMMENT '对手方账户',
+   `seq` bigint(20) NOT NULL DEFAULT '0' COMMENT '序号',
+   `create_time` datetime(6) NOT NULL COMMENT '创建时间',
+   `update_time` datetime(6) NOT NULL COMMENT '更新时间',
+   PRIMARY KEY (`id`) USING BTREE,
+   UNIQUE KEY `uk_fid_source_acc_no_action_type_seq` (`fid`,`source`,`acc_no`,`action_type`,`seq`) USING BTREE,
+   KEY `idx_create_time` (`create_time`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=200000000 DEFAULT CHARSET=utf8mb4 COMMENT='B端操作流水';
+
+

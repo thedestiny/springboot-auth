@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.productserver.mapper.CtransLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.productserver.entity.CtransLog">
+        <id column="id" property="id" />
+        <result column="source" property="source" />
+        <result column="fid" property="fid" />
+        <result column="request_no" property="requestNo" />
+        <result column="user_id" property="userId" />
+        <result column="account_type" property="accountType" />
+        <result column="prod_type" property="prodType" />
+        <result column="action_type" property="actionType" />
+        <result column="amount" property="amount" />
+        <result column="status" property="status" />
+        <result column="error_msg" property="errorMsg" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="seq" property="seq" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, `source`, fid, request_no, user_id, account_type, prod_type, action_type,
+        amount, status, error_msg, remark, create_time, update_time, seq
+    </sql>
+
+</mapper>

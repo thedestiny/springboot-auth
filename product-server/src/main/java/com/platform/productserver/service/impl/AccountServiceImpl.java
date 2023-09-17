@@ -63,13 +63,13 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     public boolean openAccount(AccountDto dto) {
 
         Integer accountType = dto.getAccountType();
-        // 检查账户类型
+        // 检查账户类型 10-内部账户 11-外部账户 12-管理者
         AccountTypeEnum anEnum = AccountTypeEnum.checkAccountType(accountType);
-
         User user = userMapper.selectByUserId(dto.getUserId());
         if (ObjectUtil.isEmpty(user)) {
             throw new AppException(ResultCode.NOT_EXIST, "用户信息不存在");
         }
+        // 初始化账户数据
         Account account = new Account();
         account.setId(IdGenUtils.pid());
         account.setUserId(dto.getUserId());
@@ -95,13 +95,12 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if (obj instanceof Exception) {
             throw new AppException(ResultCode.SAVE_FAILURE, "保存账户数据失败！");
         }
-
         return (Boolean) obj;
     }
 
     @Override
     public boolean trade(TradeDto tradeDto) {
-
+        // 查询账户信息
         Account account = accountMapper.queryAccount(tradeDto.getUserId(), tradeDto.getAccountType());
         if (ObjectUtil.isNull(account)) {
             throw new AppException(ResultCode.NOT_EXIST);
@@ -112,7 +111,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         Boolean credit = tradeDto.getCredit();
         // 交易类型
         TransTypeEnum transTypeEnum = TransTypeEnum.checkTransType(transType);
-
+        // 初始化账户流水数据
         AccountLog accountLog = new AccountLog();
         accountLog.setAccountId(account.getId());
         accountLog.setRequestNo(tradeDto.getRequestNo());
@@ -129,11 +128,11 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         accountLog.setAppId(tradeDto.getAppId());
         accountLog.setRemark(tradeDto.getRemark());
         accountLog.setSeq(Constant.DEFAULT_SEQ);
-
+        // 账户事务操作
         Object obj = template.execute(status -> {
             try {
-
                 Account update = accountMapper.queryAccountForUpdate(account.getId());
+                // 计算账户金额
                 AppUtils.opt(update, amount, transTypeEnum.getOpt(), credit);
                 accountLog.setBalance(update.getBalance());
                 // 记录交易记录 更新交易流水表
@@ -149,7 +148,6 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if (obj instanceof Exception) {
             throw new AppException(ResultCode.SAVE_FAILURE, "操作账户数据失败！");
         }
-
         return (Boolean) obj;
     }
 

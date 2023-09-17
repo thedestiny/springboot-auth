@@ -36,6 +36,11 @@ public class GiveUserDto implements Serializable {
     @ApiModelProperty("账户类型：1-内部、2-外部、3-管理者")
     private Integer accountType;
 
+    @ApiModelProperty("数据类型 1-toC 2-toB")
+    private Integer dataType;
+
+    @ApiModelProperty("业务类型")
+    private String prodType;
 
     @NotNull(message = "分发金额不能为空")
     @Digits(integer = 18, fraction = 2, message = "整数位上限为16位，小数位上限为2位")
@@ -45,4 +50,7 @@ public class GiveUserDto implements Serializable {
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("账单摘要")
+    private String tradeSummary;
 }
