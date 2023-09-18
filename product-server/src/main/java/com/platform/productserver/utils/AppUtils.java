@@ -46,7 +46,7 @@ public class AppUtils {
 
 
     /**
-     * 操作数据
+     * B端操作金额
      */
     public static void opt(Merchant account, BigDecimal amount, String opt, Boolean credit){
         BigDecimal balance = account.getBalance();
@@ -59,7 +59,8 @@ public class AppUtils {
         if(StrUtil.equals("-", opt)){
             // 支出金额 = 原支出金额 + 交易金额
             account.setExpenseAmount(NumberUtil.add(account.getExpenseAmount(), amount));
-            if(NumberUtil.isGreaterOrEqual(balance, amount)){
+            // 可用余额 = 总金额 - 欠款金额 - 冻结金额
+            if(NumberUtil.isGreaterOrEqual(NumberUtil.sub(balance, account.getCreditAmount(), account.getFreezeAmount()), amount)){
                 account.setBalance(NumberUtil.sub(balance, amount));
             } else {
                 // 允许欠款
