@@ -56,6 +56,9 @@ public class TradeDto implements Serializable {
     // 记否记录欠款
     private Boolean credit = false;
 
+    // 处理状态
+    private Integer status;
+
 
 
 }

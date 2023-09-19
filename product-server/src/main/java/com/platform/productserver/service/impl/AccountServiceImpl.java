@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 用户账户表 服务实现类
@@ -152,4 +153,12 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     }
 
 
+    @Override
+    public boolean tradeBatch(List<TradeDto> dtoList) {
+
+
+
+
+        return false;
+    }
 }

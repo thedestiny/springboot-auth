@@ -51,7 +51,6 @@ public class GrantBusiness {
     private TransLogService transLogService;
 
 
-
     /**
      * 单笔积分分发
      *
@@ -95,22 +94,26 @@ public class GrantBusiness {
         }
 
         GrantContext ctx = new GrantContext();
-
+        // 保存业务记录信息
         saveGrantInfo(batchReq, userList, ctx);
-
+        // 执行积分分发
         executeGrantInfo(ctx);
-
 
         return resp;
     }
 
     /**
      * 执行发放动作
+     *
      * @param ctx
      */
     private void executeGrantInfo(GrantContext ctx) {
+        // 数据保存成功方可发送
+        if (Boolean.TRUE.equals(ctx.getSaveFlag())) {
+            // 调用批量接口
 
 
+        }
 
 
     }
@@ -152,7 +155,7 @@ public class GrantBusiness {
 
 
         ctx.setSaveFlag(Boolean.FALSE);
-        if(Boolean.TRUE.equals((Boolean) obj)){
+        if (Boolean.TRUE.equals((Boolean) obj)) {
             // 设置批次信息 b 端日志 和 c 端日志
             ctx.setSaveFlag(Boolean.TRUE);
             ctx.setBatchReq(batchReq);

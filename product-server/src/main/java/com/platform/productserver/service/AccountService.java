@@ -5,6 +5,8 @@ import com.platform.productserver.dto.TradeDto;
 import com.platform.productserver.entity.Account;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * C端账户 服务
@@ -25,6 +27,11 @@ public interface AccountService extends IService<Account> {
      * 账户交易操作
      */
     boolean trade(TradeDto tradeDto);
+
+    /**
+     * 批量交易
+     */
+    boolean tradeBatch(List<TradeDto> dtoList);
 
 
 }

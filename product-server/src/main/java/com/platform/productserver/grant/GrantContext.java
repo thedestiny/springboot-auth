@@ -19,7 +19,7 @@ public class GrantContext implements Serializable {
     private static final long serialVersionUID = -6215186770229376280L;
 
     // 数据保存状态
-    private boolean saveFlag;
+    private Boolean saveFlag;
 
     private BatchGiveReq batchReq;
 
