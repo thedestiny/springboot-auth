@@ -16,10 +16,11 @@ public class SqlGenUtils {
 
     public static void main(String[] args) {
 
-        String colums = " id, key_id, order_id,";
+        String colums = "  id, account_id, merchant_no, acc_no, account_type, request_no, order_no, other_account,\n" +
+                "other_account_type, action_type, prod_type, trans_amount, balance, remark, `source`, app_id, create_time";
 
-        // batchSave(colums);
-        resultMap(colums);
+         batchSave(colums);
+        // resultMap(colums);
 
 
     }

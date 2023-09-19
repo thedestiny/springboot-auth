@@ -1,8 +1,6 @@
 package com.platform.productserver.service;
 
-import com.platform.productserver.dto.BusinessDto;
-import com.platform.productserver.dto.FreezeDto;
-import com.platform.productserver.dto.MerchantDto;
+import com.platform.productserver.dto.*;
 import com.platform.productserver.entity.Merchant;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -31,17 +29,17 @@ public interface MerchantService extends IService<Merchant> {
     /**
      * 入账并冻结
      */
-    boolean freezeIn(FreezeDto freezeDto);
+    boolean freezeIn(FreezeTradeDto freezeDto);
     /**
      * 解冻并出账
      */
-    boolean unFreezeOut(FreezeDto freezeDto);
+    boolean unFreezeOut(FreezeTradeDto freezeDto);
     /**
      * 批量入账
      */
-    boolean batchTradeIn();
+    boolean batchTradeIn(BatchTradeDto tradeDto);
     /**
      * 批量出账
      */
-    boolean batchTradeOut();
+    boolean batchTradeOut(BatchTradeDto tradeDto);
 }

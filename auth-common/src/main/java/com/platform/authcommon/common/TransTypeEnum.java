@@ -8,12 +8,13 @@ public enum TransTypeEnum {
 
     TRANS_IN(101, "转入", "+"),
     TRANS_OUT(102, "转出", "-"),
-    TRADE_IN(103, "转入", "+"),
-    TRADE_OUT(104, "转出", "-"),
+    TRADE_IN(103, "入账", "+"),
+    TRADE_OUT(104, "出账", "-"),
 
     FREEZE(201, "冻结", "|"),
     UNFREEZE(202, "解冻", "|"),
     FREEZE_OUT(203, "解冻并出账", "-"),
+    FREEZE_IN(204, "入账并冻结", "+"),
 
 
     ;
