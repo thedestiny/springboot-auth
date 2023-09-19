@@ -51,19 +51,14 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
 
     @Override
     public boolean freeze(FreezeDto freezeDto) {
-
         Merchant merchant = merchantMapper.queryMerchantByNo(freezeDto.getAccNo());
         // 校验商户信息
         checkMerchantInfo(merchant);
-        // 冻结金额 和冻结类型
-        BigDecimal amount = freezeDto.getAmount();
+        BigDecimal amount = freezeDto.getAmount(); // 冻结金额 和冻结类型
         String activityType = freezeDto.getActivityType();
-        // 构建流水日志
-        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, 0);
-
+        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, 0);     // 构建流水日志
         Object obj = template.execute(status -> {
             try {
-
                 Merchant update = merchantMapper.queryMerchantForUpdate(merchant.getId());
                 // 可用余额
                 BigDecimal available = NumberUtil.sub(update.getBalance(), update.getFreezeAmount(), update.getCreditAmount());
@@ -91,10 +86,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                     freezeMapper.insert(freez);
                     transLog.setAccountId(freez.getId());
                 }
-
                 freezeLogMapper.insert(transLog);
-
-
                 return true;
             } catch (Exception e) {
                 log.error("冻结账户交易失败 {} log {} error", JSONObject.toJSONString(freezeDto), JSONObject.toJSONString(transLog), e);
