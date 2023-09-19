@@ -2,6 +2,9 @@ package com.platform.productserver.mapper;
 
 import com.platform.productserver.entity.BtransLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.platform.productserver.entity.GiveLog;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface BtransLogMapper extends BaseMapper<BtransLog> {
 
+
+    Integer insertEntityList(List<BtransLog> logList);
 }

@@ -3,6 +3,8 @@ package com.platform.productserver.mapper;
 import com.platform.productserver.entity.CtransLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  * C端操作流水 Mapper 接口
@@ -13,4 +15,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CtransLogMapper extends BaseMapper<CtransLog> {
 
+
+    Integer insertEntityList(List<CtransLog> logList);
 }
