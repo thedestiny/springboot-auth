@@ -1,5 +1,6 @@
 package com.platform.productserver.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -156,7 +157,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     @Override
     public boolean tradeBatch(List<TradeDto> dtoList) {
 
-
+        if (CollUtil.isEmpty(dtoList)) {
+            throw new AppException(ResultCode.SAVE_FAILURE, "批量转账操作数据为空！");
+        }
 
 
         return false;

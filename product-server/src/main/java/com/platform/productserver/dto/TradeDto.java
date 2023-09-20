@@ -1,10 +1,12 @@
 package com.platform.productserver.dto;
 
+import cn.hutool.core.util.NumberUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * c 端交易参数
@@ -60,5 +62,14 @@ public class TradeDto implements Serializable {
     private Integer status;
 
 
+    public static void main(String[] args) {
+
+        BigDecimal dd = new BigDecimal("1.1");
+        System.out.println(dd.setScale(0, BigDecimal.ROUND_UP));
+
+        BigDecimal div = NumberUtil.div(new BigDecimal(23), BigDecimal.valueOf(10), 0, RoundingMode.DOWN);
+        System.out.println(div);
+
+    }
 
 }
