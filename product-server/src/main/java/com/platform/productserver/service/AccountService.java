@@ -1,6 +1,7 @@
 package com.platform.productserver.service;
 
 import com.platform.productserver.dto.AccountDto;
+import com.platform.productserver.dto.BatchTradeResp;
 import com.platform.productserver.dto.TradeDto;
 import com.platform.productserver.entity.Account;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -29,9 +30,9 @@ public interface AccountService extends IService<Account> {
     boolean trade(TradeDto tradeDto);
 
     /**
-     * 批量交易
+     * 批量交易接口
      */
-    boolean tradeBatch(List<TradeDto> dtoList);
+    BatchTradeResp tradeBatch(List<TradeDto> dtoList);
 
 
 }

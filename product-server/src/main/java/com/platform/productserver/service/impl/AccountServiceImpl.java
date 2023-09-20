@@ -6,12 +6,12 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.platform.authcommon.common.AccountTypeEnum;
-import com.platform.authcommon.common.Constant;
-import com.platform.authcommon.common.ResultCode;
-import com.platform.authcommon.common.TransTypeEnum;
+import com.google.common.collect.Lists;
+import com.platform.authcommon.common.*;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
+import com.platform.productserver.dto.BaseNode;
+import com.platform.productserver.dto.BatchTradeResp;
 import com.platform.productserver.utils.AppUtils;
 import com.platform.authcommon.utils.IdGenUtils;
 import com.platform.productserver.dto.AccountDto;
@@ -102,6 +102,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
     @Override
     public boolean trade(TradeDto tradeDto) {
+
         // 查询账户信息
         Account account = accountMapper.queryAccount(tradeDto.getUserId(), tradeDto.getAccountType());
         if (ObjectUtil.isNull(account)) {
@@ -155,13 +156,30 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
 
     @Override
-    public boolean tradeBatch(List<TradeDto> dtoList) {
+    public BatchTradeResp tradeBatch(List<TradeDto> dtoList) {
 
         if (CollUtil.isEmpty(dtoList)) {
             throw new AppException(ResultCode.SAVE_FAILURE, "批量转账操作数据为空！");
         }
 
+        List<BaseNode> dataList = Lists.newArrayList();
 
-        return false;
+        for (TradeDto tradeDto : dtoList) {
+            BaseNode node = new BaseNode();
+            try {
+                boolean trade = trade(tradeDto);
+                node.setRequestNo(tradeDto.getRequestNo());
+                node.setStatus(trade ? OrderStatusEnum.SUCCESS.getCode() : OrderStatusEnum.FAIL.getCode());
+            } catch (Exception e) {
+                log.error("error is {} ", e.getMessage(), e);
+                node.setRequestNo(tradeDto.getRequestNo());
+                node.setStatus(OrderStatusEnum.FAIL.getCode());
+                node.setError(e.getMessage());
+            }
+            dataList.add(node);
+        }
+        BatchTradeResp resp = new BatchTradeResp();
+        resp.setDataList(dataList);
+        return resp;
     }
 }
