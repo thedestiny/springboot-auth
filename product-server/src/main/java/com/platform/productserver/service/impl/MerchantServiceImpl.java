@@ -59,7 +59,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         checkMerchantInfo(merchant);
         BigDecimal amount = freezeDto.getAmount(); // 冻结金额 和冻结类型
         String activityType = freezeDto.getActivityType();
-        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, TransTypeEnum.FREEZE.getCode());     // 构建流水日志
+        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, TransTypeEnum.FREEZE.getCode()); // 构建流水日志
         Object obj = template.execute(status -> {
             try {
                 Merchant update = merchantMapper.queryMerchantForUpdate(merchant.getId());
@@ -171,7 +171,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         checkMerchantInfo(merchant);
         BigDecimal amount = freezeDto.getAmount(); // 冻结金额 和冻结类型
         String activityType = freezeDto.getActivityType();
-        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, TransTypeEnum.FREEZE_IN.getCode());     // 构建流水日志
+        FreezeLog transLog = buildFreezeLog(merchant, freezeDto, TransTypeEnum.FREEZE_IN.getCode()); // 构建冻结流水日志和B端流水日志
         MerchantLog merchantLog = buildMerchantLog(freezeDto, merchant, TransTypeEnum.FREEZE_IN.getCode());
         Object obj = template.execute(status -> {
             try {
@@ -182,7 +182,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                 merchantMapper.updateById(update);
                 merchantLog.setBalance(update.getBalance());
                 merchantLogMapper.insert(merchantLog);
-                // 查询冻结账户
+                // 查询冻结账户，如果存在则更新数据否则新增数据
                 Freeze freeze = freezeMapper.queryFreezeAccount(update.getId(), activityType);
                 BigDecimal freezeAmt = amount;
                 if (ObjectUtil.isNotEmpty(freeze)) {
@@ -222,12 +222,9 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
      */
     @Override
     public boolean unFreezeOut(FreezeTradeDto freezeDto) {
-
         Merchant merchant = merchantMapper.queryMerchantByNo(freezeDto.getAccNo());
-        // 校验商户信息
-        checkMerchantInfo(merchant);
-        // 获取解冻金额和解冻类型
-        BigDecimal amount = freezeDto.getAmount();
+        checkMerchantInfo(merchant); // 校验商户信息
+        BigDecimal amount = freezeDto.getAmount();  // 获取解冻金额和解冻类型
         String activityType = freezeDto.getActivityType();
         // 构建流水日志
         FreezeLog transLog = buildFreezeLog(merchant, freezeDto, TransTypeEnum.FREEZE_OUT.getCode());
@@ -239,35 +236,29 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                 update.setBalance(NumberUtil.sub(update.getBalance(), amount));
                 update.setFreezeAmount(NumberUtil.sub(update.getFreezeAmount(), amount));
                 merchantLog.setBalance(update.getBalance());
-
                 // 查询冻结账户
                 Freeze freeze = freezeMapper.queryFreezeAccount(update.getId(), activityType);
-                if (ObjectUtil.isEmpty(freeze)) {
+                if (ObjectUtil.isEmpty(freeze))
                     throw new AppException(ResultCode.NOT_EXIST, "冻结类型不存在!");
-                }
                 // 查询原冻结流水
                 FreezeLog freezeLog = freezeLogMapper.queryFreezeLog(freezeDto.getRequestNo());
-                if (ObjectUtil.isEmpty(freezeLog)) {
+                if (ObjectUtil.isEmpty(freezeLog))
                     throw new AppException(ResultCode.NOT_EXIST, "原冻结流水不存在!");
-                }
                 // 冻结类型中的冻结金额
                 BigDecimal freezeAmount = freeze.getFreezeAmount();
-                if (!NumberUtil.isGreaterOrEqual(freezeAmount, amount)) {
+                if (!NumberUtil.isGreaterOrEqual(freezeAmount, amount))
                     throw new AppException(ResultCode.NOT_EXIST, "冻结金额不足!");
-                }
                 // 设置用户冻结金额, 原冻结金额 - 解冻金额
                 update.setFreezeAmount(NumberUtil.sub(update.getFreezeAmount(), amount));
                 merchantMapper.updateById(update);
                 // 解冻冻结账户资金
                 freeze.setFreezeAmount(NumberUtil.sub(freezeAmount, amount));
                 freezeMapper.updateById(freeze);
-
                 transLog.setAccountId(freeze.getId());
                 freezeLogMapper.insert(transLog);
                 // 更新账户余额并保存账户流水记录
                 merchantMapper.updateById(update);
                 merchantLogMapper.insert(merchantLog);
-
                 return true;
             } catch (Exception e) {
                 log.error("解冻账户交易失败 {} log {} error", JSONObject.toJSONString(freezeDto), JSONObject.toJSONString(transLog), e);

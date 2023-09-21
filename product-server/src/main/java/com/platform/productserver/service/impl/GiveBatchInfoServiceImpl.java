@@ -34,4 +34,9 @@ public class GiveBatchInfoServiceImpl extends ServiceImpl<GiveBatchInfoMapper, G
     public Integer updateBatchInfo(GiveBatchInfo batchInfo) {
         return baseMapper.updateById(batchInfo);
     }
+
+    @Override
+    public Integer updateEntityById(GiveBatchInfo batchInf) {
+        return baseMapper.updateById(batchInf);
+    }
 }

@@ -1,4 +1,5 @@
 package com.platform.productserver.grant;
+import java.math.BigDecimal;
 
 
 import java.util.List;
@@ -13,15 +14,17 @@ import com.platform.authcommon.common.TransTypeEnum;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
 import com.platform.authcommon.utils.IdGenUtils;
+import com.platform.productserver.dto.BatchTradeDto;
+import com.platform.productserver.dto.BatchTradeResp;
+import com.platform.productserver.dto.BatchUserTradeDto;
+import com.platform.productserver.dto.TradeDto;
 import com.platform.productserver.entity.BtransLog;
 import com.platform.productserver.entity.CtransLog;
 import com.platform.productserver.entity.GiveBatchInfo;
 import com.platform.productserver.entity.GiveLog;
-import com.platform.productserver.service.GiveBatchInfoService;
-import com.platform.productserver.service.GiveLogService;
-import com.platform.productserver.service.GiveRefundLogService;
-import com.platform.productserver.service.TransLogService;
+import com.platform.productserver.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -49,6 +52,14 @@ public class GrantBusiness {
     private GiveRefundLogService refundLogService;
     @Autowired
     private TransLogService transLogService;
+
+    /**
+     * C 端和 B 端 账户服务
+     */
+    @Autowired
+    private MerchantService merchantService;
+    @Autowired
+    private AccountService accountService;
 
 
     /**
@@ -81,7 +92,7 @@ public class GrantBusiness {
                 resp.setBatchNo(batchInfo.getBatchNo());
                 return resp;
             }
-            // todo 幂等，处理中的数据需要继续处理
+            // 幂等，处理中的数据需要继续处理
             if (OrderStatusEnum.PROCESSING.getCode().equals(status)) {
                 retryGrant(batchInfo, resp);
                 return resp;
@@ -92,30 +103,122 @@ public class GrantBusiness {
         if (CollUtil.isEmpty(userList)) {
             throw new AppException(ResultCode.NOT_EXIST, "发放列表数据不存在!");
         }
-
         GrantContext ctx = new GrantContext();
-        // 保存业务记录信息
+        // 1 保存业务记录信息
         saveGrantInfo(batchReq, userList, ctx);
-        // 执行积分分发
-        executeGrantInfo(ctx);
-
+        // 2 执行积分分发
+        boolean result = executeGrantInfo(ctx);
+        // 3 执行分发成功后，修改分发批次表和分发日志表
+        if(result){
+            GiveBatchInfo batchInf = ctx.getBatchInf();
+            List<GiveLog> logs = ctx.getLogs();
+            Object obj = template.execute(status -> {
+                try {
+                    Integer ef1 = batchInfoService.updateBatchInfo(batchInf);
+                    Integer ef2 = giveLogService.updateGiveLogList(logs);
+                    return true;
+                } catch (Exception e) {
+                    log.error("分发数据修改异常 {} error", JSONObject.toJSONString(batchReq), e);
+                    status.setRollbackOnly();
+                    throw e;
+                }
+            });
+            if (obj instanceof Exception) {
+                throw new AppException(ResultCode.SAVE_FAILURE, "修改分发数据失败！");
+            }
+        }
         return resp;
     }
 
+
+
     /**
      * 执行发放动作
-     *
-     * @param ctx
      */
-    private void executeGrantInfo(GrantContext ctx) {
+    private boolean executeGrantInfo(GrantContext ctx) {
         // 数据保存成功方可发送
-        if (Boolean.TRUE.equals(ctx.getSaveFlag())) {
-            // 调用批量接口
-
-
+        if (Boolean.FALSE.equals(ctx.getSaveFlag())) {
+            return false;
         }
 
+        GiveBatchInfo batchInf = ctx.getBatchInf();
+        BatchGiveReq batchReq = ctx.getBatchReq();
 
+        // 1 调用批量接口先处理 B 端出账接口
+        List<BtransLog> btransLogs = ctx.getBtransLogs();
+        boolean bFlag = false;
+        if(CollUtil.isNotEmpty(btransLogs)){
+            // 构建B端请求参数&调用B端批量出账接口
+            BatchTradeDto tradeDto = buildBatchMerchantOut(batchInf, batchReq, btransLogs);
+            bFlag = merchantService.batchTradeOut(tradeDto);
+            // 修改b 端流水表日志
+
+        }
+        boolean cFlag = false;
+        // 2 B 端出账成功后，调用 C 端入账接口
+        List<CtransLog> ctransLogs = ctx.getCtransLogs();
+        if(CollUtil.isNotEmpty(ctransLogs) && bFlag){
+            List<TradeDto> dtoList = buildBatchAccountIn(batchReq, ctransLogs);
+            BatchTradeResp batchTradeResp = accountService.tradeBatch(dtoList);
+            // 修改 c 端流水表日志
+            cFlag = true;
+        }
+        return bFlag && cFlag;
+    }
+
+    /**
+     * 构建 c 端账户入账参数
+     */
+    private List<TradeDto> buildBatchAccountIn(BatchGiveReq batchReq, List<CtransLog> ctransLogs) {
+        List<TradeDto> dtoList = Lists.newArrayList();
+        for (CtransLog ctransLog : ctransLogs) {
+            TradeDto dto = new TradeDto();
+            dto.setTransId(0L);
+            dto.setUserId(ctransLog.getUserId());
+            dto.setAccountType(ctransLog.getAccountType());
+            dto.setAmount(ctransLog.getAmount());
+            dto.setRequestNo(ctransLog.getRequestNo());
+            dto.setOrderNo(ctransLog.getRequestNo());
+            dto.setOtherAccount(batchReq.getOutAccNo());
+            dto.setOtherAccountType(0);
+            dto.setProdType(ctransLog.getProdType());
+            dto.setTransType(ctransLog.getActionType());
+            dto.setSource(ctransLog.getSource());
+            dto.setRemark(ctransLog.getRemark());
+            dto.setAppId("");
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
+    // 构建 B 端出账参数
+    private BatchTradeDto buildBatchMerchantOut(GiveBatchInfo batchInf, BatchGiveReq batchReq, List<BtransLog> btransLogs) {
+        BatchTradeDto tradeDto = new BatchTradeDto();
+        tradeDto.setMerchantNo(batchInf.getMerchantNo());
+        tradeDto.setAccountType(batchReq.getOutAccNoType());
+        tradeDto.setCredit(false);
+        tradeDto.setAmount(batchInf.getAmount());
+
+        List<BatchUserTradeDto> tradeList = Lists.newArrayList();
+        for (BtransLog btransLog : btransLogs) {
+
+            BatchUserTradeDto element = new BatchUserTradeDto();
+            element.setOtherAccount(btransLog.getOtherAccNo());
+            element.setOtherAccountType(0);
+            element.setAmount(btransLog.getAmount());
+            element.setProdType(btransLog.getProdType());
+            element.setTransType(btransLog.getActionType());
+            element.setSource(btransLog.getSource());
+            element.setRemark(btransLog.getRemark());
+            element.setAppId(btransLog.getAppId());
+            element.setOrderNo(btransLog.getRequestNo());
+            element.setRequestNo(btransLog.getRequestNo());
+
+            tradeList.add(element);
+        }
+        //
+        tradeDto.setTradeList(tradeList);
+        return tradeDto;
     }
 
     private void saveGrantInfo(BatchGiveReq batchReq, List<GiveUserDto> userList, GrantContext ctx) {

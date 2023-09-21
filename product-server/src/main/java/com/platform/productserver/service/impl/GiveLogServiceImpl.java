@@ -33,9 +33,10 @@ public class GiveLogServiceImpl extends ServiceImpl<GiveLogMapper, GiveLog> impl
         return baseMapper.insertEntityList(logList);
     }
 
+    @Override
+    public Integer updateGiveLogList(List<GiveLog> logs) {
+        return null;
 
 
-
-
-
+    }
 }

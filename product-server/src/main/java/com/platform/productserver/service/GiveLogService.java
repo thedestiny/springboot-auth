@@ -21,7 +21,8 @@ public interface GiveLogService extends IService<GiveLog> {
     Integer insertGiveLogList(List<GiveLog> logList);
 
 
-
-
-
+    /**
+     * 修改积分分发日志表
+     */
+    Integer updateGiveLogList(List<GiveLog> logs);
 }
