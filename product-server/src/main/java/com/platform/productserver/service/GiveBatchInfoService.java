@@ -26,4 +26,5 @@ public interface GiveBatchInfoService extends IService<GiveBatchInfo> {
     Integer updateBatchInfo(GiveBatchInfo batchInfo);
 
 
+    Integer updateEntityById(GiveBatchInfo batchInf);
 }
