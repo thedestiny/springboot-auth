@@ -1,5 +1,6 @@
 package com.platform.authcommon.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,7 +14,11 @@ public class Result<T> implements Serializable {
     private static final long serialVersionUID = 4253876214234961008L;
 
     private Integer code;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String message;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public Result() {
@@ -103,6 +108,14 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result<T> forbidden(T data) {
         return new Result<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
+    }
+
+
+    public static void main(String[] args) {
+
+        Result<String> sss = Result.forbidden("sss");
+
+
     }
 
 }
