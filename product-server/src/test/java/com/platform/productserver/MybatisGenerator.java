@@ -65,11 +65,11 @@ public class MybatisGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/treasure?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://152.136.33.103:5306/treasure?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUsername("username");
-        dsc.setPassword("password");
+        dsc.setUsername("destiny");
+        dsc.setPassword("Myroot123!");
         mpg.setDataSource(dsc);
 
 
@@ -155,7 +155,7 @@ public class MybatisGenerator {
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id");
         // strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-         strategy.setInclude("tb_give_log","tb_give_batch_info","tb_give_refund_log");
+         strategy.setInclude("tb_ctrans_log", "tb_btrans_log");
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix("tb_");

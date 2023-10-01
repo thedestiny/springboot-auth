@@ -98,7 +98,6 @@ public class GrantBusiness {
                 return resp;
             }
         }
-
         List<GiveUserDto> userList = batchReq.getUserList();
         if (CollUtil.isEmpty(userList)) {
             throw new AppException(ResultCode.NOT_EXIST, "发放列表数据不存在!");
@@ -236,12 +235,11 @@ public class GrantBusiness {
             blogs.add(btransLog);
             clogs.add(ctransLog);
         }
-
         Object obj = template.execute(status -> {
             try {
+                // 保存分发信息表和日志表、 c 端和 b 端操作日志表
                 Integer ef1 = batchInfoService.saveBatchInfo(batchInf);
                 Integer ef2 = giveLogService.insertGiveLogList(logs);
-                // 转换 c 端和 b 端操作日志表
                 Integer ef3 = transLogService.insertBtransLogs(blogs);
                 Integer ef4 = transLogService.insertCtransLogs(clogs);
                 return true;
@@ -251,12 +249,9 @@ public class GrantBusiness {
                 throw e;
             }
         });
-
         if (obj instanceof Exception) {
             throw new AppException(ResultCode.SAVE_FAILURE, "保存分发数据失败！");
         }
-
-
         ctx.setSaveFlag(Boolean.FALSE);
         if (Boolean.TRUE.equals((Boolean) obj)) {
             // 设置批次信息 b 端日志 和 c 端日志

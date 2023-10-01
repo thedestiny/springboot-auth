@@ -14,6 +14,17 @@ spring:
 server:
   port: 9301
 
+app:
+  wxpay:
+    mch-id: mcd_id
+    mch-serial-no: serial_no
+    private-key-path: apiclient_key.pem
+    api-v3-key: v3_key
+    appid: app_id
+    domain: https://api.mch.weixin.qq.com
+    notify-domain: https://www.return.com
+    partner-key: parter_key
+
 
 alipay:
   private-key: xxx
