@@ -90,39 +90,30 @@ public class WxPayBusiness {
         PayResp resp = new PayResp();
         String orderNo = payDto.getOrderNo();
         resp.setOrderNo(orderNo);
-        // 创建post请求 native 下单
+        // 创建post请求 native 下单 ，参考文档地址 https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_1.shtml
         HttpPost httpPost = new HttpPost(config.getDomain().concat(WxApiType.NATIVE_PAY.getType()));
-
-        // 构造请求参数
-        // 这里请求参数很多，只传必填项就可以了，请求和响应都是json格式
-        // gson是处理json的
+        // 构造请求参数  这里请求参数很多，只传必填项就可以了，请求和响应都是json格式
         Gson gson = new Gson();
-        // 你怎么知道要这些参数，参考文档啊 https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter4_4_1.shtml
         JSONObject paramsMap = new JSONObject();
         paramsMap.put("appid", config.getAppid());
         paramsMap.put("mchid", config.getMchId());
         paramsMap.put("description", payDto.getSubject());
         paramsMap.put("out_trade_no", orderNo);
         paramsMap.put("notify_url", config.getNotifyDomain().concat(WxNotifyType.NATIVE_NOTIFY.getType()));
-
         // 订单金额对象
         JSONObject amountMap = new JSONObject();
         // 此处的单位为分
         amountMap.put("total", transYu2Fen(payDto.getAmount()));
         amountMap.put("currency", "CNY");
         paramsMap.put("amount", amountMap);
-
         // 将参数转化成json字符串
         String requestJson = paramsMap.toJSONString();
-        log.info("3.构造请求参数");
         log.info("请求参数：{}", requestJson);
-
         // 设置请求体及请求头
         StringEntity entity = new StringEntity(requestJson, "utf-8");
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
         httpPost.setHeader("Accept", "application/json");
-
         // 完成签名并执行请求 wxPayClient会自动的处理签名和验签，并进行证书自动更新
         CloseableHttpResponse httpResponse = payClient.execute(httpPost);
         log.info("4.解析微信native下单响应");
@@ -269,7 +260,6 @@ public class WxPayBusiness {
         String reason = resp.getReason();
         BigDecimal orderAmount = resp.getOrderAmount();
         BigDecimal amount = resp.getAmount();
-
         log.info("调用微信退款接口");
         String url = config.getDomain().concat(WxApiType.DOMESTIC_REFUNDS.getType());
         HttpPost httpPost = new HttpPost(url);
@@ -281,23 +271,19 @@ public class WxPayBusiness {
         paramsMap.put("reason", reason);//退款原因
         // 退款通知地址，退款也进行了回调通知，类似下单处理？
         paramsMap.put("notify_url", config.getNotifyDomain().concat(WxNotifyType.REFUND_NOTIFY.getType()));
-
         Map<String, Object> amountMap = new HashMap<String, Object>();
         amountMap.put("refund", transYu2Fen(amount));//退款金额
         amountMap.put("total", transYu2Fen(orderAmount));//原订单金额
         amountMap.put("currency", "CNY");//退款币种
         paramsMap.put("amount", amountMap);
-
         //将参数转换成json字符串
         String jsonParams = gson.toJson(paramsMap);
         log.info("请求参数:{}" + jsonParams);
-
         // 封装到请求中，并设置请求格式和响应格式
         StringEntity entity = new StringEntity(jsonParams, "utf-8");
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
         httpPost.setHeader("Accept", "application/json");
-
         // 发起退款请求，内部对请求做了签名，响应也验签了
         CloseableHttpResponse response = payClient.execute(httpPost);
 
@@ -475,16 +461,13 @@ public class WxPayBusiness {
         paramsMap.put("mchid", config.getMchId());
         String jsonParams = gson.toJson(paramsMap);
         log.info("请求参数：{}", jsonParams);
-
         // 将请求参数设置到请求对象中
         StringEntity entity = new StringEntity(jsonParams, "utf-8");
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
         httpPost.setHeader("Accept", "application/json");
-
         // 完成签名并执行请求
         CloseableHttpResponse response = payClient.execute(httpPost);
-
         try {
             int statusCode = response.getStatusLine().getStatusCode();
             // 响应状态码

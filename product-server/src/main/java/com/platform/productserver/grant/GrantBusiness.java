@@ -1,27 +1,26 @@
 package com.platform.productserver.grant;
+
+import java.util.Date;
+
 import java.math.BigDecimal;
 
 
 import java.util.List;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.platform.authcommon.common.AccountTypeEnum;
 import com.platform.authcommon.common.OrderStatusEnum;
 import com.platform.authcommon.common.ResultCode;
 import com.platform.authcommon.common.TransTypeEnum;
 import com.platform.authcommon.config.RedisUtils;
 import com.platform.authcommon.exception.AppException;
 import com.platform.authcommon.utils.IdGenUtils;
-import com.platform.productserver.dto.BatchTradeDto;
-import com.platform.productserver.dto.BatchTradeResp;
-import com.platform.productserver.dto.BatchUserTradeDto;
-import com.platform.productserver.dto.TradeDto;
-import com.platform.productserver.entity.BtransLog;
-import com.platform.productserver.entity.CtransLog;
-import com.platform.productserver.entity.GiveBatchInfo;
-import com.platform.productserver.entity.GiveLog;
+import com.platform.productserver.dto.*;
+import com.platform.productserver.entity.*;
 import com.platform.productserver.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +107,7 @@ public class GrantBusiness {
         // 2 执行积分分发
         boolean result = executeGrantInfo(ctx);
         // 3 执行分发成功后，修改分发批次表和分发日志表
-        if(result){
+        if (result) {
             GiveBatchInfo batchInf = ctx.getBatchInf();
             List<GiveLog> logs = ctx.getLogs();
             Object obj = template.execute(status -> {
@@ -130,7 +129,6 @@ public class GrantBusiness {
     }
 
 
-
     /**
      * 执行发放动作
      */
@@ -146,17 +144,18 @@ public class GrantBusiness {
         // 1 调用批量接口先处理 B 端出账接口
         List<BtransLog> btransLogs = ctx.getBtransLogs();
         boolean bFlag = false;
-        if(CollUtil.isNotEmpty(btransLogs)){
+        if (CollUtil.isNotEmpty(btransLogs)) {
             // 构建B端请求参数&调用B端批量出账接口
             BatchTradeDto tradeDto = buildBatchMerchantOut(batchInf, batchReq, btransLogs);
             bFlag = merchantService.batchTradeOut(tradeDto);
             // 修改b 端流水表日志
 
+
         }
         boolean cFlag = false;
         // 2 B 端出账成功后，调用 C 端入账接口
         List<CtransLog> ctransLogs = ctx.getCtransLogs();
-        if(CollUtil.isNotEmpty(ctransLogs) && bFlag){
+        if (CollUtil.isNotEmpty(ctransLogs) && bFlag) {
             List<TradeDto> dtoList = buildBatchAccountIn(batchReq, ctransLogs);
             BatchTradeResp batchTradeResp = accountService.tradeBatch(dtoList);
             // 修改 c 端流水表日志
@@ -370,5 +369,183 @@ public class GrantBusiness {
     private void retryGrant(GiveBatchInfo batchInfo, GiveResp resp) {
 
 
+    }
+
+    public GiveResp refund(GiveRefundReq refundReq) {
+        // 获取原分发单号
+        String giveNo = refundReq.getGiveNo();
+        // 查询原分发记录
+        GiveLog giveLog = giveLogService.queryByGiveNo(giveNo);
+        // 查询已撤回记录
+        List<GiveRefundLog> logs = refundLogService.queryByRefundNo(giveNo);
+        // 处理中或者成功的撤回金额
+        BigDecimal refunded = BigDecimal.ZERO;
+        if (CollUtil.isNotEmpty(logs)) {
+            refunded = logs.stream()
+                    .filter(node -> OrderStatusEnum.isInit(node.getStatus()) || OrderStatusEnum.isSuccess(node.getStatus()))
+                    .map(GiveRefundLog::getRefundedAmount)
+                    .reduce(BigDecimal.ZERO, NumberUtil::add);
+        }
+        // 原分发金额
+        BigDecimal amount = giveLog.getAmount();
+        // 退款金额
+        BigDecimal reqAmount = refundReq.getAmount();
+        // 校验退款金额
+        if (NumberUtil.sub(amount, refunded, reqAmount).compareTo(BigDecimal.ZERO) < 0) {
+            throw new AppException("撤回金额超出可撤回金额");
+        }
+
+        // 记录退款日志
+        GiveRefundLog insertLog = buildRefundLog(refundReq, giveLog);
+        // 构建 C 端和 B 端操作日志
+        CtransLog ctransLog = buildCtransLog(refundReq, giveLog, reqAmount);
+        BtransLog btransLog = buildBtransLog(refundReq, giveLog, reqAmount);
+
+        // 保存数据库信息
+        Object obj = template.execute(status -> {
+            try {
+                // 保存撤回日志
+                Integer ef1 = refundLogService.insertEntity(insertLog);
+                // 保存分发信息表和日志表、 c 端和 b 端操作日志表
+                btransLog.setFid(insertLog.getId());
+                ctransLog.setFid(insertLog.getId());
+                Integer ef3 = transLogService.insertBtransLogs(Lists.newArrayList(btransLog));
+                Integer ef4 = transLogService.insertCtransLogs(Lists.newArrayList(ctransLog));
+                return true;
+            } catch (Exception e) {
+                log.error("分发数据异常 {} error", JSONObject.toJSONString(refundReq), e);
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+
+        // 执行 B 端入账 和 C 端出账
+        Boolean flag1 = handleTransIn(btransLog, refundReq, giveLog);
+        // 如果 B 端入账成功，则执行 C 端出账
+        if (flag1) {
+            Boolean flag2 = handleTransOut(ctransLog, refundReq, giveLog);
+            // 如果两者都执行成功，则修改撤回记录
+            if (flag2) {
+                insertLog.setStatus(OrderStatusEnum.SUCCESS.getCode());
+                refundLogService.updateById(insertLog);
+            }
+        }
+
+        return new GiveResp();
+    }
+
+    private Boolean handleTransOut(CtransLog ctransLog, GiveRefundReq refundReq, GiveLog giveLog) {
+
+        TradeDto tradeDto = new TradeDto();
+        tradeDto.setTransId(0L);
+        tradeDto.setUserId(giveLog.getUserId());
+        tradeDto.setAccountType(giveLog.getAccountType());
+        tradeDto.setAmount(giveLog.getAmount());
+        tradeDto.setRequestNo(ctransLog.getRequestNo());
+        tradeDto.setOrderNo(refundReq.getOrderNo());
+        tradeDto.setOtherAccount(giveLog.getOutAccNo());
+        tradeDto.setOtherAccountType(AccountTypeEnum.BUSINESS.getCode());
+        tradeDto.setProdType(giveLog.getProdType());
+        tradeDto.setTransType(TransTypeEnum.TRADE_OUT.getCode());
+        tradeDto.setSource(giveLog.getSource());
+        tradeDto.setRemark(refundReq.getRemark());
+        tradeDto.setAppId(giveLog.getAppId());
+        tradeDto.setCredit(false);
+        boolean trade = accountService.trade(tradeDto);
+        if(trade){
+            transLogService.updateCtransLog(ctransLog);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private Boolean handleTransIn(BtransLog btransLog, GiveRefundReq refundReq, GiveLog giveLog) {
+
+        BusinessDto busDto = new BusinessDto();
+        busDto.setOrderNo(refundReq.getOrderNo());
+        busDto.setRequestNo(refundReq.getRequestNo());
+        busDto.setMerchantNo(giveLog.getMerchantNo());
+        busDto.setAccountType(AccountTypeEnum.accountType(giveLog.getOutAccNo()));
+        busDto.setAmount(refundReq.getAmount());
+        busDto.setOtherAccount(giveLog.getInAccNo());
+        busDto.setOtherAccountType(AccountTypeEnum.accountType(giveLog.getInAccNo()));
+        busDto.setProdType(giveLog.getProdType());
+        busDto.setTransType(TransTypeEnum.TRADE_IN.getCode());
+        busDto.setSource(giveLog.getSource());
+        busDto.setRemark(refundReq.getRemark());
+        busDto.setAppId(giveLog.getAppId());
+        busDto.setCredit(false);
+
+        boolean trade = merchantService.trade(busDto);
+        if(trade){
+            transLogService.updateBtransLog(btransLog);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private BtransLog buildBtransLog(GiveRefundReq refundReq, GiveLog giveLog, BigDecimal reqAmount) {
+        BtransLog btransLog = new BtransLog();
+        btransLog.setSource(giveLog.getSource());
+        btransLog.setRequestNo(refundReq.getRequestNo());
+        btransLog.setAccNo(giveLog.getOutAccNo());
+        btransLog.setActionType(TransTypeEnum.TRANS_IN.getCode());
+        btransLog.setProdType(giveLog.getProdType());
+        btransLog.setAmount(reqAmount);
+        btransLog.setStatus(0);
+        btransLog.setErrorMsg("");
+        btransLog.setRemark(refundReq.getRemark());
+        btransLog.setAppId(giveLog.getAppId());
+        btransLog.setExclusiveNo("");
+        btransLog.setActivityType(giveLog.getActivityNo());
+        btransLog.setOtherAccNo(giveLog.getInAccNo());
+        btransLog.setSeq(0L);
+        return btransLog;
+    }
+
+    private CtransLog buildCtransLog(GiveRefundReq refundReq, GiveLog giveLog, BigDecimal reqAmount) {
+        CtransLog ctransLog = new CtransLog();
+        ctransLog.setSource(giveLog.getSource());
+        ctransLog.setRequestNo(refundReq.getRequestNo());
+        ctransLog.setUserId(giveLog.getUserId());
+        ctransLog.setAccountType(giveLog.getAccountType());
+        ctransLog.setProdType(giveLog.getProdType());
+        ctransLog.setActionType(TransTypeEnum.TRANS_OUT.getCode());
+        ctransLog.setAmount(reqAmount);
+        ctransLog.setStatus(0);
+        ctransLog.setErrorMsg("");
+        ctransLog.setRemark(refundReq.getRemark());
+        ctransLog.setSeq(0L);
+        return ctransLog;
+    }
+
+    /**
+     * 构建撤回日志
+     */
+    private GiveRefundLog buildRefundLog(GiveRefundReq refundReq, GiveLog giveLog) {
+        GiveRefundLog insertLog = new GiveRefundLog();
+        insertLog.setAppId(giveLog.getAppId());
+        insertLog.setBatchNo(giveLog.getBatchNo());
+        insertLog.setRefundNo(giveLog.getRequestNo());
+        insertLog.setRequestNo(refundReq.getRequestNo());
+        insertLog.setAmount(refundReq.getAmount());
+        // insertLog.setRefundedAmount(new BigDecimal("0"));
+        insertLog.setStatus(0);
+        insertLog.setErrorMsg("");
+        insertLog.setRemark(refundReq.getRemark());
+        insertLog.setRefundType(refundReq.getRefundType());
+        insertLog.setAccountType(giveLog.getAccountType());
+        insertLog.setHandleDebit(refundReq.getAllowDebit());
+        insertLog.setUserId(giveLog.getUserId());
+        insertLog.setTransOut(giveLog.getInAccNo());
+        insertLog.setTransIn(giveLog.getOutAccNo());
+        insertLog.setTradeSummary(refundReq.getSummary());
+        insertLog.setSource(giveLog.getSource());
+
+        return insertLog;
     }
 }

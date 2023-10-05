@@ -25,4 +25,7 @@ public interface GiveLogService extends IService<GiveLog> {
      * 修改积分分发日志表
      */
     Integer updateGiveLogList(List<GiveLog> logs);
+
+
+    GiveLog queryByGiveNo(String giveNo);
 }

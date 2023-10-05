@@ -1,6 +1,7 @@
 package com.platform.productserver.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.platform.productserver.entity.BtransLog;
 import com.platform.productserver.entity.CtransLog;
 import com.platform.productserver.mapper.BtransLogMapper;
@@ -40,5 +41,21 @@ public class TransLogServiceImpl implements TransLogService {
             return 0;
         }
         return btransLogMapper.insertEntityList(logList);
+    }
+
+    @Override
+    public Integer updateBtransLog(BtransLog log) {
+        if(ObjectUtil.isEmpty(log)){
+            return 0;
+        }
+        return btransLogMapper.updateById(log);
+    }
+
+    @Override
+    public Integer updateCtransLog(CtransLog log) {
+        if(ObjectUtil.isEmpty(log)){
+            return 0;
+        }
+        return ctransLogMapper.updateById(log);
     }
 }

@@ -35,4 +35,13 @@
          trans_in, trade_summary, source, create_time, update_time
     </sql>
 
+
+    <select id="selectByRefundNo" resultMap="BaseResultMap">
+
+          select <include refid="Base_Column_List"/>
+          from tb_give_refund_log
+          where refund_no = #{giveNo}
+
+    </select>
+
 </mapper>

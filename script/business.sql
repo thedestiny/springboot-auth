@@ -96,7 +96,7 @@ CREATE TABLE `tb_give_refund_log` (
   KEY `idx_status` (`status`) USING BTREE,
   KEY `idx_refundno` (`refund_no`) USING BTREE,
   KEY `idx_refundamt` (`refunded_amount`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT= 200000000 DEFAULT CHARSET=utf8mb4 COMMENT='发放撤回表';
+) ENGINE=InnoDB AUTO_INCREMENT= 200000000 DEFAULT CHARSET=utf8mb4 COMMENT='积分分发撤回表';
 
 
 CREATE TABLE `tb_ctrans_log` (

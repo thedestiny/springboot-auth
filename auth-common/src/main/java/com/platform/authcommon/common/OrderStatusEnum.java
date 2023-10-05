@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 
 @Getter
-public enum  OrderStatusEnum {
+public enum OrderStatusEnum {
 
     PROCESSING(0, "PROCESSING", "处理中"),
     SUCCESS(1, "SUCCESS", "成功"),
@@ -20,8 +20,17 @@ public enum  OrderStatusEnum {
     private final String msg;
     private final String detail;
 
+    public static boolean isInit(Integer status) {
+        return PROCESSING.getCode() == status;
+    }
 
+    public static boolean isSuccess(Integer status) {
+        return SUCCESS.getCode() == status;
+    }
 
+    public static boolean isFailure(Integer status) {
+        return FAIL.getCode() == status;
+    }
 
     OrderStatusEnum(int status, String showCode, String detail) {
         this.code = status;
@@ -30,8 +39,8 @@ public enum  OrderStatusEnum {
     }
 
     public static String getShowCodeByStatus(Integer status) {
-        for(OrderStatusEnum node : OrderStatusEnum.values()){
-            if (node.code.equals(status)){
+        for (OrderStatusEnum node : OrderStatusEnum.values()) {
+            if (node.code.equals(status)) {
                 return node.msg;
             }
         }

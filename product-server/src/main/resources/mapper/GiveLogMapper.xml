@@ -55,4 +55,12 @@
     </insert>
 
 
+    <select id="selectByGiveNo" resultMap="BaseResultMap">
+
+      select
+      <include refid="Base_Column_List"/>
+      from tb_give_log where request_no = #{giveNo}
+
+    </select>
+
 </mapper>

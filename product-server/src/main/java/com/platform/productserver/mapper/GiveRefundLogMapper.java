@@ -3,6 +3,8 @@ package com.platform.productserver.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.platform.productserver.entity.GiveRefundLog;
 
+import java.util.List;
+
 /**
  * <p>
  * 发放撤回表 Mapper 接口
@@ -14,5 +16,6 @@ import com.platform.productserver.entity.GiveRefundLog;
 public interface GiveRefundLogMapper extends BaseMapper<GiveRefundLog> {
 
 
-
+    List<GiveRefundLog> selectByRefundNo(String giveNo);
+    
 }

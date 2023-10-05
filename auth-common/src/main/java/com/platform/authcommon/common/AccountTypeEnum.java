@@ -20,6 +20,7 @@ public enum AccountTypeEnum {
     GRANT(30,"发放账户", "G"),
     BUSINESS(31,"商户账户", "B"),
     SETTLE(32,"结算账户", "S"),
+
     ;
 
     AccountTypeEnum(Integer code, String name, String prefix) {
@@ -31,6 +32,17 @@ public enum AccountTypeEnum {
     private Integer code;
     private String name;
     private String prefix;
+
+
+    public static Integer accountType(String accNo){
+
+        for (AccountTypeEnum node : AccountTypeEnum.values()){
+            if(accNo.startsWith(node.getPrefix())){
+                return node.code;
+            }
+        }
+        return -1;
+    }
 
 
     /**

@@ -23,6 +23,5 @@ public interface GiveLogMapper extends BaseMapper<GiveLog> {
     Integer insertEntityList(List<GiveLog> logList);
 
 
-
-
+    GiveLog selectByGiveNo(String giveNo);
 }

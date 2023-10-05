@@ -18,4 +18,9 @@ public interface TransLogService {
     Integer insertBtransLogs(List<BtransLog> logList);
 
 
+    Integer updateCtransLog(CtransLog log);
+
+    Integer updateBtransLog(BtransLog log);
+
+
 }

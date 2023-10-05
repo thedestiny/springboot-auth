@@ -8,6 +8,8 @@ import com.platform.productserver.service.GiveRefundLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 发放撤回表 服务实现类
@@ -21,6 +23,13 @@ import org.springframework.stereotype.Service;
 public class GiveRefundLogServiceImpl extends ServiceImpl<GiveRefundLogMapper, GiveRefundLog> implements GiveRefundLogService {
 
 
+    @Override
+    public List<GiveRefundLog> queryByRefundNo(String giveNo) {
+        return baseMapper.selectByRefundNo(giveNo);
+    }
 
-
+    @Override
+    public Integer insertEntity(GiveRefundLog insertLog) {
+        return baseMapper.insert(insertLog);
+    }
 }

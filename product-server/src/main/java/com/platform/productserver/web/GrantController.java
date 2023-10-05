@@ -1,10 +1,7 @@
 package com.platform.productserver.web;
 
 import com.platform.authcommon.common.Result;
-import com.platform.productserver.grant.BatchGiveReq;
-import com.platform.productserver.grant.GiveReq;
-import com.platform.productserver.grant.GiveResp;
-import com.platform.productserver.grant.GrantBusiness;
+import com.platform.productserver.grant.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +41,10 @@ public class GrantController {
         return Result.success(result);
     }
 
-
+    @ApiOperation(value = "积分分发-撤回")
+    @PostMapping(value = "refund")
+    public Result<GiveResp> refund(@RequestBody GiveRefundReq refundReq){
+        GiveResp result = grantBusiness.refund(refundReq);
+        return Result.success(result);
+    }
 }

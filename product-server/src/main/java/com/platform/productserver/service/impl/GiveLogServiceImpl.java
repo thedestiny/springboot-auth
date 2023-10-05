@@ -37,6 +37,10 @@ public class GiveLogServiceImpl extends ServiceImpl<GiveLogMapper, GiveLog> impl
     public Integer updateGiveLogList(List<GiveLog> logs) {
         return null;
 
+    }
 
+    @Override
+    public GiveLog queryByGiveNo(String giveNo) {
+        return baseMapper.selectByGiveNo(giveNo);
     }
 }
