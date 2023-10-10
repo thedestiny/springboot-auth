@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * 提供全局获取AppContext的方法
  */
+
 @Component
 public class ApplicationContextHolder implements ApplicationContextAware, Ordered {
 

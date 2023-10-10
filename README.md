@@ -87,4 +87,6 @@ select DATE_SUB(SYSDATE(),INTERVAL 1 year);
 
 Tomcat 的默认核心线程数是 10，最大线程数 200，队列长度是无限长。
 
+https://juejin.cn/post/7285622727603388452
+
 ```

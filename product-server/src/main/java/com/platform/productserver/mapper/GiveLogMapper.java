@@ -22,6 +22,13 @@ public interface GiveLogMapper extends BaseMapper<GiveLog> {
      */
     Integer insertEntityList(List<GiveLog> logList);
 
-
+    /**
+     * 根据请求号查询数据
+     */
     GiveLog selectByGiveNo(String giveNo);
+
+    /**
+     * 根据批次号查询一批数据
+     */
+    List<GiveLog> selectByBatchNo(String batchNo);
 }

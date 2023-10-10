@@ -23,4 +23,7 @@ public interface TransLogService {
     Integer updateBtransLog(BtransLog log);
 
 
+    List<BtransLog> queryBLogList(List<Long> idList);
+
+    List<CtransLog> queryCLogList(List<Long> idList);
 }

@@ -28,4 +28,6 @@ public interface GiveLogService extends IService<GiveLog> {
 
 
     GiveLog queryByGiveNo(String giveNo);
+
+    List<GiveLog> selectByBatchNo(String giveNo);
 }

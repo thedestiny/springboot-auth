@@ -48,4 +48,21 @@
     </insert>
 
 
+    <select id="selectLogListByFid" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_btrans_log
+        <where>
+            <if test="idList != null ">
+                fid in
+                <foreach collection="idList" item="gid"  open="(" close=")" separator=",">
+                    #{gid}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+
+
 </mapper>

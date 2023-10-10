@@ -43,4 +43,9 @@ public class GiveLogServiceImpl extends ServiceImpl<GiveLogMapper, GiveLog> impl
     public GiveLog queryByGiveNo(String giveNo) {
         return baseMapper.selectByGiveNo(giveNo);
     }
+
+    @Override
+    public List<GiveLog> selectByBatchNo(String giveNo) {
+        return baseMapper.selectByBatchNo(giveNo);
+    }
 }
