@@ -17,4 +17,9 @@ public interface CtransLogMapper extends BaseMapper<CtransLog> {
 
 
     Integer insertEntityList(List<CtransLog> logList);
+
+    /**
+     * 根据 fid list 查询数据
+     */
+    List<CtransLog> selectLogListByFid(List<Long> idList);
 }

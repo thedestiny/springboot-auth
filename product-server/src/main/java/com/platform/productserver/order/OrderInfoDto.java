@@ -24,6 +24,9 @@ public class OrderInfoDto implements Serializable {
     @ApiModelProperty(value = "订单号")
     private String orderNo;
 
+    @ApiModelProperty(value = "商户号")
+    private String merNo;
+
     public OrderInfoDto() {
     }
 

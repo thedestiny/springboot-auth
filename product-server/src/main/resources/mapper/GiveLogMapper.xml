@@ -63,4 +63,13 @@
 
     </select>
 
+    <select id="selectByBatchNo" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List"/>
+        from tb_give_log where batch_no = #{batchNo}
+
+
+    </select>
+
 </mapper>

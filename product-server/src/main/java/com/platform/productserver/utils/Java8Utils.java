@@ -28,6 +28,7 @@ public class Java8Utils {
         OrderInfoDto dto3 = new OrderInfoDto("123", BigDecimal.valueOf(3), "234");
         OrderInfoDto dto4 = new OrderInfoDto("345", BigDecimal.valueOf(2), "345");
 
+
         List<OrderInfoDto> dtoList = Lists.newArrayList(dto1, dto2, dto3, dto4);
 
         // 根据订单号去重

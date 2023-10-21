@@ -19,4 +19,6 @@ public class MessageConstant {
 
     public static final String PERMISSION_DENIED = "没有访问权限，请联系管理员!";
 
+
+
 }

@@ -1,11 +1,11 @@
 package com.platform.productserver.grant;
 
-import java.util.Date;
 
 import java.math.BigDecimal;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -23,7 +23,6 @@ import com.platform.productserver.dto.*;
 import com.platform.productserver.entity.*;
 import com.platform.productserver.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -80,6 +79,12 @@ public class GrantBusiness {
         // 查询红包批次信息
         String batchNo = batchReq.getBatchNo();
         GiveBatchInfo batchInfo = batchInfoService.queryBatchInfo(batchNo);
+
+        List<GiveUserDto> userList = batchReq.getUserList();
+        if (CollUtil.isEmpty(userList)) {
+            throw new AppException(ResultCode.NOT_EXIST, "发放列表数据不存在!");
+        }
+
         // 分发批次信息已经存在，进行校验即可
         if (ObjectUtil.isNotEmpty(batchInfo)) {
             Integer status = batchInfo.getStatus();
@@ -93,38 +98,18 @@ public class GrantBusiness {
             }
             // 幂等，处理中的数据需要继续处理
             if (OrderStatusEnum.PROCESSING.getCode().equals(status)) {
-                retryGrant(batchInfo, resp);
+                retryGrant(batchReq, batchInfo, resp);
                 return resp;
             }
         }
-        List<GiveUserDto> userList = batchReq.getUserList();
-        if (CollUtil.isEmpty(userList)) {
-            throw new AppException(ResultCode.NOT_EXIST, "发放列表数据不存在!");
-        }
+
         GrantContext ctx = new GrantContext();
         // 1 保存业务记录信息
         saveGrantInfo(batchReq, userList, ctx);
         // 2 执行积分分发
         boolean result = executeGrantInfo(ctx);
         // 3 执行分发成功后，修改分发批次表和分发日志表
-        if (result) {
-            GiveBatchInfo batchInf = ctx.getBatchInf();
-            List<GiveLog> logs = ctx.getLogs();
-            Object obj = template.execute(status -> {
-                try {
-                    Integer ef1 = batchInfoService.updateBatchInfo(batchInf);
-                    Integer ef2 = giveLogService.updateGiveLogList(logs);
-                    return true;
-                } catch (Exception e) {
-                    log.error("分发数据修改异常 {} error", JSONObject.toJSONString(batchReq), e);
-                    status.setRollbackOnly();
-                    throw e;
-                }
-            });
-            if (obj instanceof Exception) {
-                throw new AppException(ResultCode.SAVE_FAILURE, "修改分发数据失败！");
-            }
-        }
+        updateResult(batchReq, ctx, result);
         return resp;
     }
 
@@ -149,7 +134,6 @@ public class GrantBusiness {
             BatchTradeDto tradeDto = buildBatchMerchantOut(batchInf, batchReq, btransLogs);
             bFlag = merchantService.batchTradeOut(tradeDto);
             // 修改b 端流水表日志
-
 
         }
         boolean cFlag = false;
@@ -248,9 +232,11 @@ public class GrantBusiness {
                 throw e;
             }
         });
+
         if (obj instanceof Exception) {
             throw new AppException(ResultCode.SAVE_FAILURE, "保存分发数据失败！");
         }
+
         ctx.setSaveFlag(Boolean.FALSE);
         if (Boolean.TRUE.equals((Boolean) obj)) {
             // 设置批次信息 b 端日志 和 c 端日志
@@ -366,9 +352,51 @@ public class GrantBusiness {
      * @param batchInfo
      * @param resp
      */
-    private void retryGrant(GiveBatchInfo batchInfo, GiveResp resp) {
+    private void retryGrant(BatchGiveReq batchReq, GiveBatchInfo batchInfo, GiveResp resp) {
 
+        String batchNo = batchInfo.getBatchNo();
+        List<GiveLog> giveLogs = giveLogService.selectByBatchNo(batchNo);
+        // 获取分发日志id 集合
+        List<Long> idList = giveLogs.stream().map(GiveLog::getId).collect(Collectors.toList());
+        // 获取 B 端和 C 端的操作日志
+        List<BtransLog> btransLogs = transLogService.queryBLogList(idList);
+        List<CtransLog> ctransLogs = transLogService.queryCLogList(idList);
 
+        GrantContext ctx = new GrantContext();
+        ctx.setSaveFlag(Boolean.TRUE);
+        ctx.setBatchReq(batchReq);
+        ctx.setBatchInf(batchInfo);
+        ctx.setLogs(giveLogs);
+        // ctx.setUserList();
+        ctx.setCtransLogs(ctransLogs);
+        ctx.setBtransLogs(btransLogs);
+
+        // 2 执行积分分发
+        boolean result = executeGrantInfo(ctx);
+        // 3 执行分发成功后，修改分发批次表和分发日志表
+        updateResult(batchReq, ctx, result);
+
+    }
+
+    private void updateResult(BatchGiveReq batchReq, GrantContext ctx, boolean result) {
+        if (result) {
+            GiveBatchInfo batchInf = ctx.getBatchInf();
+            List<GiveLog> logs = ctx.getLogs();
+            Object obj = template.execute(status -> {
+                try {
+                    Integer ef1 = batchInfoService.updateBatchInfo(batchInf);
+                    Integer ef2 = giveLogService.updateGiveLogList(logs);
+                    return true;
+                } catch (Exception e) {
+                    log.error("分发数据修改异常 {} error", JSONObject.toJSONString(batchReq), e);
+                    status.setRollbackOnly();
+                    throw e;
+                }
+            });
+            if (obj instanceof Exception) {
+                throw new AppException(ResultCode.SAVE_FAILURE, "修改分发数据失败！");
+            }
+        }
     }
 
     public GiveResp refund(GiveRefundReq refundReq) {
@@ -452,7 +480,7 @@ public class GrantBusiness {
         tradeDto.setAppId(giveLog.getAppId());
         tradeDto.setCredit(false);
         boolean trade = accountService.trade(tradeDto);
-        if(trade){
+        if (trade) {
             transLogService.updateCtransLog(ctransLog);
             return true;
         } else {
@@ -479,7 +507,7 @@ public class GrantBusiness {
         busDto.setCredit(false);
 
         boolean trade = merchantService.trade(busDto);
-        if(trade){
+        if (trade) {
             transLogService.updateBtransLog(btransLog);
             return true;
         } else {

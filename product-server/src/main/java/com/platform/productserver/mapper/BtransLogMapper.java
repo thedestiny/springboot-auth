@@ -18,4 +18,7 @@ public interface BtransLogMapper extends BaseMapper<BtransLog> {
 
 
     Integer insertEntityList(List<BtransLog> logList);
+
+    List<BtransLog> selectLogListByFid(List<Long> idList);
+
 }

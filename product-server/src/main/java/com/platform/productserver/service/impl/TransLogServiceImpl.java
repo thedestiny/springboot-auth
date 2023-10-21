@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,5 +58,21 @@ public class TransLogServiceImpl implements TransLogService {
             return 0;
         }
         return ctransLogMapper.updateById(log);
+    }
+
+    @Override
+    public List<BtransLog> queryBLogList(List<Long> idList) {
+        if(CollUtil.isEmpty(idList)){
+            return new ArrayList<>();
+        }
+        return btransLogMapper.selectLogListByFid(idList);
+    }
+
+    @Override
+    public List<CtransLog> queryCLogList(List<Long> idList) {
+        if(CollUtil.isEmpty(idList)){
+            return new ArrayList<>();
+        }
+        return ctransLogMapper.selectLogListByFid(idList);
     }
 }
