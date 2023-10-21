@@ -1,6 +1,7 @@
 package com.platform.productserver.utils;
 
 import cn.hutool.core.util.NumberUtil;
+import com.alibaba.nacos.common.utils.MD5Utils;
 import com.google.common.collect.Lists;
 import com.platform.productserver.order.OrderInfoDto;
 
@@ -17,6 +18,9 @@ public class Java8Utils {
 
 
     public static void main(String[] args) {
+
+        String dd = "E10ADC3949BA59ABBE56E057F20F883E";
+        System.out.println(MD5Utils.md5Hex("123456", "UTF-8"));
 
         // 实践数据
         OrderInfoDto dto1 = new OrderInfoDto("123", BigDecimal.valueOf(5), "456");
