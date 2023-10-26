@@ -75,7 +75,12 @@ select DATE_SUB(SYSDATE(),INTERVAL 1 month);
 --  当前时间减1季度          
 select DATE_SUB(SYSDATE(),INTERVAL 1 quarter);
 -- 当前时间减1年        
-select DATE_SUB(SYSDATE(),INTERVAL 1 year);              
+select DATE_SUB(SYSDATE(),INTERVAL 1 year);
+
+DATE_FORMAT(NOW(),'%b %d %Y %h:%i %p')
+DATE_FORMAT(NOW(),'%m-%d-%Y')
+DATE_FORMAT(NOW(),'%d %b %y')
+DATE_FORMAT(NOW(),'%d %b %Y %T:%f')
 
 ```
 
