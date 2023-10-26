@@ -38,7 +38,7 @@
 </#if>
 
 
-    <insert id="insertEntityList" parameterType="ArrayList">
+    <insert id="insertEntityList" parameterType="arraylist">
         INSERT INTO ${table.name} (<#list table.fields as field>${field.name}<#if field_has_next>,</#if></#list>)
         VALUES
         <foreach collection="list" item="e" separator=",">
@@ -56,8 +56,8 @@
         UPDATE ${table.name}
         <set>
             <#list table.fields as field>
-                 <#if !field.keyFlag><#--生成主键排在第一位-->
-            <if test="${field.propertyName} != null">
+                 <#if !field.keyFlag ><#--生成主键排在第一位-->
+            <if test="${field.propertyName} != null<#if field.columnType.type = 'String'> and  ${field.propertyName} != ''</#if>">
                 ${field.name} = ${r'#{'}${field.propertyName}${r"}"} <#if field_has_next>,</#if>
             </if>
                  </#if>
@@ -93,8 +93,8 @@
         <where>
              <#list table.fields as field>
                       <#if !field.keyFlag><#--生成主键排在第一位-->
-         <if test="${field.propertyName} != null">
-             and ${field.name} = ${r'#{'}${field.propertyName}${r"}"} <#if field_has_next>,</#if>
+         <if test="${field.propertyName} != null<#if field.columnType.type = 'String'> and ${field.propertyName} != '' </#if>">
+             and ${field.name} = ${r'#{'}${field.propertyName}${r"}"} <#if field_has_next></#if>
          </if>
                       </#if>
              </#list>
