@@ -48,16 +48,9 @@ public class MybatisGenerator {
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
         String property = System.getProperty("user.dir");
-        String content = FileUtil.readString(property + "/pom1.xml", "UTF-8");
+
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-
-        FileUtil.del(projectPath);
-        content = content.replace("${groupId}", groupId);
-        content = content.replace("${artifactId}", artifactId);
-        content = content.replace("${proName}", artifactId);
-        FileUtil.writeString(content, projectPath + "/pom.xml", "UTF-8");
-
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor(author);
         gc.setOpen(false);
@@ -169,6 +162,13 @@ public class MybatisGenerator {
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         // getObjectMap()
         mpg.execute();
+
+        String content = FileUtil.readString(property + "/pom1.xml", "UTF-8");
+        FileUtil.del(projectPath);
+        content = content.replace("${groupId}", groupId);
+        content = content.replace("${artifactId}", artifactId);
+        content = content.replace("${proName}", artifactId);
+        FileUtil.writeString(content, projectPath + "/pom.xml", "UTF-8");
 
         String config = FileUtil.readString(property + "/application1.yml", "UTF-8");
         FileUtil.writeString(config, projectPath + "/src/main/resources/application.yml", "UTF-8");
