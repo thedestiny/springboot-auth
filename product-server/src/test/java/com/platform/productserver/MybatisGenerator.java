@@ -1,6 +1,7 @@
 package com.platform.productserver;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -22,6 +23,7 @@ import java.util.Scanner;
 
 /**
  * 模板项目生成内容 mpg
+ *
  * @Description
  * @Date 2022-08-17 5:28 PM
  */
@@ -29,22 +31,18 @@ import java.util.Scanner;
 @Slf4j
 public class MybatisGenerator {
 
-    public static String scanner(String tip) {
-        Scanner scanner = new Scanner(System.in);
-        StringBuilder help = new StringBuilder();
-        help.append("请输入" + tip + "：");
-        System.out.println(help.toString());
-        if (scanner.hasNext()) {
-            String ipt = scanner.next();
-            if (StringUtils.isNotBlank(ipt)) {
-                return ipt;
-            }
-        }
-        throw new MybatisPlusException("请输入正确的" + tip + "！");
-    }
-
-
     public static void main(String[] args) {
+
+        // 项目生成地址
+        String projectPath = "/Users/admin/Desktop/trade01";
+        // groupId 和 artifactId
+        String groupId = "com.longem";
+        String artifactId = "trade";
+        String author = "kaiyang";
+
+        String url = "localhost:3306/database";
+        String username = "username";
+        String password = "password";
 
 
         // 代码生成器
@@ -53,19 +51,15 @@ public class MybatisGenerator {
         String content = FileUtil.readString(property + "/pom1.xml", "UTF-8");
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        String projectPath = "/Users/admin/Desktop/winsome";//
+
         FileUtil.del(projectPath);
-
-        String groupId = "com.platform";
-        String artifactId = "linaea";
-
         content = content.replace("${groupId}", groupId);
         content = content.replace("${artifactId}", artifactId);
         content = content.replace("${proName}", artifactId);
         FileUtil.writeString(content, projectPath + "/pom.xml", "UTF-8");
 
         gc.setOutputDir(projectPath + "/src/main/java");
-        gc.setAuthor("destiny");
+        gc.setAuthor(author);
         gc.setOpen(false);
         gc.setServiceName("%sService");
         gc.setBaseResultMap(true);
@@ -83,21 +77,17 @@ public class MybatisGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/account?useUnicode=true&useSSL=false&characterEncoding=utf8");
-        // dsc.setSchemaName("public");
+        dsc.setUrl(StrUtil.format("jdbc:mysql://{}?useUnicode=true&useSSL=false&characterEncoding=utf8", url));
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUsername("root");
-        dsc.setPassword("123456");
+        dsc.setUsername(username);
+        dsc.setPassword(password);
         mpg.setDataSource(dsc);
-
-
         // 包配置
         PackageConfig pc = new PackageConfig();
         // pc.setModuleName("com.platform.linaea");
-        // pc.setParent("com.baomidou.ant");
         pc.setParent(groupId + "." + artifactId);
         pc.setController("web");
-        pc.setEntity("entity");
+        pc.setEntity("model.entity");
         pc.setMapper("mapper");
         pc.setService("service");
         pc.setServiceImpl("service.impl");
@@ -108,6 +98,7 @@ public class MybatisGenerator {
             @Override
             public void initMap() {
                 ConfigBuilder config = getConfig();
+                // 设置不同的扩展信息
                 Map<String, String> packageInfo = config.getPackageInfo();
                 packageInfo.put("req", groupId + "." + artifactId + ".domain");
             }
@@ -154,8 +145,6 @@ public class MybatisGenerator {
         templateConfig.setService(source + "/service.java");
         templateConfig.setServiceImpl(source + "/serviceImpl.java");
         templateConfig.setMapper(source + "/mapper.java");
-
-        templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
 
         // 策略配置
@@ -172,10 +161,10 @@ public class MybatisGenerator {
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id");
         // strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        strategy.setInclude("t_order");
+        strategy.setInclude("tb_name", "tb_name2", "tb_name3");
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix("t_");
+        strategy.setTablePrefix("tb_");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         // getObjectMap()
@@ -184,4 +173,19 @@ public class MybatisGenerator {
         String config = FileUtil.readString(property + "/application1.yml", "UTF-8");
         FileUtil.writeString(config, projectPath + "/src/main/resources/application.yml", "UTF-8");
     }
+
+    public static String scanner(String tip) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder help = new StringBuilder();
+        help.append("请输入" + tip + "：");
+        System.out.println(help.toString());
+        if (scanner.hasNext()) {
+            String ipt = scanner.next();
+            if (StringUtils.isNotBlank(ipt)) {
+                return ipt;
+            }
+        }
+        throw new MybatisPlusException("请输入正确的" + tip + "！");
+    }
+
 }
