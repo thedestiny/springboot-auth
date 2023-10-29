@@ -107,6 +107,7 @@ public class MybatisGenerator {
         focList.add(new FileOutConfig(templatePath) {
             @Override
             public String outputFile(TableInfo tableInfo) {
+                modify(tableInfo);
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
                 return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
@@ -158,6 +159,10 @@ public class MybatisGenerator {
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix("tb_");
+        strategy.setEntitySerialVersionUID(true);
+        // 写于父类中的公共字段
+        strategy.setSuperEntityColumns("id", "update_time", "create_time");
+
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         // getObjectMap()
@@ -173,6 +178,19 @@ public class MybatisGenerator {
         String config = FileUtil.readString(property + "/application1.yml", "UTF-8");
         FileUtil.writeString(config, projectPath + "/src/main/resources/application.yml", "UTF-8");
     }
+
+    /**
+     * 修改 table_info 信息
+     * @param tableInfo
+     */
+    public static void modify(TableInfo tableInfo) {
+
+        String tableName = tableInfo.getEntityName();
+        tableInfo.setConvert(true);
+        // ReflectUtil.setFieldValue(, , );
+
+    }
+
 
     public static String scanner(String tip) {
         Scanner scanner = new Scanner(System.in);
