@@ -33,6 +33,7 @@
         <module>order-server</module>
         <module>product-server</module>
         <module>auth-common</module>
+        <module>sandbox-flex</module>
     </modules>
 
 

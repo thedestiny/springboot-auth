@@ -1,0 +1,31 @@
+
+
+
+
+spring:
+  datasource:
+    hikari:
+      connection-test-query: select 1
+      max-lifetime: 180000
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 36000
+      connection-timeout: 50000
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flex_test?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+mybatis-flex:
+  configuration:
+    map-underscore-to-camel-case: true
+    use-column-label: true
+    cache-enabled: false
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.platform.flex.entity
+  executor-type: simple
+
+server:
+  port: 8097
