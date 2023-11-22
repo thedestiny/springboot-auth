@@ -1,6 +1,5 @@
-
-
-
+server:
+  port: 8097
 
 spring:
   datasource:
@@ -12,10 +11,9 @@ spring:
       idle-timeout: 36000
       connection-timeout: 50000
       driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/flex_test?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  profiles:
+    active: dev
+
 
 
 mybatis-flex:
@@ -27,5 +25,9 @@ mybatis-flex:
   type-aliases-package: com.platform.flex.entity
   executor-type: simple
 
-server:
-  port: 8097
+
+logging:
+  level:
+     root: info
+     com.platform.flex: debug
+

@@ -22,12 +22,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan(basePackages = "com.platform.flex.mapper")
 public class FlexApplication {
 
-
     public static void main(String[] args) {
 
         log.info("start product flex ! ");
         SpringApplication.run(FlexApplication.class, args);
 
-
     }
+
+
 }

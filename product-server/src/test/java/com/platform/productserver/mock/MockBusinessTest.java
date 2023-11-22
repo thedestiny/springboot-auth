@@ -82,7 +82,7 @@ public class MockBusinessTest {
         expectedResult.setRoles(Lists.newArrayList("value"));
 
         // mock 静态方法
-        PowerMockito.mockStatic(IdGenUtils.class);
+        // PowervaMockito.mockStatic(IdGenUtils.class);
         PowerMockito.when(IdGenUtils.id()).thenReturn("2222");
         // mock 分布式锁
         RLock mock = mock(RLock.class);

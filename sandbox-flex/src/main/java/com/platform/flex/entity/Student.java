@@ -1,9 +1,7 @@
 package com.platform.flex.entity;
 
-import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.Table;
+import com.mybatisflex.annotation.*;
+import com.mybatisflex.core.mask.Masks;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,17 +24,28 @@ public class Student implements Serializable {
     @Id(keyType = KeyType.Auto)
     private Long id;
 
+    // 数据字段脱敏
+    @ColumnMask(Masks.CHINESE_NAME)
     private String username;
 
     private BigDecimal weight;
 
     private Integer age;
 
+    @ColumnMask(Masks.MOBILE)
+    private String phone;
+
+    @ColumnMask(Masks.ID_CARD_NUMBER)
+    private String idCard;
+
+    private String address;
+
+    private Date birthday;
 
     @Column(value = "create_time", onInsertValue = "now()")
     private Date createTime;
-
-    @Column(ignore = true)
+    // ignore = true,
+    @Column(onUpdateValue = "now()", onInsertValue = "now()")
     private Date updateTime;
 
 
