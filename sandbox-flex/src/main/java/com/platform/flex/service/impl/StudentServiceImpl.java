@@ -1,5 +1,6 @@
 package com.platform.flex.service.impl;
 
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.platform.flex.entity.Student;
 import com.platform.flex.mapper.StudentMapper;
@@ -23,6 +24,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Override
     public Student queryEntityById(Long id) {
 
+        QueryWrapper wrapper = new QueryWrapper();
         Student student = mapper.selectOneById(id);
         log.info("student is {}", student);
         return student;
