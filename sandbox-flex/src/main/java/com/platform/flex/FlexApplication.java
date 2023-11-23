@@ -1,5 +1,10 @@
 package com.platform.flex;
 
+import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.row.Db;
+import com.platform.flex.entity.Student;
+import com.platform.flex.mapper.StudentMapper;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +31,25 @@ public class FlexApplication {
 
         log.info("start product flex ! ");
         SpringApplication.run(FlexApplication.class, args);
+
+
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/account01?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true");
+        dataSource.setUsername("root");
+        dataSource.setPassword("123456");
+
+        MybatisFlexBootstrap.getInstance().setDataSource(dataSource).addMapper(StudentMapper.class)
+                .start();
+
+
+
+
+        //示例1：查询 id=100 条数据
+        // Student student = MybatisFlexBootstrap.getInstance().
+
+//                .execute(StudentMapper.class, mapper ->
+//                        mapper.selectOneByEntityId(100);
+//                );
 
     }
 

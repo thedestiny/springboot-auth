@@ -26,6 +26,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
         QueryWrapper wrapper = new QueryWrapper();
         Student student = mapper.selectOneById(id);
+        // Student student = mapper.select(id);
         log.info("student is {}", student);
         return student;
     }
