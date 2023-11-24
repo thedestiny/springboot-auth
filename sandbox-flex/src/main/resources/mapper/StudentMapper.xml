@@ -19,6 +19,15 @@
 
     <select id="queryStudentPageList" parameterType="com.platform.flex.entity.Student" resultMap="BaseResultMap">
 
+         select *
+         from tb_student
+         <where>
+             <if test="username != null and username !=''  "> username like concat('%', #{username}, '%')</if>
+             <if test="age != null  ">and age &gt;= #{age}</if>
+
+         </where>
+         order by id desc
+
 
     </select>
 

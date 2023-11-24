@@ -9,6 +9,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.platform.flex.dto.StudentDto;
 import com.platform.flex.entity.Student;
+import com.platform.flex.entity.table.AccountTableDef.*;
 import com.platform.flex.entity.table.StudentTableDef.*;
 import com.platform.flex.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.platform.flex.entity.table.StudentTableDef.STUDENT;
+import static com.platform.flex.entity.table.AccountTableDef.ACCOUNT;
 
 /**
  * @Description
@@ -62,17 +64,26 @@ public class IndexController {
         QueryWrapper wrapper = new QueryWrapper();
         // 数据查询
         // wrapper.select(STUDENT.AGE, STUDENT.ADDRESS);
+        // select * from tb_student where (age > 23 and address like "%郑州%") and (id > 0 or id_card in ())
         wrapper.select(STUDENT.ALL_COLUMNS)
                 .from(STUDENT)
                 .where(STUDENT.AGE.ge(23).and(STUDENT.ADDRESS.like("郑州"))).and(STUDENT.ID.ge(0).or(STUDENT.ID_CARD.in(list)))
                 .orderBy(STUDENT.ID.desc());
 
 
-//        wrapper.where();
-//        wrapper.where();
+        QueryWrapper wrapp = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS)
+                .select(STUDENT.ALL_COLUMNS)
+                .from(STUDENT)
+                .innerJoin(ACCOUNT).on(STUDENT.ID.eq(ACCOUNT.ID))
+                .where(STUDENT.ID.ge(1)).orderBy(STUDENT.ID.desc());
 
-        String sql = "insert into tb_account(id, user_id) value (?, ?)";
-        Db.insertBySql(sql,100,"12");
+        Page<StudentDto> page = studentService.pageAs(Page.of(1, 10), wrapp, StudentDto.class);
+        log.info("pages is {}", JSONObject.toJSONString(page, SerializerFeature.PrettyFormat));
+
+
+//        wrapper.where();
+//        wrapper.where();
 
 
         Page<StudentDto> pages = studentService.pageAs(Page.of(1, 10), wrapper, StudentDto.class);
