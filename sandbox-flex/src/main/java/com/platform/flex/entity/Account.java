@@ -21,12 +21,8 @@ public class Account implements Serializable {
 
     @Id(keyType = KeyType.Auto)
     private Long id;
-
-
     private String userId;
-
     private BigDecimal balance;
-
     private Integer status;
 
 

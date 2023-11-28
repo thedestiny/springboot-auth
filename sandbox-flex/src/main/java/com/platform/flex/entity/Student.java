@@ -23,25 +23,24 @@ public class Student implements Serializable {
 
     @Id(keyType = KeyType.Auto)
     private Long id;
-
-    // 数据字段脱敏
+    // 用户姓名 数据字段脱敏
     @ColumnMask(Masks.CHINESE_NAME)
     private String username;
-
+    // 体重
     private BigDecimal weight;
-
+    // 年龄
     private Integer age;
-
+    // 手机号
     @ColumnMask(Masks.MOBILE)
     private String phone;
-
+    // 身份证号
     @ColumnMask(Masks.ID_CARD_NUMBER)
     private String idCard;
-
+    // 地址
     private String address;
-
+    // 生日
     private Date birthday;
-
+    // 创建时间和修改时间
     @Column(value = "create_time", onInsertValue = "now()")
     private Date createTime;
     // ignore = true,

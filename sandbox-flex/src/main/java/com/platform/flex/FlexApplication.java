@@ -42,13 +42,8 @@ public class FlexApplication {
                 .start();
 
 
-
-
-
-
         //示例1：查询 id=100 条数据
-        // Student student = MybatisFlexBootstrap.getInstance().
-
+//         Student student = MybatisFlexBootstrap.getInstance().
 //                .execute(StudentMapper.class, mapper ->
 //                        mapper.selectOneByEntityId(100);
 //                );

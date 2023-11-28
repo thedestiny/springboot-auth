@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.platform.flex.entity.table.StudentTableDef.STUDENT;
 import static com.platform.flex.entity.table.AccountTableDef.ACCOUNT;
 
@@ -50,8 +51,9 @@ public class IndexController {
         student.setUsername("李晓明");
         student.setPhone("13849784423");
         student.setIdCard("420186199512014023");
+        // 数据保存和数据更新
         studentService.save(student);
-
+        // 由于设置了脱敏字段，查询出来的对象是脱敏的
         Student query = studentService.queryEntityById(12L);
         if (ObjectUtil.isNotEmpty(query)) {
             query.setAddress("河南省郑州市中原区");
@@ -60,7 +62,6 @@ public class IndexController {
         }
 
         List<String> list = Lists.newArrayList();
-
         QueryWrapper wrapper = new QueryWrapper();
         // 数据查询
         // wrapper.select(STUDENT.AGE, STUDENT.ADDRESS);
@@ -70,25 +71,35 @@ public class IndexController {
                 .where(STUDENT.AGE.ge(23).and(STUDENT.ADDRESS.like("郑州"))).and(STUDENT.ID.ge(0).or(STUDENT.ID_CARD.in(list)))
                 .orderBy(STUDENT.ID.desc());
 
+        List<StudentDto> dtos = studentService.listAs(wrapper, StudentDto.class);
+        log.info("列表查询数据 {}", JSONObject.toJSONString(dtos));
+        // 单表分页查询
+        Page<StudentDto> pages = studentService.pageAs(Page.of(1, 10), wrapper, StudentDto.class);
+        Page<Student> page1 = studentService.page(Page.of(1, 10), wrapper);
+        log.info("pages is {}", JSONObject.toJSONString(page1, SerializerFeature.PrettyFormat));
 
+        // 数据关联查询
+        // select * from tb_student ts inner join tb_account ta on ta.id = ts.id where ts.id > 1 order by ts.id desc
         QueryWrapper wrapp = QueryWrapper.create()
                 .select(ACCOUNT.ALL_COLUMNS)
                 .select(STUDENT.ALL_COLUMNS)
                 .from(STUDENT)
                 .innerJoin(ACCOUNT).on(STUDENT.ID.eq(ACCOUNT.ID))
                 .where(STUDENT.ID.ge(1)).orderBy(STUDENT.ID.desc());
-
+        // 关联分页查询使用别名的方式
         Page<StudentDto> page = studentService.pageAs(Page.of(1, 10), wrapp, StudentDto.class);
         log.info("pages is {}", JSONObject.toJSONString(page, SerializerFeature.PrettyFormat));
+        // 统计条件
+        QueryWrapper wap = QueryWrapper.create()
+                .select(STUDENT.ALL_COLUMNS,
+                        max(STUDENT.AGE).as("maxAge"),
+                        min(STUDENT.AGE).as("minAge"),
+                        count().as("cnt"),
+                        avg(STUDENT.WEIGHT).as("avgWeight"),
+                        sum(STUDENT.WEIGHT).as("sumWeight")
+                )
+                .from(STUDENT).where(STUDENT.ID.ge(10)).groupBy(STUDENT.ADDRESS);
 
-
-//        wrapper.where();
-//        wrapper.where();
-
-
-        Page<StudentDto> pages = studentService.pageAs(Page.of(1, 10), wrapper, StudentDto.class);
-        Page<Student> page1 = studentService.page(Page.of(1, 10), wrapper);
-        log.info("pages is {}", JSONObject.toJSONString(page1, SerializerFeature.PrettyFormat));
 
         return pages;
     }
