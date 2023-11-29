@@ -5,7 +5,7 @@ package com.platform.flex.mq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
-import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
+import org.apache.rocketmq.spring.annotation.SelectorType;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 
 /**
@@ -22,11 +22,12 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 @Slf4j
 @RocketMQMessageListener(
         consumerGroup = "app-auth-group",
-        topic="app-auth",
-        selectorExpression = "*",
+        topic="app-auth-filter",
+        selectorType = SelectorType.SQL92,
+        selectorExpression = "a between 6 and 9",
         messageModel = MessageModel.CLUSTERING
 )
-public class AppMsgListener implements RocketMQListener<String> {
+public class AppMsgFilterListener implements RocketMQListener<String> {
 
     @Override
     public void onMessage(String message) {

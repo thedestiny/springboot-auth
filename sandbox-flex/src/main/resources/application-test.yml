@@ -11,14 +11,14 @@ rocketmq:
     # 发送同一类消息的设置为同一个group，保证唯一
     group: springboot_producer_group
     # 发送消息超时时间，默认3000
-    sendMessageTimeout: 10000
-    # 发送消息失败重试次数，默认2
-    retryTimesWhenSendFailed: 2
-    # 异步消息重试此处，默认2
-    retryTimesWhenSendAsyncFailed: 2
+    send-message-timeout: 10000
+    # 发送同步消息失败重试次数，默认2
+    retry-times-when-send-failed: 2
+    # 发送异步消息重试次数，默认2
+    retry-times-when-send-async-failed: 2
     # 消息最大长度，默认1024 * 1024 * 4(默认4M)
-    maxMessageSize: 4096
+    max-message-size: 4096
     # 压缩消息阈值，默认4k(1024 * 4)
-    compressMessageBodyThreshold: 4096
+    compress-message-body-threshold: 4096
     # 是否在内部发送失败时重试另一个broker，默认false
-    retryNextServer: false
+    retry-next-server: false
