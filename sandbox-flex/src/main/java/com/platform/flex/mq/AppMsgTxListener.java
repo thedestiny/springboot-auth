@@ -22,7 +22,6 @@ import org.springframework.messaging.MessageHeaders;
 @RocketMQTransactionListener
 public class AppMsgTxListener implements RocketMQLocalTransactionListener {
 
-
     @Override
     public RocketMQLocalTransactionState executeLocalTransaction(Message msg, Object arg) {
         MessageHeaders headers = msg.getHeaders();
