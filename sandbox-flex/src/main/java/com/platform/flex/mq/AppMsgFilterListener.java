@@ -21,7 +21,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
  */
 @Slf4j
 @RocketMQMessageListener(
-        consumerGroup = "app-auth-group",
+        consumerGroup = "springboot_consumer_group",
         topic="app-auth-filter",
         selectorType = SelectorType.SQL92,
         selectorExpression = "a between 6 and 9",

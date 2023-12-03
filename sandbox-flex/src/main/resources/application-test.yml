@@ -1,24 +1,4 @@
 # https://mp.weixin.qq.com/s/iRCP6hEiKOLEp8QRm_OsWQ
 # Message message = new Message();
 #        message.setDelayTimeLevel(1);
-rocketmq:
-  consumer:
-    group: springboot_consumer_group
-    # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
-    pull-batch-size: 10
-  name-server: localhost:9876
-  producer:
-    # 发送同一类消息的设置为同一个group，保证唯一
-    group: springboot_producer_group
-    # 发送消息超时时间，默认3000
-    send-message-timeout: 10000
-    # 发送同步消息失败重试次数，默认2
-    retry-times-when-send-failed: 2
-    # 发送异步消息重试次数，默认2
-    retry-times-when-send-async-failed: 2
-    # 消息最大长度，默认1024 * 1024 * 4(默认4M)
-    max-message-size: 4096
-    # 压缩消息阈值，默认4k(1024 * 4)
-    compress-message-body-threshold: 4096
-    # 是否在内部发送失败时重试另一个broker，默认false
-    retry-next-server: false
+

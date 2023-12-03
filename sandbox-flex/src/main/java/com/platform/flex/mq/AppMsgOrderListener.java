@@ -22,8 +22,8 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
  */
 @Slf4j
 @RocketMQMessageListener(
-        consumerGroup = "app-auth-group",
-        topic="app-auth-filter",
+        consumerGroup = "springboot_consumer_group",
+        topic="app-auth-order",
         selectorType = SelectorType.TAG,
          consumeThreadMax = 1,
         messageModel = MessageModel.CLUSTERING

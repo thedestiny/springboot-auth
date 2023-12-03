@@ -7,6 +7,8 @@ import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * https://blog.csdn.net/m0_49183244/article/details/129169326
@@ -21,11 +23,12 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
  */
 @Slf4j
 @RocketMQMessageListener(
-        consumerGroup = "app-auth-group",
-        topic="app-auth",
+        consumerGroup = "springboot_consumer_group",
+        topic="order-notice",
         selectorExpression = "*",
         messageModel = MessageModel.CLUSTERING
 )
+@Component
 public class AppMsgListener implements RocketMQListener<String> {
 
     @Override
