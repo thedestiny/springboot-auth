@@ -7,6 +7,7 @@ import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.annotation.SelectorType;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.stereotype.Component;
 
 /**
  * https://blog.csdn.net/m0_49183244/article/details/129169326
@@ -28,10 +29,11 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
          consumeThreadMax = 1,
         messageModel = MessageModel.CLUSTERING
 )
+@Component
 public class AppMsgOrderListener implements RocketMQListener<String> {
 
     @Override
     public void onMessage(String message) {
-        log.info("message {} ", message);
+        log.info("consume message {} ", message);
     }
 }

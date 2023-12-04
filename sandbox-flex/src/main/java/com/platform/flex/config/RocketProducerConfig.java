@@ -45,7 +45,7 @@ public class RocketProducerConfig {
     public static void main(String[] args) throws Exception {
 
 
-        createProducer();
+       //  createProducer();
 
     }
 

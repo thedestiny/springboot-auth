@@ -73,3 +73,21 @@ consumer 是多线程并发消费同一个 messagequeue 即使消息是顺序到
 
 
 ```
+
+
+
+```
+
+
+{
+    "id": 23456,
+    "username": "小明",
+    "address": "河北省",
+    "userId":"33333",
+    "idCard":"410222222222222222",
+    "balance":345.2,
+    "status":3,
+    "createTime":"2023-12-03 23:12:23"
+}
+
+```

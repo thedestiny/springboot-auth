@@ -3,6 +3,7 @@ package com.platform.flex.mq;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.platform.flex.dto.StudentDto;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
@@ -36,6 +37,12 @@ public class MsgProvider {
             int idx = key.hashCode() % mqs.size();
             return mqs.get(idx);
         }));
+    }
+
+    public void sendOrderMessage(StudentDto msg){
+
+        // 8 顺序消息， 同步发送消息
+        SendResult orderId1 = template.syncSendOrderly("app-auth-order", msg, String.valueOf(msg.getId()));
     }
 
 

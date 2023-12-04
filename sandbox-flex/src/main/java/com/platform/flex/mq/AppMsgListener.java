@@ -1,13 +1,10 @@
 package com.platform.flex.mq;
 
-// import org.apache.rocketmq.client.consumer.listener.MessageListener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.MessageModel;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
-import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Component;
         selectorExpression = "*",
         messageModel = MessageModel.CLUSTERING
 )
-@Component
 public class AppMsgListener implements RocketMQListener<String> {
 
     @Override
