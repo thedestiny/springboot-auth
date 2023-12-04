@@ -3,15 +3,17 @@ package com.platform.flex.mq;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.platform.flex.dto.OrderDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -21,14 +23,15 @@ import java.util.Map;
  * @Date 2023-11-28 4:19 PM
  */
 
-@Configuration
+@Slf4j
+@Component
 public class MsgProvider {
 
 
     @Autowired
     private RocketMQTemplate template;
 
-    public void sendMsgConfig(){
+    public void sendMsgConfig() {
 
         template.setCharset("UTF-8");
         // 配置 MessageQueueSelector
@@ -38,12 +41,31 @@ public class MsgProvider {
         }));
     }
 
-
-    public void sendTxMessage(){
-
+    /**
+     * 事务消息
+     */
+    public void sendTxMessage(OrderDto dto) {
         String msg = "事务消息";
-        Message<String> builder = MessageBuilder.withPayload(msg).setHeader(RocketMQHeaders.KEYS,3 ).build();
+        Message<String> builder = MessageBuilder.withPayload(JSONObject.toJSONString(dto)).setHeader(RocketMQHeaders.KEYS, 3).build();
         TransactionSendResult result = template.sendMessageInTransaction("tx-message", builder, "ext-params");
+
+
+    }
+
+    /**
+     * 同步发送顺序消息
+     */
+    public void sendOrderMessage(OrderDto dto) {
+        String topic = "order-order";
+
+        // 配置 MessageQueueSelector
+        template.setMessageQueueSelector(((mqs, msg, key) -> {
+            int idx = key.hashCode() % mqs.size();
+            log.info("message {} idx {}", msg, idx);
+            return mqs.get(idx);
+        }));
+        SendResult result = template.syncSendOrderly(topic, JSONObject.toJSONString(dto), dto.getOrderId());
+        log.info("order message send {}", JSONObject.toJSONString(result));
     }
 
     /**

@@ -14,14 +14,15 @@ spring:
   profiles:
     active: dev
 
+# rocketmq 配置信息
 rocketmq:
-  name-server: localhost:9876
+  # name-server: localhost:9876
+  name-server: 192.168.0.102:9876
   consumer:
     group: springboot_consumer_group
     # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
     pull-batch-size: 10
     message-model: CLUSTERING
-
   producer:
     # 发送同一类消息的设置为同一个group，保证唯一
     group: springboot_producer_group
