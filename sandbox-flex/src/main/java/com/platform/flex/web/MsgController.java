@@ -1,5 +1,6 @@
 package com.platform.flex.web;
 
+import com.platform.flex.dto.OrderDto;
 import com.platform.flex.dto.StudentDto;
 import com.platform.flex.mq.MsgProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class MsgController {
     private MsgProvider msgProvider;
 
 
+    // localhost:8097/api/msg
     @GetMapping(value = "msg")
     public String msg() {
 
@@ -36,5 +38,22 @@ public class MsgController {
         return "success";
     }
 
+    /**
+     * 顺序消息
+     * localhost:8097/api/order/msg
+     */
+    @PostMapping(value = "order/msg")
+    public String orderMsg(@RequestBody OrderDto dto) {
+        msgProvider.sendOrderMessage(dto);
+        return "success";
+    }
 
+    /**
+     * 事务消息
+     */
+    @PostMapping(value = "tx/msg")
+    public String txMsg(@RequestBody OrderDto dto) {
+        msgProvider.sendTxMessage(dto);
+        return "success";
+    }
 }

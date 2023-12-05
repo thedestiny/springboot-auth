@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
  * 默认为集群消息，广播消息所有的消费者都能收到，一般用于配置的广播
  */
 @Slf4j
+@Component
 @RocketMQMessageListener(
         consumerGroup = "springboot_consumer_group",
         topic="order-notice",

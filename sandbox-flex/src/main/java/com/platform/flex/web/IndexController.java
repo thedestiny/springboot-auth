@@ -6,11 +6,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.row.Db;
 import com.platform.flex.dto.StudentDto;
 import com.platform.flex.entity.Student;
-import com.platform.flex.entity.table.AccountTableDef.*;
-import com.platform.flex.entity.table.StudentTableDef.*;
 import com.platform.flex.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
-import static com.platform.flex.entity.table.StudentTableDef.STUDENT;
 import static com.platform.flex.entity.table.AccountTableDef.ACCOUNT;
+import static com.platform.flex.entity.table.StudentTableDef.STUDENT;
 
 /**
  * @Description
