@@ -3,7 +3,6 @@ package com.platform.flex.config;
 import com.platform.flex.utils.IdGenutils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -11,12 +10,9 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
-import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.springframework.context.annotation.Configuration;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * https://mp.weixin.qq.com/s?__biz=Mzg5MDczNDI0Nw==&mid=2247506546&idx=1&sn=88c957a00d0d21147a76611f46f497db&chksm=cfda89baf8ad00ac259d309719997b6be4839f25c4600bc32d8c235dd9dd2e82cfab03aac27d&cur_album_id=3184160945112154113&scene=189#wechat_redirect
