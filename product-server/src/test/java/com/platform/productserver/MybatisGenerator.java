@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -168,18 +169,19 @@ public class MybatisGenerator {
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         // getObjectMap()
 
-        String content = FileUtil.readString(property + "/pom1.xml", "UTF-8");
+        String content = FileUtil.readString(property + "/pom1.xml", Charset.forName("UTF-8"));
         FileUtil.del(projectPath);
         mpg.execute();
 
         content = content.replace("${groupId}", groupId);
         content = content.replace("${artifactId}", artifactId);
         content = content.replace("${proName}", artifactId);
+        // 添加 pom git readme 以及配置文件
         FileUtil.writeString(content, projectPath + "/pom.xml", "UTF-8");
-        FileUtil.writeString(".idea\ntarget\n*.iml\n*.log", projectPath + "/.gitignore", "UTF-8");
-
-        String config = FileUtil.readString(property + "/application1.yml", "UTF-8");
-        FileUtil.writeString(config, projectPath + "/src/main/resources/application.yml", "UTF-8");
+        FileUtil.writeString(".idea\ntarget\n*.iml\n*.log", projectPath + "/.gitignore",  Charset.forName("UTF-8"));
+        FileUtil.writeString("#### reademe", projectPath + "/README.md", "UTF-8");
+        String config = FileUtil.readString(property + "/application1.yml",  Charset.forName("UTF-8"));
+        FileUtil.writeString(config, projectPath + "/src/main/resources/application.yml",  Charset.forName("UTF-8"));
     }
 
     /**
