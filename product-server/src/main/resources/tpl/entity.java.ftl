@@ -5,6 +5,7 @@ package ${package.Entity};
 import ${pkg};
     </#if>
 </#list>
+import com.baomidou.mybatisplus.annotation.TableField;
 
 <#if swagger2>
 import io.swagger.annotations.ApiModel;

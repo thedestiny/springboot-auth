@@ -34,15 +34,15 @@ public class MybatisGenerator {
     public static void main(String[] args) {
 
         // 项目生成地址
-        String projectPath = "/Users/admin/Desktop/trade01";
+        String projectPath = "/Users/admin/Desktop/trade03";
         // groupId 和 artifactId
-        String groupId = "com.longem";
-        String artifactId = "trade";
+        String groupId = "com.platform";
+        String artifactId = "book";
         String author = "kaiyang";
 
-        String url = "localhost:3306/database";
-        String username = "username";
-        String password = "password";
+        String url = "localhost:3306/ershoushu";
+        String username = "root";
+        String password = "123456";
 
 
         // 代码生成器
@@ -80,7 +80,7 @@ public class MybatisGenerator {
         // pc.setModuleName("com.platform.linaea");
         pc.setParent(groupId + "." + artifactId);
         pc.setController("web");
-        pc.setEntity("model.entity");
+        pc.setEntity("entity");
         pc.setMapper("mapper");
         pc.setService("service");
         pc.setServiceImpl("service.impl");
@@ -93,7 +93,7 @@ public class MybatisGenerator {
                 ConfigBuilder config = getConfig();
                 // 设置不同的扩展信息
                 Map<String, String> packageInfo = config.getPackageInfo();
-                packageInfo.put("req", groupId + "." + artifactId + ".domain");
+                packageInfo.put("req", groupId + "." + artifactId + ".dto");
             }
         };
 
@@ -110,7 +110,7 @@ public class MybatisGenerator {
                 modify(tableInfo);
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
                 return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
-                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+                        + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
 
@@ -119,7 +119,7 @@ public class MybatisGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
                 return projectPath + "/src/main/java/" + pc.getParent().replace(".", "/")
-                        + "/domain/" + tableInfo.getEntityName() + "Req" + StringPool.DOT_JAVA;
+                        + "/dto/" + tableInfo.getEntityName() + "Req" + StringPool.DOT_JAVA;
             }
         });
 
@@ -139,41 +139,44 @@ public class MybatisGenerator {
         templateConfig.setService(source + "/service.java");
         templateConfig.setServiceImpl(source + "/serviceImpl.java");
         templateConfig.setMapper(source + "/mapper.java");
+        templateConfig.setXml(source + "/mapper.xml");
         mpg.setTemplate(templateConfig);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        strategy.setEntityLombokModel(true);
+        strategy.setRestControllerStyle(true);
         // strategy.setSuperEntityClass("你自己的父类实体,没有就不用设置!");
         // strategy.setSuperEntityClass("com.platform.linaea.base.BaseEntity");
         // strategy.setSuperControllerClass("com.platform.linaea.base.BaseController");
-        strategy.setEntityLombokModel(true);
-        strategy.setRestControllerStyle(true);
+
         // 公共父类
         // strategy.setSuperControllerClass("你自己的父类控制器,没有就不用设置!");
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id");
         // strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        strategy.setInclude("tb_name", "tb_name2", "tb_name3");
+        // strategy.setInclude("tb_name", "tb_name2", "tb_name3");
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix("tb_");
+        // strategy.setTablePrefix("tb_");
         strategy.setEntitySerialVersionUID(true);
         // 写于父类中的公共字段
-        strategy.setSuperEntityColumns("id", "update_time", "create_time");
-
+        // strategy.setSuperEntityColumns("id", "update_time", "create_time");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         // getObjectMap()
-        mpg.execute();
 
         String content = FileUtil.readString(property + "/pom1.xml", "UTF-8");
         FileUtil.del(projectPath);
+        mpg.execute();
+
         content = content.replace("${groupId}", groupId);
         content = content.replace("${artifactId}", artifactId);
         content = content.replace("${proName}", artifactId);
         FileUtil.writeString(content, projectPath + "/pom.xml", "UTF-8");
+        FileUtil.writeString(".idea\ntarget\n*.iml\n*.log", projectPath + "/.gitignore", "UTF-8");
 
         String config = FileUtil.readString(property + "/application1.yml", "UTF-8");
         FileUtil.writeString(config, projectPath + "/src/main/resources/application.yml", "UTF-8");
@@ -181,6 +184,7 @@ public class MybatisGenerator {
 
     /**
      * 修改 table_info 信息
+     *
      * @param tableInfo
      */
     public static void modify(TableInfo tableInfo) {
