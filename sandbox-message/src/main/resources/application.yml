@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: boot-rabbitmq
+  profiles:
+    active: dev
+  rabbitmq:
+    addresses: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: boot-app
+    # 确认消息已经发送到交换机 exchange
+    # publisher-confirms: true
+    # 确认消息已经发送到队列 queue
+    publisher-returns: true
+
