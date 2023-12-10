@@ -4,13 +4,17 @@ spring:
   profiles:
     active: dev
   rabbitmq:
-    addresses: localhost
-    port: 5672
+    # addresses: localhost http://192.168.0.102:15674 http://192.168.0.102:15672 guest/guest
+    addresses: 192.168.0.102:5678
+    # port: 5672
+    host: 192.168.0.102
+    port: 5678
     username: guest
     password: guest
-    virtual-host: boot-app
+    virtual-host: bootapp
     # 确认消息已经发送到交换机 exchange
     # publisher-confirms: true
     # 确认消息已经发送到队列 queue
-    publisher-returns: true
+    # publisher-returns: true
+
 

@@ -34,6 +34,7 @@
         <module>product-server</module>
         <module>auth-common</module>
         <module>sandbox-flex</module>
+        <module>sandbox-message</module>
     </modules>
 
 

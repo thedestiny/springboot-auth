@@ -21,8 +21,6 @@ public class MqReceiver implements ChannelAwareMessageListener {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         String queue = message.getMessageProperties().getConsumerQueue();
         log.info("queue {} tag {} msg {}", queue, deliveryTag, new String(message.getBody()));
-
-
     }
 
 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RabbitListener(queues = "")
+@RabbitListener(queues = "fanout_queue_a")
 public class AppRabbitmqListener {
 
 
@@ -22,16 +22,14 @@ public class AppRabbitmqListener {
     public void process(Message message, Channel channel) throws Exception {
 
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
-
         try {
             log.info("rabbitmq consume msg {}", message);
-
             // multiple true:将一次性ack所有小于deliveryTag的消息。
             channel.basicAck(deliveryTag, true);
-            channel.basicReject(deliveryTag, true);
+            //channel.basicReject(deliveryTag, true);
         } catch (Exception e) {
             log.error("error information  {}", e.getMessage(), e);
-            channel.basicNack(deliveryTag, true, true);
+            // channel.basicNack(deliveryTag, true, true);
         }
 
 
