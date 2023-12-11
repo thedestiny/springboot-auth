@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
         consumeThreadMax = 20,
         messageModel = MessageModel.CLUSTERING
 )
-@Component
 public class AppMsgOrderListener implements RocketMQListener<String> {
 
     @Override

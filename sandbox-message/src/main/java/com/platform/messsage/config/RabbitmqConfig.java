@@ -27,49 +27,36 @@ public class RabbitmqConfig {
         // autoDelete:是否自动删除，当没有生产者或者消费者使用此队列，该队列会自动删除。
         return new Queue(AppConstant.DIRECT_QUEUE, true, false, false);
     }
-
     @Bean
     public DirectExchange directExchange() {
-        // durable
-        // autoDelete
+        // durable autoDelete
         return new DirectExchange(AppConstant.DIRECT_EXCHANGE, true, false);
     }
-
     @Bean
     public Binding directBinding() {
         // 根据路由键绑定队列和交换机
         return BindingBuilder.bind(directQueue()).to(directExchange()).with(AppConstant.DIRECT_ROUTE_KEY);
     }
-
     // topic 模式
     @Bean
-    public Queue topicQueueMall() {
-        return new Queue(AppConstant.TOPIC_QUEUE_MALL);
-    }
+    public Queue topicQueueMall() { return new Queue(AppConstant.TOPIC_QUEUE_MALL); }
     @Bean
-    public Queue topicQueuePhone() {
-        return new Queue(AppConstant.TOPIC_QUEUE_PHONE);
-    }
-
+    public Queue topicQueuePhone() { return new Queue(AppConstant.TOPIC_QUEUE_PHONE); }
     @Bean
     public TopicExchange topicExchange() {
         return new TopicExchange(AppConstant.TOPIC_EXCHANGE, true, false);
     }
-
     @Bean
     public Binding topicBindingAll() {
         // 根据路由键绑定队列和交换机
         return BindingBuilder.bind(topicQueueMall()).to(topicExchange()).with(AppConstant.TOPIC_QUEUE_ALL);
     }
-
     @Bean
     public Binding topicBindingPhone() {
         // 根据路由键绑定队列和交换机
         return BindingBuilder.bind(topicQueuePhone()).to(topicExchange()).with(AppConstant.TOPIC_QUEUE_PHONE);
     }
-
-    // fanout 模式
-    // 扇型交换机, 不需要配置路由键,配置也不起作用
+    // fanout 模式 扇型交换机, 不需要配置路由键,配置也不起作用
     @Bean
     public Queue fanoutQueueA() {
         return new Queue(AppConstant.FANOUT_QUEUE_A);
@@ -78,7 +65,6 @@ public class RabbitmqConfig {
     public Queue fanoutQueueB() {
         return new Queue(AppConstant.FANOUT_QUEUE_B);
     }
-
     @Bean
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange(AppConstant.FANOUT_EXCHANGE, true, false);

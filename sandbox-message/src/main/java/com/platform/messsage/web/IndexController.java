@@ -83,11 +83,7 @@ public class IndexController {
             // fanout
             sendMessage(AppConstant.FANOUT_EXCHANGE, null, msg, "fanout 消息");
         }
-
-
         rabbitTemplate.convertAndSend("app.queue", JSONObject.toJSONString(msg));
-
-
         return "success";
     }
 

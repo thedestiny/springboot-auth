@@ -33,7 +33,7 @@ public class AppConsumer {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
-
+    // 使用 message channel 方式接收消息，进行参数转换
     @RabbitHandler
     @RabbitListener(queues = "app.queue")
     public void process(Message message, Channel channel) throws Exception {
@@ -51,7 +51,7 @@ public class AppConsumer {
         }
     }
 
-
+    // 直接使用对象来接收
     @RabbitHandler
     @RabbitListener(queues = AppConstant.DIRECT_QUEUE)
     public void processDirect(MsgDto dto) throws Exception {
