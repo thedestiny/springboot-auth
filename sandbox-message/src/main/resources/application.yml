@@ -18,6 +18,12 @@ spring:
     # publisher-returns: true
     publisher-confirm-type: correlated
     publisher-returns: true
-
+    template:
+      retry:
+        initial-interval: 1000ms
+        enabled: true
+        multiplier: 3
+        max-attempts: 5
+        max-interval: 3000ms
 
 
