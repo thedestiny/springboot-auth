@@ -5,10 +5,10 @@ spring:
     active: dev
   rabbitmq:
     # addresses: localhost http://192.168.0.102:15674 http://192.168.0.102:15672 guest/guest
-    addresses: 192.168.0.102:5678
+    addresses: localhost:5678
     # port: 5672
-    host: 192.168.0.102
-    port: 5678
+    # host: 192.168.0.102
+    # port: 5678
     username: guest
     password: guest
     virtual-host: bootapp
@@ -16,5 +16,8 @@ spring:
     # publisher-confirms: true
     # 确认消息已经发送到队列 queue
     # publisher-returns: true
+    publisher-confirm-type: correlated
+    publisher-returns: true
+
 
 

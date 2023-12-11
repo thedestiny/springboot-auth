@@ -36,6 +36,10 @@ public class IndexController {
     @Autowired
     private AppSendMsg sendMsg;
 
+    /**
+     * localhost:8080/api/home
+     * 消息发送
+     */
     @GetMapping(value = "home")
     public String sendMsg() {
 

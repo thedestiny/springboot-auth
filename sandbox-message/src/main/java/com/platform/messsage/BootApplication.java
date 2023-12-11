@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @Description
+ * @Description 消息启动类
  * @Date 2023-12-08 11:04 AM
  */
 

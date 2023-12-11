@@ -20,6 +20,4 @@ public class StudentReq extends Page implements Serializable {
     private String username;
 
 
-
-
 }

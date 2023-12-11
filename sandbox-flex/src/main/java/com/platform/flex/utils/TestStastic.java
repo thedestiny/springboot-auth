@@ -11,9 +11,9 @@ public class TestStastic {
 
     public void test(Student student) {
 
-        AppUtils.newApp(student.getUsername(), student.getAge());
-
-        System.out.println("ss");
+//        AppUtils.newApp(student.getUsername(), student.getAge());
+//
+//        System.out.println("ss");
 
     }
 }
