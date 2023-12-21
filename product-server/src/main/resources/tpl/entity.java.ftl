@@ -4,8 +4,13 @@ package ${package.Entity};
     <#if !pkg?contains('baomidou') >
 import ${pkg};
     </#if>
+    <#if pkg?contains('baomidou') && mybatisPlusFlag >
+        import ${pkg};
+    </#if>
 </#list>
+<#if mybatisPlusFlag>
 import com.baomidou.mybatisplus.annotation.TableField;
+</#if>
 
 <#if swagger2>
 import io.swagger.annotations.ApiModel;
@@ -18,7 +23,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
     </#if>
 </#if>
-
 /**
  * ${table.comment!}
  * @author ${author}
@@ -38,6 +42,9 @@ import lombok.experimental.Accessors;
 <#if swagger2>
 @ApiModel(value="${entity}对象", description="${table.comment!}")
 </#if>
+<#if table.convert && mybatisPlusFlag >
+@TableName("${table.name}")
+</#if>
 <#if superEntityClass??>
 public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
 <#elseif activeRecord>
@@ -45,7 +52,6 @@ public class ${entity} extends Model<${entity}> {
 <#else>
 public class ${entity} implements Serializable {
 </#if>
-
 <#if entitySerialVersionUID>
     private static final long serialVersionUID = 1L;
 </#if>
@@ -54,21 +60,25 @@ public class ${entity} implements Serializable {
     <#if field.keyFlag>
         <#assign keyPropertyName="${field.propertyName}"/>
     </#if>
-
     <#if field.comment!?length gt 0>
         <#if swagger2>
     @ApiModelProperty(value = "${field.comment}")
         <#else>
+
     /**
      * ${field.comment}
      */
         </#if>
     </#if>
+    <#if mybatisPlusFlag>
     <#if field.keyFlag>
         <#-- 主键 -->
         <#if field.keyIdentityFlag>
+        @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
         <#elseif idType??>
+        @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
         <#elseif field.convert>
+        @TableId("${field.annotationColumnName}")
         </#if>
         <#-- 普通字段 -->
     <#elseif field.fill??>
@@ -89,7 +99,9 @@ public class ${entity} implements Serializable {
     <#if (logicDeleteFieldName!"") == field.name>
     @TableLogic
     </#if>
+    </#if>
     private ${field.propertyType} ${field.propertyName};
+
 </#list>
 <#------------  END 字段循环遍历  ---------->
 

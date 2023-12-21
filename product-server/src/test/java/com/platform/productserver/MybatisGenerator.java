@@ -1,6 +1,8 @@
 package com.platform.productserver;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ReferenceUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
@@ -16,11 +18,9 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * 模板项目生成内容 mpg
@@ -63,6 +63,8 @@ public class MybatisGenerator {
         gc.setActiveRecord(false);
         gc.setEnableCache(false);
         gc.setSwagger2(false);
+        gc.setKotlin(false);
+
         // 设置时间类型 为 Date
         gc.setDateType(DateType.ONLY_DATE);
 
@@ -81,11 +83,17 @@ public class MybatisGenerator {
         // pc.setModuleName("com.platform.linaea");
         pc.setParent(groupId + "." + artifactId);
         pc.setController("web");
-        pc.setEntity("entity");
+        pc.setEntity("entity.order");
         pc.setMapper("mapper");
         pc.setService("service");
         pc.setServiceImpl("service.impl");
         mpg.setPackageInfo(pc);
+
+        AppEngine engine = new AppEngine();
+        Map<String, Object> parameters = new HashMap<>();
+        // 是否使用 mybatis-plus
+        parameters.put("mybatisPlusFlag", false);
+        engine.setParameters(parameters);
 
         // 自定义配置
         InjectionConfig cfg = new InjectionConfig() {
@@ -161,12 +169,12 @@ public class MybatisGenerator {
         // strategy.setInclude("tb_name", "tb_name2", "tb_name3");
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
-        // strategy.setTablePrefix("tb_");
+        strategy.setTablePrefix("t_","lfb_");
         strategy.setEntitySerialVersionUID(true);
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id", "update_time", "create_time");
         mpg.setStrategy(strategy);
-        mpg.setTemplateEngine(new FreemarkerTemplateEngine());
+        mpg.setTemplateEngine(engine);
         // getObjectMap()
 
         String content = FileUtil.readString(property + "/pom1.xml", Charset.forName("UTF-8"));

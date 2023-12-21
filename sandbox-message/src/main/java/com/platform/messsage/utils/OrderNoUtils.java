@@ -1,4 +1,4 @@
-package com.platform.messsage;
+package com.platform.messsage.utils;
 
 import cn.hutool.core.lang.Snowflake;
 

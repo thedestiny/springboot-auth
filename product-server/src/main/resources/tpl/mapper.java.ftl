@@ -1,8 +1,11 @@
 package ${package.Mapper};
 
 import ${package.Entity}.${entity};
-<#--import com.baomidou.mybatisplus.core.mapper.BaseMapper;-->
+<#if mybatisPlusFlag>
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+</#if>
+<#--import com.baomidou.mybatisplus.core.mapper.BaseMapper;-->
+
 import java.util.List;
 /**
  * ${table.comment!} Mapper 接口
@@ -13,7 +16,7 @@ import java.util.List;
 interface ${table.mapperName} : ${superMapperClass}<${entity}>
 <#else>
 <#--public interface ${table.mapperName} {-->
-public interface ${table.mapperName} extends BaseMapper<${table.entityName}> {
+public interface ${table.mapperName} <#if mybatisPlusFlag > extends BaseMapper<${table.entityName}> </#if> {
 
    /**
      * 批量插入
