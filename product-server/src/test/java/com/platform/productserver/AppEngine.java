@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import java.util.Map;
 
 /**
+ * 模板生成器，用于添加全局变量
  * @Description
  * @Author kaiyang
  * @Date 2023-12-19 5:26 下午
