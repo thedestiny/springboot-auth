@@ -169,7 +169,7 @@ public class MybatisGenerator {
         // strategy.setInclude("tb_name", "tb_name2", "tb_name3");
         // strategy.setSuperEntityColumns("create_time", "update_time", "id");
         strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix("t_","lfb_");
+        strategy.setTablePrefix("lfb_","t_platform_");
         strategy.setEntitySerialVersionUID(true);
         // 写于父类中的公共字段
         // strategy.setSuperEntityColumns("id", "update_time", "create_time");
