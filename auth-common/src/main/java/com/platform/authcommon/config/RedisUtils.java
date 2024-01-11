@@ -7,8 +7,10 @@ import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +30,9 @@ public class RedisUtils {
     @Autowired
     private RedisTemplate<String, Object> cacheRedis;
 
+    @Lazy
     @Autowired
+    @Qualifier("redisClient")
     private RedissonClient redissonClient;
 
     @Value("${app.prefix:app}")

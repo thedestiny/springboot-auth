@@ -1,0 +1,43 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active: dev
+  application:
+    name: stock-server
+  # 数据库连接和数据库连接池配置
+  datasource:
+    hikari:
+      connection-test-query: select 1
+      max-lifetime: 180000
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 36000
+      connection-timeout: 50000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://152.136.33.103:5306/treasure?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
+    username: destiny
+    password: Myroot123!
+
+#    url: url
+#    username: username
+#    password: password
+
+# mybatis-plus 配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.platform.entity
+  global-config:
+    db-config:
+      id-type: assign_id
+  configuration:
+    map-underscore-to-camel-case: true
+
+# 日志记录
+logging:
+  level:
+    com.platform: trace
+
+server:
+  port: 9897

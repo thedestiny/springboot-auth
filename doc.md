@@ -20,3 +20,13 @@ mybatis-flex orm 框架实践
 
 
 ```
+
+
+##### 5 sandbox-stock
+
+```mysql
+
+select id, name, amount, current, eps, float_market_capital,pb_ttm, pe_ttm, percent, high_year, low_year, dividend_yield, update_time  
+from tb_stock_info where name in ("中国银行","建设银行","工商银行","农业银行")
+
+```

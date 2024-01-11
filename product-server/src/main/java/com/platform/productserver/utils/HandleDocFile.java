@@ -19,7 +19,7 @@ public class HandleDocFile {
     public static void main(String[] args) {
 
 
-        File[] files = FileUtil.ls("/pro_path");
+        File[] files = FileUtil.ls("D:\\231224\\lottery-app-domain\\src\\main\\java\\com\\lottery\\app");
 
         for (File file : files) {
             handleFile(file);

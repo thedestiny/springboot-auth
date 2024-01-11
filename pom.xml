@@ -36,6 +36,7 @@
         <module>auth-common</module>
         <module>sandbox-flex</module>
         <module>sandbox-message</module>
+        <module>sandbox-stock</module>
 
     </modules>
 

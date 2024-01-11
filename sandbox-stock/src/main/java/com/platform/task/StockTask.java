@@ -1,13 +1,12 @@
-package com.platform.productserver.task;
+package com.platform.task;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.platform.productserver.entity.StockInfo;
-import com.platform.productserver.mapper.StockInfoMapper;
-import com.platform.productserver.service.StockService;
-import com.platform.productserver.stock.SnowStockUtils;
+import com.platform.entity.StockInfo;
+import com.platform.service.StockService;
+import com.platform.utils.SnowStockUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,7 +32,7 @@ public class StockTask {
      * 沪深股市一览表，每页90条，一共 57页数据
      * https://xueqiu.com/hq#exchange=CN&firstName=1&secondName=1_0
      */
-    @Scheduled(cron = "20 17 * * * ?")
+    @Scheduled(cron = "20 22 * * * ?")
     public void task() {
         log.info("start task !");
         Integer total = 0;

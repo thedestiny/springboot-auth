@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.mapper.FundInfoMapper">
+
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.entity.FundInfo">
+        <id column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="week" property="week" />
+        <result column="month" property="month" />
+        <result column="month3" property="month3" />
+        <result column="half" property="half" />
+        <result column="year" property="year" />
+        <result column="since" property="since" />
+        <result column="type" property="type" />
+        <result column="fund_type" property="fundType" />
+        <result column="manager" property="manager" />
+        <result column="company" property="company" />
+        <result column="issue" property="issue" />
+        <result column="baseline" property="baseline" />
+        <result column="tracking" property="tracking" />
+        <result column="fund_size" property="fundSize" />
+        <result column="share_size" property="shareSize" />
+        <result column="update_date" property="updateDate" />
+        <result column="fee" property="fee" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        code, name, week, month, month3, half, year, since, type, fund_type, manager, company,
+        issue, baseline, tracking, fund_size, share_size, update_date, fee
+    </sql>
+
+
+    <update id="saveFundInfo" parameterType="com.platform.entity.FundInfo">
+
+        INSERT INTO `tb_fund_info`(`code`, `name`, `week`, `month`, `month3`, `half`, `year`, `since`, `type`, `fund_type`,
+                                   `manager`, `company`, `issue`, `baseline`, `tracking`, `fund_size`,
+                                   `share_size`, `update_date`, `fee`, `buy_fee`, `sell_fee`)
+                                   VALUES (#{code}, #{name}, #{week}, #{month}, #{month3}, #{half}, #{year}, #{since}, #{type}, #{fundType},
+                                           #{manager}, #{company}, #{issue}, #{baseline}, #{tracking}, #{fundSize},
+                                           #{shareSize}, #{updateDate}, #{fee}, #{buyFee}, #{sellFee})
+        on duplicate key update
+            `name` = #{name}, `week` = #{week}, `month` =  #{month}, `month3` = #{month3}, `half` = #{half}, `year` = #{half}, `since` = #{since},
+            `type` = #{type}, `fund_type` = #{fundType}, `manager` = #{manager}, `company` = #{company},
+            `issue` = #{issue}, `baseline` = #{baseline}, `tracking` = #{tracking},
+            `fund_size` = #{fundSize}, `share_size` = #{shareSize},
+            `update_date` = #{updateDate}, `fee` = #{fee}, `buy_fee` = #{buyFee}, `sell_fee` = #{sellFee}
+
+
+    </update>
+
+</mapper>

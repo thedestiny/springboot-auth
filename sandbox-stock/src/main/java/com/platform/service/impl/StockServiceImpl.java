@@ -1,18 +1,18 @@
-package com.platform.productserver.service.impl;
+package com.platform.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.platform.productserver.dto.FundDto;
-import com.platform.productserver.entity.EtfInfo;
-import com.platform.productserver.entity.FundInfo;
-import com.platform.productserver.entity.StockInfo;
-import com.platform.productserver.mapper.EtfInfoMapper;
-import com.platform.productserver.mapper.FundInfoMapper;
-import com.platform.productserver.mapper.StockInfoMapper;
-import com.platform.productserver.service.StockService;
-import com.platform.productserver.stock.TianFundUtils;
+import com.platform.dto.FundDto;
+import com.platform.entity.EtfInfo;
+import com.platform.entity.FundInfo;
+import com.platform.entity.StockInfo;
+import com.platform.mapper.EtfInfoMapper;
+import com.platform.mapper.FundInfoMapper;
+import com.platform.mapper.StockInfoMapper;
+import com.platform.service.StockService;
+import com.platform.utils.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +106,20 @@ public class StockServiceImpl implements StockService {
     @Override
     public Integer saveStockInfoList(List<StockInfo> list) {
         Integer cnt = 0;
+        List<String> idList = list.stream().map(StockInfo::getId).collect(Collectors.toList());
+        List<StockInfo> stockInfos = stockInfoMapper.selectBatchIds(idList);
+        List<String> collectList = stockInfos.stream().map(StockInfo::getId).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(list)) {
+            for (StockInfo stockInfo : list) {
+                if (collectList.contains(stockInfo.getId())) {
+                    cnt += stockInfoMapper.updateById(stockInfo);
+                } else {
+                    cnt += stockInfoMapper.insert(stockInfo);
+                }
+                //  cnt += stockInfoMapper.saveStockInfo(stockInfo);
+            }
+        }
+
         if (CollUtil.isNotEmpty(list)) {
             for (StockInfo stockInfo : list) {
                 cnt += stockInfoMapper.saveStockInfo(stockInfo);

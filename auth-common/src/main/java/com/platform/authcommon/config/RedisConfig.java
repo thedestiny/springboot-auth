@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -26,16 +27,19 @@ public class RedisConfig {
 
     private static final String prefix = "redis://";
 
-    @Bean
+
+    @Bean(value = "redisClient")
     public RedissonClient initRedissonClient() {
         log.info("init Redisson config start");
         Config config = new Config();
         // 采用单机模式 useSingleServer
         // 采用集群模式 useClusterServers
+        // redis://localhost:6379
         String address = prefix + properties.getHost() + ":" + properties.getPort();
         config.useSingleServer()
                 .setTimeout(20000)
-                .setPassword(properties.getPassword())
+                .setPassword(null)
+                // .setPassword(properties.getPassword())
                 .setAddress(address);
                 //可以用"redis://"来启用SSL连接
                 // .addNodeAddress(prefix + properties.getHost() + ":" + properties.getPort());

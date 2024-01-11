@@ -1,4 +1,4 @@
-package com.platform.productserver.stock;
+package com.platform.utils;
 
 
 import cn.hutool.core.date.DateField;
@@ -11,8 +11,8 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.platform.productserver.dto.FundDto;
-import com.platform.productserver.entity.EtfInfo;
+import com.platform.dto.FundDto;
+import com.platform.entity.EtfInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

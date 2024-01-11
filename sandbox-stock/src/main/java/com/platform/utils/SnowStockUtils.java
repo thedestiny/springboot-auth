@@ -1,4 +1,4 @@
-package com.platform.productserver.stock;
+package com.platform.utils;
 
 
 import cn.hutool.core.collection.CollUtil;
@@ -12,8 +12,8 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.platform.productserver.dto.LineDto;
-import com.platform.productserver.entity.StockInfo;
+import com.platform.dto.LineDto;
+import com.platform.entity.StockInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,7 +39,7 @@ public class SnowStockUtils {
     public final static String tmp = "https://stock.xueqiu.com/v5/stock/screener/quote/list.json?page={}&size={}&order=desc&orderby=code&order_by=symbol&market=CN&type=sh_sz";
     // cookie
     public final static String cookie =
-            "cookiesu=171692779984940; device_id=b113b3700ba6f60d2c110d9a9374ab5a; s=bw11pg4v6g; xq_a_token=a0f5e0d91bc0846f43452e89ae79e08167c42068; xqat=a0f5e0d91bc0846f43452e89ae79e08167c42068; xq_r_token=76ed99965d5bffa08531a6a47501f096f61108e8; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTY5NTUxNTc5NCwiY3RtIjoxNjkzMjg0MzQ1NzM4LCJjaWQiOiJkOWQwbjRBWnVwIn0.AFn93LyOiNyrjehw_EJ7pBQpw1GyruaMI6ke7Bu9swWOYabZO6Wy84p-wYvNbKz0inGy_1Na2mtgX0JNO-hv8NRV-_i6nXHljAyL3VVxdzGkVxFR6JM2nnaxZyQ3AbGK8Q7Hcoau8Zhvbj1dJEQZ1XFY2t4SUs2I7bXg_hGghBNmbCgRUqSskzZ5DEw4suNkoWArG1Z-zPve8TTVznEm9jCCSloOcjBdptjMEXB3Abt2Bo5zsua6lQiVXUIcafo3rsO-U3B1w-v2cSWqWoKqhcbRK-TN5bXyMMOqOyBpN7ZLCvD_MYE500RfAoM0i8SOqLTJrSFbsxJ9YFBP6HTwAw; u=171692779984940; Hm_lvt_1db88642e346389874251b5a1eded6e3=1692779986,1693284347; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1693284350";
+            "device_id=2b38bc16558c7136729b7ca56964df25; s=af11m6tu48; bid=db8e4f1e50c43c68f8fff28eae72dd3f_ll3vxqz5; cookiesu=481692415870953; xq_a_token=9eb4932f3197a06d242009fa2ee386ce66c8799f; xqat=9eb4932f3197a06d242009fa2ee386ce66c8799f; xq_r_token=d7a7d3c7d70d9e116b3f0277feb01c5b9543559b; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTcwNTg4NDA0OSwiY3RtIjoxNzA0NTI5NjYzMDc5LCJjaWQiOiJkOWQwbjRBWnVwIn0.CIAdPY7iul9bAViqfloQicQj_Q8bJqWfldd09QloqaWJA3k9GO6fLhhogXLo-hRrJSaj2xcBx0FyG1bmGouR7RhhojeIy02X4UlBOuxaZBHIMcKDbiXG7xDFXm-W5DLslRFyC2UceS1_LMaY4WLICwccui1MUiS6ADmu-enNMEV5ZuN6EE231jcHntsRhmLfS0MLy4kT2wcAFCD9NAoLbELCRG7Q1p1Mq4wvvlt_Iz2OJj9-AqQNwyeoz_fLTeoGnvNv2wsfW8pJj0DhwkvhY84OC6usRm-R78v5y9B7pHCKIPE8xvSlTwJUzNTV_Bz7ZearB5Ok0cDgMQdtY5S4Dg; u=481692415870953; is_overseas=0; Hm_lvt_1db88642e346389874251b5a1eded6e3=1704529680; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1704529680";
 
     /**
      * 获取股票列表信息
@@ -83,7 +83,7 @@ public class SnowStockUtils {
             stock.setPeTtm(node.getBigDecimal("pe_ttm"));  // 静态市盈率
             stock.setPbTtm(node.getBigDecimal("pb_ttm"));  // 市净率(ttm)
             stock.setNetValue(node.getBigDecimal("net_value"));  // 每股净资产
-            stock.setIssue(transDate(node.getLong("issue_date_ts")));
+            stock.setIssue(transDate(node.getLong("issue_date_ts"))); // 发行日期
             resultList.add(stock);
         }
         return resultList;

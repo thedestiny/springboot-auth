@@ -1,18 +1,13 @@
-package com.platform.productserver.stock;
+package com.platform.utils;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.ReflectUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.platform.productserver.dto.LineDto;
-import com.platform.productserver.dto.StockCompDto;
-import com.platform.productserver.entity.StockInfo;
-import com.platform.productserver.utils.PrintTableUtils;
+import com.platform.dto.LineDto;
+import com.platform.dto.StockCompDto;
+import com.platform.entity.StockInfo;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
