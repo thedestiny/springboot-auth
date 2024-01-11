@@ -77,6 +77,8 @@ select DATE_SUB(SYSDATE(),INTERVAL 1 quarter);
 -- 当前时间减1年        
 select DATE_SUB(SYSDATE(),INTERVAL 1 year);
 
+and create_time <![CDATA[ < ]]> DATE_ADD(STR_TO_DATE(#{endDate},'%Y-%m-%d'), interval 1 day)
+
 DATE_FORMAT(NOW(),'%b %d %Y %h:%i %p')
 DATE_FORMAT(NOW(),'%m-%d-%Y')
 DATE_FORMAT(NOW(),'%d %b %y')

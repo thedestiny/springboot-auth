@@ -50,6 +50,7 @@
         INSERT INTO ${table.name} (<#list table.fields as field>${field.name}<#if field_has_next>,</#if></#list>)
         VALUES
         (<#list table.fields as field>${r'#{'}${field.propertyName}${r"}"}<#if field_has_next>,</#if></#list>)
+
     </insert>
 
     <insert id="updateByEntityId" parameterType="${package.Entity}.${table.entityName}">
@@ -100,9 +101,25 @@
              </#list>
 
         </where>
-
-
     </select>
+
+    <insert id="insertEntitySelective" parameterType="${package.Entity}.${table.entityName}">
+        <#--                ${field.name} = ${r'#{'}${field.propertyName}${r"}"} <#if field_has_next>,</#if>-->
+        <#--                ${field.name} = ${r'#{'}${field.propertyName}${r"}"} <#if field_has_next>,</#if>-->
+        INSERT INTO ${table.name} (
+        <#list table.fields as field>
+            <if test="${field.propertyName} != null <#if field.columnType.type = 'String'> and  ${field.propertyName} != ''</#if>"> ${field.name}<#if field_has_next>,</#if> </if>
+        </#list>
+        )
+        VALUES
+        (
+        <#list table.fields as field>
+            <if test="${field.propertyName} != null <#if field.columnType.type = 'String'> and  ${field.propertyName} != ''</#if>"> ${r'#{'}${field.propertyName}${r"}"}<#if field_has_next>,</#if></if>
+        </#list>
+        )
+
+
+    </insert>
 
 
 
