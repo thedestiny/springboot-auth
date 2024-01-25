@@ -16,9 +16,6 @@ spring:
       connection-timeout: 50000
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://152.136.33.103:5306/treasure?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
-    username: destiny
-    password: Myroot123!
 
 #    url: url
 #    username: username

@@ -40,7 +40,7 @@ public class FundDto implements Serializable {
     // 基金经理
     private String manager;
     // 基金公司
-    private String company;
+    private transient String company;
     // 发行日期
     private String issue;
     // 业绩比较基准
