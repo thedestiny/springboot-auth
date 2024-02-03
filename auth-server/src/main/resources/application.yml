@@ -50,7 +50,9 @@ spring:
 
 logging:
   level:
-    com.platform: debug
+    com.platform.authserver: debug
+
+
 
 
 management:
@@ -61,3 +63,11 @@ management:
 
 server:
   port: 9401
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*.xml
+  type-aliases-package: com.platform.authserver.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+

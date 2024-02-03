@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:mysql://152.136.33.103:5306/treasure?useUnicode=true&characterEncoding=utf8&useSSL=false&tinyInt1isBit=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&useAffectedRows=true
+    username: destiny
+    password: Myroot123!
+  redis:
+    host: localhost
+    password:
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 8
+        max-idle: 8
