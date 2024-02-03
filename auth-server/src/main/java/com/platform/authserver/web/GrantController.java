@@ -24,7 +24,6 @@ public class GrantController {
     public String getAccessConfirmation(Map<String, Object> params, HttpServletRequest request, Model model) throws Exception {
         AuthorizationRequest author =
                 (AuthorizationRequest) params.get("authorizationRequest");
-
         model.addAttribute("clientId", author.getClientId());
         model.addAttribute("scopes", author.getScope());
         return "grant";

@@ -50,6 +50,10 @@ https://juejin.cn/post/7121892567130013732
 gateway route 配置
 https://blog.csdn.net/wuweuhai/article/details/124943247
 
+POST     /oauth/authorize 授权码模式认证授权接口
+GET/POST /oauth/token 获取 token 的接口
+POST     /oauth/check_token 检查 token 合法性接口
+
 ```
 
 ```mysql

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Slf4j
-@RequestMapping
 @Controller
+@RequestMapping
 public class IndexController {
 
     @GetMapping(value = "login")
