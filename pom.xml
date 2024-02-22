@@ -37,6 +37,7 @@
         <module>sandbox-flex</module>
         <module>sandbox-message</module>
         <module>sandbox-stock</module>
+        <module>sandbox-desen</module>
 
     </modules>
 
