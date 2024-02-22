@@ -16,6 +16,9 @@ import java.io.Serializable;
 @Configuration
 public class MaskConfig implements Serializable {
 
+    private static final long serialVersionUID = -746315412160267803L;
+
+
     @Value("${log.mask.enable:true}")
     private Boolean enable;
 

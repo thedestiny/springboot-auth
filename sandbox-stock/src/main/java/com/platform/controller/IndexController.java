@@ -1,6 +1,9 @@
 package com.platform.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.platform.dto.Result;
+import com.platform.dto.UserDto;
 import com.platform.task.StockTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,20 @@ public class IndexController {
 
 
     @GetMapping(value = "index")
-    public String task(){
+    public Result<UserDto> task(){
 
-        task.task();
+        // task.task();
 
-        return "success";
+        UserDto dto = new UserDto();
+        dto.setUsername("梁开阳");
+        dto.setCellphone("12348599321");
+        dto.setAddress("河南省郑州市管城区23号");
+        dto.setEmail("xieyue86@163.com");
+        dto.setAge(10);
+        log.info("user info {}", dto);
+        log.info("user info {}", JSONObject.toJSONString(dto));
+
+        return Result.success(dto);
     }
 
 }

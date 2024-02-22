@@ -16,6 +16,8 @@ public class MaskConverter extends MessageConverter {
     @Override
     public String convert(ILoggingEvent event) {
         String origLog = event.getFormattedMessage();
+
+
         log.info(origLog);
         return super.convert(event);
     }

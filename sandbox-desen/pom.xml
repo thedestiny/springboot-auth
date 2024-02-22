@@ -6,7 +6,7 @@
 	<artifactId>desen</artifactId>
 	<version>1.0</version>
 	<name>desen</name>
-	<description>日志脱敏 </description>
+	<description>日志脱敏</description>
 
 
 	<properties>

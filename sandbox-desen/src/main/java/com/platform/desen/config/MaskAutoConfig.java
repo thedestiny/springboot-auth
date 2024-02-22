@@ -10,4 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan("com.platform.desen")
 public class MaskAutoConfig {
+
+
+
 }
