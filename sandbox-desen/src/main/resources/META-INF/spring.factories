@@ -1,3 +1,3 @@
 # Auto Configuration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.platform.desen.config.MaskAutoConfiguation
+  com.platform.desen.config.MaskAutoConfig

@@ -1,5 +1,6 @@
 package com.platform.dto;
 
+import cn.hutool.core.net.NetUtil;
 import com.platform.senstive.SensitiveEnum;
 import com.platform.senstive.Sensitivity;
 import lombok.Data;
@@ -26,4 +27,10 @@ public class UserDto implements Serializable {
     private Integer age;
 
 
+    public static void main(String[] args) {
+
+        String address = NetUtil.getLocalhost().getHostAddress();
+        System.out.println(address);
+
+    }
 }

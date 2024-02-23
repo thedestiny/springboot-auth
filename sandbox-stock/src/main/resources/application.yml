@@ -5,6 +5,7 @@ spring:
     active: dev
   application:
     name: stock-server
+
   # 数据库连接和数据库连接池配置
   datasource:
     hikari:
@@ -32,9 +33,10 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 # 日志记录
-logging:
-  level:
-    com.platform: trace
+#logging:
+#  level:
+#    com.platform: trace
 
 server:
   port: 9897
+

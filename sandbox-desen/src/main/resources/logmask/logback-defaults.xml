@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE"
+              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>
+    <property name="LOG_HOME" value="${LOG_PATH:-/tmp}"/>
+    <jmxConfigurator/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+    <!--<include resource="logback-pattern.xml"/>-->
+
+    <springProperty scope="context" name="spring_application_name" source="spring.application.name" />
+
+    <!--定义日志文件大小 超过这个大小会压缩归档 -->
+    <property name="DEBUG_MAX_FILE_SIZE" value="100MB"/>
+    <property name="INFO_MAX_FILE_SIZE" value="100MB"/>
+    <property name="ERROR_MAX_FILE_SIZE" value="100MB"/>
+    <property name="TRACE_MAX_FILE_SIZE" value="100MB"/>
+    <property name="WARN_MAX_FILE_SIZE" value="100MB"/>
+
+    <!--定义日志文件最长保存时间 -->
+    <property name="DEBUG_MAX_HISTORY" value="9"/>
+    <property name="INFO_MAX_HISTORY" value="9"/>
+    <property name="ERROR_MAX_HISTORY" value="9"/>
+    <property name="TRACE_MAX_HISTORY" value="9"/>
+    <property name="WARN_MAX_HISTORY" value="9"/>
+
+    <!--定义归档日志文件最大保存大小，当所有归档日志大小超出定义时，会触发删除  -->
+    <property name="DEBUG_TOTAL_SIZE_CAP" value="5GB"/>
+    <property name="INFO_TOTAL_SIZE_CAP" value="5GB"/>
+    <property name="ERROR_TOTAL_SIZE_CAP" value="5GB"/>
+    <property name="TRACE_TOTAL_SIZE_CAP" value="5GB"/>
+    <property name="WARN_TOTAL_SIZE_CAP" value="5GB"/>
+
+    <!-- 按照每天生成日志文件 -->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前Log文件名 -->
+        <file>${LOG_HOME}/debug.log</file>
+        <!-- 压缩备份设置 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/backup/debug/debug.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>${DEBUG_MAX_HISTORY}</maxHistory>
+            <maxFileSize>${DEBUG_MAX_FILE_SIZE}</maxFileSize>
+            <totalSizeCap>${DEBUG_TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前Log文件名 -->
+        <file>${LOG_HOME}/info.log</file>
+        <!-- 压缩备份设置 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/backup/info/info.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>${INFO_MAX_HISTORY}</maxHistory>
+            <maxFileSize>${INFO_MAX_FILE_SIZE}</maxFileSize>
+            <totalSizeCap>${INFO_TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前Log文件名 -->
+        <file>${LOG_HOME}/warn.log</file>
+        <!-- 压缩备份设置 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/backup/warn/warn.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>${WARN_MAX_HISTORY}</maxHistory>
+            <maxFileSize>${WARN_MAX_FILE_SIZE}</maxFileSize>
+            <totalSizeCap>${WARN_TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前Log文件名 -->
+        <file>${LOG_HOME}/error.log</file>
+        <!-- 压缩备份设置 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/backup/error/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>${ERROR_MAX_HISTORY}</maxHistory>
+            <maxFileSize>${ERROR_MAX_FILE_SIZE}</maxFileSize>
+            <totalSizeCap>${ERROR_TOTAL_SIZE_CAP}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="INFO_FILE"/>
+        <appender-ref ref="WARN_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+        <!--        <if condition='"true".equals(property("kafka_enabled"))'>-->
+        <!--            <then>-->
+        <!--                <appender-ref ref="KAFKA_ASYNC"/>-->
+        <!--            </then>-->
+        <!--        </if>-->
+    </root>
+
+</included>

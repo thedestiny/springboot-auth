@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 /**
  * @Description
  * @Author kaiyang
- * @Date 2024-02-22 6:35 PM
+ * @Date 2024-02-23 4:23 PM
  */
 
 @Component
-public class EmailHandler extends AbstractMaskHandler implements MaskHandler{
+public class IdCardHandler extends AbstractMaskHandler implements MaskHandler {
 
 
     public int getStartIdx(String matcherGroupStr) {
@@ -26,9 +26,6 @@ public class EmailHandler extends AbstractMaskHandler implements MaskHandler{
     }
 
     public String keyword(String str) {
-        return DesensitizedUtil.email(str);
+        return DesensitizedUtil.idCardNum(str,6 , 4);
     }
-
-
-
 }
