@@ -3,6 +3,8 @@ package com.platform.desen.handler;
 import cn.hutool.core.util.DesensitizedUtil;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Pattern;
+
 /**
  * @Description
  * @Author kaiyang
@@ -12,17 +14,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailHandler extends AbstractMaskHandler implements MaskHandler{
 
+    private static final Pattern PATTERN = Pattern.compile("([\\w]+(\\.[\\w]+)*@[\\w]+(\\.[\\w])+)");
 
     public int getStartIdx(String matcherGroupStr) {
-        return 0;
+        return 1;
     }
 
     public int getEndIdx(String matcherGroupStr) {
-        return 0;
+        return matcherGroupStr.length() - matcherGroupStr.indexOf("@");
     }
 
     public String regrex(String str) {
-        return null;
+            return this.matcher(str, PATTERN);
     }
 
     public String keyword(String str) {

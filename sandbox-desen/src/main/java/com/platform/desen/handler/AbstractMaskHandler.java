@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 public abstract class AbstractMaskHandler implements MaskHandler {
 
 
-
     public String matcher(String str, Pattern pattern) {
         if (StrUtil.isBlank(str)) {
             return str;

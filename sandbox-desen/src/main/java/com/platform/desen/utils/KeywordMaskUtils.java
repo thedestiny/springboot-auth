@@ -19,9 +19,9 @@ import java.util.Map;
 @Component
 public class KeywordMaskUtils {
 
-
     @Autowired
     private Map<String, MaskHandler> handlerMap;
+
     @Autowired
     private MaskConfig maskConfig;
 
@@ -42,11 +42,12 @@ public class KeywordMaskUtils {
 
                     index = StringUtils.indexOfIgnoreCase(maskLog, value, index + 1);
                     if (index != -1) {
-                        int valueStart = this.getStartIndex(maskLog, index + value.length());
-                        int valueEnd = this.getEndIndex(maskLog, valueStart);
-                        String subStr = maskLog.substring(valueStart, valueEnd);
+                        // 关键字的值开始和结束标记
+                        int startIndex = this.getStartIndex(maskLog, index + value.length());
+                        int endIndex = this.getEndIndex(maskLog, startIndex);
+                        String subStr = maskLog.substring(startIndex, endIndex);
                         subStr = handlerMap.get(MaskRuleEnum.match(key)).keyword(subStr);
-                        maskLog = maskLog.substring(0, valueStart) + subStr + maskLog.substring(valueEnd);
+                        maskLog = maskLog.substring(0, startIndex) + subStr + maskLog.substring(endIndex);
                     } else {
                         break;
                     }

@@ -15,6 +15,7 @@ public enum MaskRuleEnum {
     EMAIL("email", "emailHandler"),
     ID_CARD("idCard", "idCardHandler"),
     ADDRESS("address", "addressHandler"),
+    BANK("bank", "bankHandler"),
 
     ;
 

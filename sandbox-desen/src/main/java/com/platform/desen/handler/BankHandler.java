@@ -12,24 +12,25 @@ import java.util.regex.Pattern;
  */
 
 @Component
-public class NameHandler extends AbstractMaskHandler implements MaskHandler {
+public class BankHandler extends AbstractMaskHandler implements MaskHandler {
 
-    private static final Pattern PATTERN = Pattern.compile("(?<!\\w)1[3|4|5|6|7|8|9][0-9]\\d{8}(?!\\w)");
+    private static final Pattern PATTERN = Pattern.compile("(?<!\\w)(\\d{16}|\\d{17}|\\d{19,30})(?!\\w)");
 
     public int getStartIdx(String matcherGroupStr) {
-        return 2;
+        return 4;
     }
 
     public int getEndIdx(String matcherGroupStr) {
-        return 3;
+        return 4;
     }
 
     public String regrex(String str) {
-        return matcher(str, PATTERN);
+        return this.matcher(str, PATTERN);
     }
 
+
     public String keyword(String str) {
-        return DesensitizedUtil.chineseName(str);
+        return DesensitizedUtil.bankCard(str);
     }
 
 

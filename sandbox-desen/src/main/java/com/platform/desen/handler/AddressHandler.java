@@ -3,6 +3,8 @@ package com.platform.desen.handler;
 import cn.hutool.core.util.DesensitizedUtil;
 import org.springframework.stereotype.Component;
 
+import java.util.regex.Pattern;
+
 /**
  * @Description
  * @Author kaiyang
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AddressHandler extends AbstractMaskHandler implements MaskHandler {
+
+    private static final Pattern PATTERN = Pattern.compile("\\d+");
+
 
     public int getStartIdx(String matcherGroupStr) {
         return 0;
@@ -21,11 +26,12 @@ public class AddressHandler extends AbstractMaskHandler implements MaskHandler {
     }
 
     public String regrex(String str) {
-        return null;
+        return str;
     }
 
+
     public String keyword(String str) {
-        return DesensitizedUtil.address(str,str.length() /2);
+        return DesensitizedUtil.address(str, str.length() / 2);
     }
 
 
