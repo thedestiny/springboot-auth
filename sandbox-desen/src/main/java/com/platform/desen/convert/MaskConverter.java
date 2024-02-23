@@ -47,7 +47,7 @@ public class MaskConverter extends MessageConverter {
             }
 
         } catch (Exception e) {
-            log.info("error is {}", e.getMessage(), e);
+            //log.info("error is {}", e.getMessage(), e);
         }
         return origLog;
     }
