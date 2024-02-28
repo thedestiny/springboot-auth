@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * @Description
+ * @Description 正则表达式脱敏方式
  * @Author kaiyang
  * @Date 2024-02-23 9:54 AM
  */
@@ -20,15 +20,13 @@ public class RegrexMaskUtils {
 
     @Autowired
     private Map<String, MaskHandler> handlerMap;
-
     @Autowired
     private MaskConfig maskConfig;
-
 
     public String doMask(String maskLog) {
         String processLog = maskLog;
         Map<String, String> regrexMap = maskConfig.getRegrexMap();
-
+        // 正则表达式
         for (Map.Entry<String, String> entry : regrexMap.entrySet()) {
             // 规则关键字以及过滤规则是否开启
             String key = entry.getKey();

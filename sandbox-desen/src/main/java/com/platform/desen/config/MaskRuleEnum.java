@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Description
+ * @Description 脱敏规则以及处理器
  * @Author kaiyang
  * @Date 2024-02-23 4:57 PM
  */
@@ -16,7 +16,6 @@ public enum MaskRuleEnum {
     ID_CARD("idCard", "idCardHandler"),
     ADDRESS("address", "addressHandler"),
     BANK("bank", "bankHandler"),
-
     ;
 
     MaskRuleEnum(String rule, String handler) {
@@ -25,19 +24,15 @@ public enum MaskRuleEnum {
     }
 
     public String rule;
-
     public String handler;
 
     public final static Map<String, String> map = new HashMap<String, String>();
 
     static {
-
         for (MaskRuleEnum rule : MaskRuleEnum.values()) {
             map.put(rule.rule, rule.handler);
         }
     }
-
-
     public static String match(String name) {
         return map.get(name);
 

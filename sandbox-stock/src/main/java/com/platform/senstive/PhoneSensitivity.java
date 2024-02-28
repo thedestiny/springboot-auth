@@ -1,6 +1,8 @@
 package com.platform.senstive;
 
 
+
+
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -13,11 +15,11 @@ import java.lang.annotation.Target;
  * 配置脱敏注解
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target(ElementType.FIELD)
 @JacksonAnnotationsInside
 @JsonSerialize(using = SensitiveSerializer.class)
-public @interface Sensitivity {
+public @interface PhoneSensitivity {
 
-    SensitiveEnum strategy() default SensitiveEnum.USERNAME;
+    SensitiveEnum strategy() default SensitiveEnum.PHONE;
 
 }

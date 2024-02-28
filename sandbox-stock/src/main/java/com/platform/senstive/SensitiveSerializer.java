@@ -10,28 +10,26 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 
 import java.io.IOException;
 
-
+/**
+ * 脱敏序列化方式
+ */
 public class SensitiveSerializer extends JsonSerializer<String> implements ContextualSerializer {
 
-
     private SensitiveEnum sensitive;
-
-
+    // jackson 序列化
     @Override
     public void serialize(String value, JsonGenerator generator, SerializerProvider serializerProvider) throws IOException {
         generator.writeString(sensitive.express.apply(value));
     }
-
+    // 匹配脱敏处理器
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider provider, BeanProperty property) throws JsonMappingException {
-
         Sensitivity annotation = property.getAnnotation(Sensitivity.class);
         if (ObjectUtil.isNotEmpty(annotation) && ObjectUtil.equal(String.class, property.getType().getRawClass())) {
             SensitiveEnum strategy = annotation.strategy();
             this.sensitive = strategy;
             return this;
         }
-
         return provider.findValueSerializer(property.getType(), property);
     }
 

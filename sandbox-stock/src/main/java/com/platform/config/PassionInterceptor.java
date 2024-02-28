@@ -13,6 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.MaskFormatter;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -89,6 +90,7 @@ public class PassionInterceptor extends HandlerInterceptorAdapter implements Ser
         if (arr != null && arr.length == 1) {
             return arr[0];
         }
+
         return Arrays.toString(arr);
     }
 
