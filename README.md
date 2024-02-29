@@ -109,3 +109,23 @@ https://juejin.cn/post/7285622727603388452
 
 
 ```
+
+
+#### gitee 第三方登录
+```
+
+登录获取 code
+get https://gitee.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code
+回调获取 code
+
+通过 code 获取 access_token 信息
+post https://gitee.com/oauth/token?grant_type=authorization_code&code={code}&client_id={client_id}&redirect_uri={redirect_uri}&client_secret={client_secret}
+json 获取 access_token expires_in refresh_token
+
+通过access_token 获取用户信息 
+get https://gitee.com/api/v5/user?access_token={access_token}
+
+通过 refresh_token 的方式刷新 token 
+post https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token={refresh_token}
+
+```
