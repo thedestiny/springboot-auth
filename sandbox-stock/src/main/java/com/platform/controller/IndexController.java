@@ -2,6 +2,8 @@ package com.platform.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.platform.config.AppDataConfig;
+import com.platform.config.Person;
 import com.platform.dto.Result;
 import com.platform.dto.UserDto;
 import com.platform.task.StockTask;
@@ -20,12 +22,19 @@ public class IndexController {
     @Autowired
     private StockTask task;
 
+    @Autowired
+    private Person person;
+
+    @Autowired
+    private AppDataConfig dataConfig;
+
 
     @GetMapping(value = "index")
     public Result<UserDto> task(){
 
         // task.task();
-
+        log.info("person data {}", JSONObject.toJSONString(person));
+        log.info("config data {}", dataConfig);
         UserDto dto = new UserDto();
         dto.setUsername("梁开阳");
         dto.setCellphone("12348599321");

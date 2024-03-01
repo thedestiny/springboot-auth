@@ -40,3 +40,35 @@ mybatis-plus:
 server:
   port: 9897
 
+
+person:
+  lastName: hello
+  age: 18
+  boss: false
+  birth: 2017/12/12
+  maps:
+    k1: v1
+    k2: 12
+  lists:
+    - lisi
+    - zhaoliu
+  dog:
+    name: 小狗
+    age: 12
+  varmaplist:
+    key11:
+      - t1
+      - t2
+      - t3
+    key22:
+      - t11
+      - t22
+      - t33
+
+
+app:
+  dataList: 34,45,56
+  hobbys: '{"lilei": "篮球", "lili": "乒乓球", "hanlei": "羽毛球"}'
+  hobbyList: '{"lilei": "篮球,足球", "lili": "乒乓球,橄榄球", "hanlei": "羽毛球"}'
+
+
