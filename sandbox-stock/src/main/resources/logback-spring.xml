@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-    <include resource="logmask/logback-pattern.xml"/>
-    <include resource="logmask/logback-defaults.xml"/>
+    <include resource="logmask/log-pattern.xml"/>
+    <include resource="logmask/log-defaults.xml"/>
 </configuration>

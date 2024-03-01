@@ -7,10 +7,8 @@
     <conversionRule conversionWord="m" converterClass="com.platform.desen.convert.MaskConverter" />
     <springProperty scope="context" name="spring_application_name" source="spring.application.name" />
     <springProperty scope="context" name="server_port" source="server.port" />
-
     <!-- appID | module |  dateTime | level | requestID | traceID | requestIP | userIP | serverIP | serverPort | processID | thread | location | detailInfo-->
     <property name="CONSOLE_LOG_PATTERN" value="%clr(${spring_application_name}){cyan}|%clr(%module){blue}|%clr(%d{ISO8601}){faint}|%clr(%p)|%X{requestId}|%X{X-B3-TraceId:-}|%X{requestIp}|%X{userIp}|%ip|${server_port}|${PID}|%clr(%t){faint}|%clr(%.40logger{39}){cyan}.%clr(%method){cyan}:%L|%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
-
     <property name="FILE_LOG_PATTERN" value="${spring_application_name}|%module|%d{ISO8601}|%p|%X{requestId}|%X{X-B3-TraceId:-}|%X{requestIp}|%X{userIp}|%ip|${server_port}|${PID}|%t|%.40logger{39}.%method:%L|%m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
 
 </included>

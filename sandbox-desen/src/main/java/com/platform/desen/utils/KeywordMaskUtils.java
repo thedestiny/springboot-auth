@@ -11,35 +11,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Description
+ * @Description 关键字脱敏方式
  * @Author kaiyang
  * @Date 2024-02-23 9:54 AM
  */
-
 @Component
 public class KeywordMaskUtils {
 
     @Autowired
     private Map<String, MaskHandler> handlerMap;
-
     @Autowired
     private MaskConfig maskConfig;
 
-
     public String doMask(String maskLog) {
-
+        // 关键字规则
         Map<String, List<String>> keywordMap = maskConfig.getKeywordMap();
-
         for (Map.Entry<String, List<String>> entry : keywordMap.entrySet()) {
             // 匹配的规则名称和关键字名称
             String key = entry.getKey();
             // 关键字
             List<String> values = entry.getValue();
-
             for (String value : values) {
                 int index = -1;
                 while (true) {
-
+                    // 关键字
                     index = StringUtils.indexOfIgnoreCase(maskLog, value, index + 1);
                     if (index != -1) {
                         // 关键字的值开始和结束标记
@@ -48,13 +43,13 @@ public class KeywordMaskUtils {
                         String subStr = maskLog.substring(startIndex, endIndex);
                         subStr = handlerMap.get(MaskRuleEnum.match(key)).keyword(subStr);
                         maskLog = maskLog.substring(0, startIndex) + subStr + maskLog.substring(endIndex);
+                        index += endIndex;
                     } else {
                         break;
                     }
                 }
             }
         }
-
         return maskLog;
 
     }

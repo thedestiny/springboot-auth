@@ -109,3 +109,33 @@ https://juejin.cn/post/7285622727603388452
 
 
 ```
+
+
+#### gitee 第三方登录
+```
+
+登录获取 code
+get https://gitee.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code
+回调获取 code
+
+通过 code 获取 access_token 信息
+post https://gitee.com/oauth/token?grant_type=authorization_code&code={code}&client_id={client_id}&redirect_uri={redirect_uri}&client_secret={client_secret}
+json 获取 access_token expires_in refresh_token
+
+通过access_token 获取用户信息 
+get https://gitee.com/api/v5/user?access_token={access_token}
+
+通过 refresh_token 的方式刷新 token 
+post https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token={refresh_token}
+
+
+OpenID Connect建立在OAuth之上，OpenID Connect（通常缩写为 OIDC ）
+
+OAuth 中有四个主要参与者：
+
+资源所有者 （RO）：控制 API 公开的数据的实体，通常是最终用户
+客户端：移动应用程序、网站等想要代表资源所有者访问数据
+授权服务器 （AS）：安全令牌服务 （STS），或者通俗地说，颁发令牌的 OAuth 服务器
+资源服务器 （RS）：公开数据的服务，即 API
+
+```

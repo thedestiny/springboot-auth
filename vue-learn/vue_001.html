@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试页面</title>
+</head>
+<body>
+
+<div id="app">
+
+    <h4>{{message}}</h4>
+
+    <table>
+        <tr v-for="(item, index) in items">
+            <td>{{index}}</td>
+            <td>{{item.id}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.name}}</td>
+        </tr>
+
+    </table>
+
+</div>
+
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+
+<script>
+
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            message: "这是一个数据",
+            items: [
+                {id: 23, name: "小明", age: 34},
+                {id: 23, name: "小明", age: 34}
+            ]
+        },
+        create: {},
+        computed: {},
+        methods: {
+            curr_time: function (p1, p2) {
+                return Date.now();
+            }
+        },
+
+
+    })
+
+</script>
+
+</body>
+</html>

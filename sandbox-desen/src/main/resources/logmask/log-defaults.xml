@@ -7,7 +7,7 @@
     <jmxConfigurator/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
-    <!--<include resource="logback-pattern.xml"/>-->
+    <!--<include resource="log-pattern.xml"/>-->
 
     <springProperty scope="context" name="spring_application_name" source="spring.application.name" />
 
