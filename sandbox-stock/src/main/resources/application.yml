@@ -17,6 +17,10 @@ spring:
       connection-timeout: 50000
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
+  redis:
+    jedis:
+      pool:
+        max-active:
 
 #    url: url
 #    username: username
@@ -39,6 +43,7 @@ mybatis-plus:
 
 server:
   port: 9897
+
 
 
 person:
