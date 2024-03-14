@@ -129,7 +129,9 @@ get https://gitee.com/api/v5/user?access_token={access_token}
 post https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token={refresh_token}
 
 
-OpenID Connect建立在OAuth之上，OpenID Connect（通常缩写为 OIDC ）
+OpenID Connect建立在OAuth之上，OpenID Connect（通常缩写为 OIDC）
+oauth2 一般是作为授权而非认证
+OIDC = Oauth2 + 认证机制
 
 OAuth 中有四个主要参与者：
 
