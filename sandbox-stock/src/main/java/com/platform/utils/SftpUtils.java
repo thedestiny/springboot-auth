@@ -5,12 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * @Description ftp 上传文件
@@ -19,6 +22,8 @@ import java.util.Properties;
  */
 
 @Slf4j
+@Component
+@Scope("prototype")
 public class SftpUtils implements AutoCloseable {
 
 
@@ -31,20 +36,20 @@ public class SftpUtils implements AutoCloseable {
 
     // 初始化 ftp 连接
     public void initSftp(FtpConfig config) throws JSchException {
-        this.connectSftpServer(config.getUsername(), config.getUsername(), config.getPort(), config.getPassword());
+        this.connectSftpServer(config.getHostname(), config.getUsername(), config.getPassword(), config.getPort());
     }
 
 
     /**
      * 连接 sftp 服务器，创建 channel 和 session
      *
+     * @param hostname 地址
      * @param username 用户名
      * @param password 密码
-     * @param hostname 地址
      * @param port     端口号
      * @throws JSchException
      */
-    public void connectSftpServer(String username, String hostname, int port, String password) throws JSchException {
+    public void connectSftpServer(String hostname, String username, String password, int port) throws JSchException {
 
         JSch jsch = new JSch();
         // 根据用户名，主机ip，端口获取一个Session对象
@@ -67,6 +72,7 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 关闭通道和会话
+     *
      * @throws Exception
      */
     @Override
@@ -82,6 +88,7 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * sftp 上传文件
+     *
      * @param directory  上传到 sftp 的目录
      * @param uploadFile 上传 sftp 的文件
      */
@@ -99,7 +106,8 @@ public class SftpUtils implements AutoCloseable {
             }
             // 切换到上传目录并上传文件
             channel.cd(directory);
-            channel.put(input, file.getName());
+            // 0 覆盖 1 恢复模式 2 追加模式
+            channel.put(input, file.getName(), ChannelSftp.OVERWRITE);
             log.info("文件 {} 上传 sftp 成功", uploadFile);
         } catch (Exception e) {
             log.warn("文件 {} 上传 sftp 失败", uploadFile, e);
@@ -108,9 +116,10 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 将输入流上传到SFTP服务器，作为文件
-     * @param directory    上传到SFTP服务器的路径
-     * @param filename     上传到SFTP服务器后的文件名
-     * @param input        输入流
+     *
+     * @param directory 上传到SFTP服务器的路径
+     * @param filename  上传到SFTP服务器后的文件名
+     * @param input     输入流
      */
     public boolean upload(String directory, String filename, InputStream input) {
         try {
@@ -146,6 +155,7 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 创建目录
+     *
      * @param document 目录名称
      * @return
      */
@@ -175,20 +185,22 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 下载文件
-     * @param directory    下载目录
-     * @param filename     下载的文件
-     * @param saveFile     存在本地的路径
+     *
+     * @param directory 下载目录
+     * @param filename  下载的文件
+     * @param saveFile  存在本地的路径
      */
     public void download(String directory, String filename, String saveFile) {
 
         FileOutputStream outputStream = null;
         try {
+
             channel.cd(directory);
             File file = new File(saveFile);
             outputStream = new FileOutputStream(file);
             channel.get(filename, outputStream);
         } catch (Exception e) {
-            log.warn("文件下载异常", e);
+            log.warn("文件下载异常 dir {} file {} ", directory, filename, e);
         } finally {
             if (outputStream != null) {
                 try {
@@ -202,6 +214,7 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 下载文件
+     *
      * @param directory
      * @param filename
      * @param response
@@ -227,13 +240,19 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 删除文件
-     * @param directory  要删除文件所在目录
-     * @param filename 要删除的文件
+     *
+     * @param directory 要删除文件所在目录
+     * @param filename  要删除的文件
      */
     public void delete(String directory, String filename) {
         try {
-            channel.cd(directory);
-            channel.rm(filename);
+
+            if (StrUtil.isBlank(filename)) {
+                channel.rmdir(directory);
+            } else {
+                channel.cd(directory);
+                channel.rm(filename);
+            }
         } catch (Exception e) {
             log.warn("文件删除异常 {} ", e.getMessage(), e);
         }
@@ -241,19 +260,23 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 列出目录下的文件
+     *
      * @param directory 要列出的目录
      */
     public List<ChannelSftp.LsEntry> listFiles(String directory) {
         try {
-            return channel.ls(directory);
+            // channel.cd(directory);
+            Vector ls = ((ChannelSftp) channel).ls(directory);
+            return (List<ChannelSftp.LsEntry>) ls;
         } catch (Exception e) {
-            log.warn("列出目录下的文件异常 {}", e.getMessage(), e);
+            log.warn("列出目录 {} 下的文件异常 {}", directory, e.getMessage(), e);
         }
         return new ArrayList<>();
     }
 
     /**
      * 判断文件或目录是否存在
+     *
      * @param path 文件或目录路径
      * @return true 存在; false不存在
      */
@@ -268,6 +291,7 @@ public class SftpUtils implements AutoCloseable {
 
     /**
      * 直接从ftp上获取流
+     *
      * @param directory 上传文件目录
      * @return InputStream 输入流
      */
@@ -278,6 +302,16 @@ public class SftpUtils implements AutoCloseable {
             log.warn("sftpUtil get directory error={}", e.getMessage(), e);
         }
         return null;
+    }
+
+
+    public void information(String path) {
+
+        // rename()：   重命名指定文件或目录
+
+
+
+
     }
 
 
