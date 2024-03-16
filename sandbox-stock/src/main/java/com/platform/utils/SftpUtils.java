@@ -63,7 +63,7 @@ public class SftpUtils implements AutoCloseable {
         session.setConfig(config);
         // 通过Session建立链接
         session.connect();
-        // 打开SFTP通道
+        // 打开SFTP通道 exec用于执行命令;sftp用于文件处理
         channel = (ChannelSftp) session.openChannel("sftp");
         // 建立SFTP通道的连接
         channel.connect();
