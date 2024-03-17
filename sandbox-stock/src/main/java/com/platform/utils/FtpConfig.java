@@ -1,5 +1,6 @@
 package com.platform.utils;
 
+import cn.hutool.core.date.DateUtil;
 import lombok.Data;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,8 +26,7 @@ public class FtpConfig implements Serializable {
     // 私钥
     private String privateKey;
     // 上传路径
-    private String uploadPath;
-
+    private String uploadPath = "/upload";
 
 
 }

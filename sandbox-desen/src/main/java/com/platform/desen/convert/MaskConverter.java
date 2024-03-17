@@ -4,8 +4,8 @@ import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.platform.desen.config.MaskConfig;
+import com.platform.desen.config.SpFactUtils;
 import com.platform.desen.utils.KeywordMaskUtils;
 import com.platform.desen.utils.RegrexMaskUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class MaskConverter extends MessageConverter {
         String origLog = event.getFormattedMessage();
         try {
             // 获取脱敏配置
-            MaskConfig config = SpringUtil.getBean("maskConfig", MaskConfig.class);
+            MaskConfig config = SpFactUtils.getBean("maskConfig", MaskConfig.class);
             // 判断是否开启日志脱敏，以及日志路径
             if (ObjectUtil.isEmpty(config) || !config.getEnable()) {
                 return origLog;
@@ -30,15 +30,17 @@ public class MaskConverter extends MessageConverter {
                 return origLog;
             } else {
                 // 关键字脱敏策略以及正则的表达
-                KeywordMaskUtils b1 = SpringUtil.getBean(KeywordMaskUtils.class);
-                RegrexMaskUtils b2 = SpringUtil.getBean(RegrexMaskUtils.class);
+                KeywordMaskUtils b1 = null;
+                RegrexMaskUtils b2 = null;
                 String maskLog = origLog;
                 // 关键字方式
-                if(config.getKeyword() && config.getKeywordMap() != null && b1 != null){
-                     return b1.doMask(maskLog);
+                if (config.getKeyword() && config.getKeywordMap() != null
+                        && (b1 = SpFactUtils.getBean(KeywordMaskUtils.class)) != null) {
+                    return b1.doMask(maskLog);
                 }
                 // 正则方式
-                if(config.getRegrex() && config.getRegrexMap() != null && b2 != null){
+                if (config.getRegrex() && config.getRegrexMap() != null
+                        && (b2 = SpFactUtils.getBean(RegrexMaskUtils.class)) != null) {
                     return b2.doMask(maskLog);
                 }
             }
