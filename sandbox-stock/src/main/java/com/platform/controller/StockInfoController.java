@@ -1,12 +1,18 @@
-package com.platform.productserver.web;
+package com.platform.controller;
 
 import cn.hutool.core.collection.CollUtil;
-import com.platform.productserver.dto.FundDto;
-import com.platform.productserver.entity.EtfInfo;
-import com.platform.productserver.entity.StockInfo;
-import com.platform.productserver.service.StockService;
-import com.platform.productserver.stock.SnowStockUtils;
-import com.platform.productserver.stock.TianFundUtils;
+//import com.platform.productserver.dto.FundDto;
+//import com.platform.productserver.entity.EtfInfo;
+//import com.platform.productserver.entity.StockInfo;
+//import com.platform.productserver.service.StockService;
+//import com.platform.productserver.stock.SnowStockUtils;
+//import com.platform.productserver.stock.TianFundUtils;
+import com.platform.dto.FundDto;
+import com.platform.entity.EtfInfo;
+import com.platform.entity.StockInfo;
+import com.platform.service.StockService;
+import com.platform.utils.SnowStockUtils;
+import com.platform.utils.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

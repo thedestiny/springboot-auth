@@ -115,6 +115,36 @@ public class SftpUtils implements AutoCloseable {
     }
 
     /**
+     * 创建目录
+     *
+     * @param document 目录名称
+     * @return
+     */
+    public void createDir(String document) {
+        try {
+            log.info("开始创建目录 {}", document);
+            String[] paths = document.split(SPLIT);
+            String filePath = SPLIT;
+            for (String path : paths) {
+                if (StrUtil.isBlank(path)) {
+                    continue;
+                }
+                filePath += path + SPLIT;
+                if (isDirExist(filePath)) {
+                    channel.cd(filePath);
+                } else {
+                    // 建立目录并设置为当前目录
+                    channel.mkdir(filePath);
+                    channel.cd(filePath);
+                }
+            }
+            log.info("成功创建文件夹 {} ", document);
+        } catch (SftpException e) {
+            log.warn("sftp 目录创建失败", e);
+        }
+    }
+
+    /**
      * 将输入流上传到SFTP服务器，作为文件
      *
      * @param directory 上传到SFTP服务器的路径
@@ -153,35 +183,7 @@ public class SftpUtils implements AutoCloseable {
     }
 
 
-    /**
-     * 创建目录
-     *
-     * @param document 目录名称
-     * @return
-     */
-    public void createDir(String document) {
-        try {
-            log.info("开始创建目录 {}", document);
-            String[] paths = document.split(SPLIT);
-            String filePath = SPLIT;
-            for (String path : paths) {
-                if (StrUtil.isBlank(path)) {
-                    continue;
-                }
-                filePath += path + SPLIT;
-                if (isDirExist(filePath)) {
-                    channel.cd(filePath);
-                } else {
-                    // 建立目录并设置为当前目录
-                    channel.mkdir(filePath);
-                    channel.cd(filePath);
-                }
-            }
-            log.info("成功创建文件夹 {} ", document);
-        } catch (SftpException e) {
-            log.warn("sftp 目录创建失败", e);
-        }
-    }
+
 
     /**
      * 下载文件

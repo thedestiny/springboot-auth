@@ -12,7 +12,7 @@ import com.platform.productserver.mapper.EtfInfoMapper;
 import com.platform.productserver.mapper.FundInfoMapper;
 import com.platform.productserver.mapper.StockInfoMapper;
 import com.platform.productserver.service.StockService;
-import com.platform.productserver.stock.TianFundUtils;
+// import com.platform.productserver.stock.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +57,10 @@ public class StockServiceImpl implements StockService {
             // 循环基金代码，并判断数据库中是否存在
             FundInfo info1 = infos.get(fund.getCode());
             if (ObjectUtil.isNull(info1) || StrUtil.isBlank(info1.getSellFee())) {
-                TianFundUtils.buySellFee(fund); // 买入卖出手续费
+                // TianFundUtils.buySellFee(fund); // 买入卖出手续费
             }
             if (ObjectUtil.isNull(info1) || StrUtil.isBlank(info1.getManager())) {
-                TianFundUtils.fundInfo(fund); // 基金基本信息
+                // TianFundUtils.fundInfo(fund); // 基金基本信息
             }
             FundInfo info = new FundInfo();
             BeanUtils.copyProperties(fund, info); // 存在则更新 不存在则插入

@@ -75,6 +75,6 @@ systemctl restart sshd
 ```
 # 展示 20行数据，查看sftp 登录信息
 tail /var/log/secure -n 20
-
-
+# 查看 crontab 日志
+tail -f /var/log/messages
 ```

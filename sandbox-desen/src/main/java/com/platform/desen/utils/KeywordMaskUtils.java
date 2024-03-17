@@ -1,20 +1,25 @@
 package com.platform.desen.utils;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import com.platform.desen.config.MaskConfig;
 import com.platform.desen.config.MaskRuleEnum;
 import com.platform.desen.handler.MaskHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 /**
  * @Description 关键字脱敏方式
  * @Author kaiyang
  * @Date 2024-02-23 9:54 AM
  */
+@Slf4j
 @Component
 public class KeywordMaskUtils {
 
@@ -24,6 +29,8 @@ public class KeywordMaskUtils {
     private MaskConfig maskConfig;
 
     public String doMask(String maskLog) {
+        TimeInterval timer = DateUtil.timer();
+
         // 关键字规则
         Map<String, List<String>> keywordMap = maskConfig.getKeywordMap();
         for (Map.Entry<String, List<String>> entry : keywordMap.entrySet()) {

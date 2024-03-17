@@ -58,7 +58,10 @@ public class SftpController {
             String date = DateUtil.format(new Date(), "yyyyMMdd");
             sftp.initSftp(config);
             // 上传文件然后上传到 sftp
-            sftp.upload(config.getUploadPath() + File.separator + date, file.getOriginalFilename(), file.getInputStream());
+            String pth = config.getUploadPath() + "/" + date;
+            sftp.upload(pth, file.getOriginalFilename(), file.getInputStream());
+            String add = pth + "/" + file.getOriginalFilename();
+            return add;
         } catch (Exception e) {
             log.error("error is {} ", e.getMessage(), e);
         }
@@ -75,7 +78,9 @@ public class SftpController {
             log.info("project path is {}", tmp);
             sftp.initSftp(config);
             // 本地上传到 sftp
-            sftp.upload(config.getUploadPath() + File.separator + date, tmp + File.separator + dto.getFile());
+            String pth = config.getUploadPath() + "/" + date;
+            sftp.upload(pth, tmp + "/" + dto.getFile());
+            return pth + "/" + dto.getFile();
         } catch (Exception e) {
             log.error("error is {} ", e.getMessage(), e);
         }
