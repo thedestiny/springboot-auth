@@ -1,9 +1,10 @@
 package com.platform.utils;
 
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.Maps;
+import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Expression;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,45 +20,31 @@ public class ExpressionUtils {
 
     public static void main(String[] args) {
 
-        String expression = "";
 
-        // Expression compiledExp = AviatorEvaluator.compile(expression);
+        String expression = "1 + 3 + 5 + 4 / 2  ";
+        // 直接执行表达式 不需要多次执行相同的表达式
+        Long execute1 = (Long) AviatorEvaluator.execute(expression);
+        log.info("result is {}", execute1);
 
-        Map<String, String> map1 = new HashMap<>();
-        map1.put("123", "123");
-        map1.put("234", "234");
-        map1.put("345", "345");
-        map1.put("456", "456");
-        map1.put("567", "567");
-        map1.put("678", "678");
+        // 编译成可重复执行的表达式对象，以提高性能, 需要重复执行
+        Expression exp = AviatorEvaluator.compile(expression);
+        Object execute = exp.execute();
+        log.info("result is {} ", execute);
 
-        Map<String, String> map2 = new HashMap<>();
-        map2.put("234", "234");
-        map2.put("345", "345");
-        map2.put("456", "4568");
-        map2.put("567", "5679");
-        map2.put("678", "678");
-        map2.put("789", "789");
+        Expression lexp = AviatorEvaluator.compile("a>b? a+b:a*b");
+        Map<String, Object> env = new HashMap<>();
+        env.put("a", 2);
+        env.put("b", 1);
+        Long execute2 = (Long) lexp.execute(env);
+        log.info("result2 is {} ", execute2);
 
-        // map difference 的不同内容
-        MapDifference<String, String> diff = Maps.difference(map1, map2);
-        // 是否相等
-        boolean result = diff.areEqual();
-        // 左侧多的情况
-        Map<String, String> left = diff.entriesOnlyOnLeft();
-        // 右侧多的情况
-        Map<String, String> right = diff.entriesOnlyOnRight();
-        // 相同且对平的情况
-        Map<String, String> common = diff.entriesInCommon();
-
-        log.info("result is {}", result);
-        log.info("result left is {}", left);
-        log.info("result right {}", right);
-        log.info("result common {}", common);
-        // key 相同但是 value 不同的情况
-        Map<String, MapDifference.ValueDifference<String>> difference = diff.entriesDiffering();
-        MapDifference.ValueDifference<String> def = difference.get("456");
-        log.info("result difference {} left {} right {} ", difference, def.leftValue(), def.rightValue());
+//        AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+//        AviatorEvaluator.setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
+        Map<String, Object> env1 = new HashMap<>();
+        env1.put("a", BigDecimal.valueOf(2));
+        env1.put("b", BigDecimal.valueOf(6));
+        BigDecimal execute3 = (BigDecimal) AviatorEvaluator.execute("a /b ", env1);
+        log.info("execute3 is {} ", execute3);
 
 
     }
