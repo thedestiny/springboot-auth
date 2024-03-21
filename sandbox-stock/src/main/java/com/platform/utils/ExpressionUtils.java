@@ -38,8 +38,6 @@ public class ExpressionUtils {
         Long execute2 = (Long) lexp.execute(env);
         log.info("result2 is {} ", execute2);
 
-//        AviatorEvaluator.getInstance().setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
-//        AviatorEvaluator.setOption(Options.ALWAYS_PARSE_FLOATING_POINT_NUMBER_INTO_DECIMAL, true);
         Map<String, Object> env1 = new HashMap<>();
         env1.put("a", BigDecimal.valueOf(2));
         env1.put("b", BigDecimal.valueOf(6));
