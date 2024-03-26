@@ -1,0 +1,12 @@
+server:
+  port: 9098
+spring:
+  profiles:
+    active: dev
+
+logging:
+  level:
+    com.platform.migrate: info
+    org.apache.flink.runtime.checkpoint: warn
+    org.apache.flink.runtime.source.coordinator.SourceCoordinator: warn
+    com.ververica.cdc.connectors.mysql.source.reader.MySqlSourceReader: warn
