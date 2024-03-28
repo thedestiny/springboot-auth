@@ -38,6 +38,7 @@
         <module>sandbox-message</module>
         <module>sandbox-stock</module>
         <module>sandbox-desen</module>
+        <module>data-cleaning</module>
 
     </modules>
 

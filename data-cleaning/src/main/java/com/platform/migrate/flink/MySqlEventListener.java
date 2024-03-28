@@ -41,18 +41,17 @@ public class MySqlEventListener  implements CommandLineRunner {
                 .serverTimeZone("Asia/Shanghai")
                 .build();
 
-        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
-        // 设置 3s 的 checkpoint 间隔
-        env.enableCheckpointing(3000);
-        DataStreamSource<String> streamSource = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
-                // 设置 source 节点的并行度为 1
-                .setParallelism(1);
-
-        // 设置 sink 节点并行度为 1
-        streamSource.addSink(customSink).setParallelism(1);
-
-        env.execute("Print MySQL Snapshot + Binlog");
+//        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+//
+//        // 设置 3s 的 checkpoint 间隔
+//        env.enableCheckpointing(3000);
+//        DataStreamSource<String> streamSource = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
+//                // 设置 source 节点的并行度为 1
+//                .setParallelism(1);
+//
+//        // 设置 sink 节点并行度为 1
+//        streamSource.addSink(customSink).setParallelism(1);
+//        env.execute("Print MySQL Snapshot + Binlog");
     }
 
 

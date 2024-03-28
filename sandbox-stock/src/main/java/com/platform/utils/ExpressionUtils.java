@@ -44,6 +44,14 @@ public class ExpressionUtils {
         BigDecimal execute3 = (BigDecimal) AviatorEvaluator.execute("a /b ", env1);
         log.info("execute3 is {} ", execute3);
 
+        String email = "killme2008@gmail.com";
+        Map<String, Object> env2 = new HashMap<>();
+        env2.put("email", email);
+        String username =
+                (String) AviatorEvaluator.execute("email=~/([\\w0-8]+)@\\w+[\\.\\w+]+/ ? $1:'unknow'", env2);
+        System.out.println(username);
+
+
 
     }
 

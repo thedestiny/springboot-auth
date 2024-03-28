@@ -143,4 +143,7 @@ OAuth 中有四个主要参与者：
 Aviator 表达式 
 Guava maps表达式 
 
+代码精简 
+https://juejin.cn/post/7347905080508547099
+
 ```
