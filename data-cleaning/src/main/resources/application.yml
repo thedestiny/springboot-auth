@@ -4,6 +4,22 @@ spring:
   profiles:
     active: dev
 
+
+
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      auto-commit: false
+      idle-timeout: 20000
+      maximum-pool-size: 2000
+      pool-name: data-cleaning-pool
+    type: com.zaxxer.hikari.HikariDataSource
+
+
+
+
+
+
 logging:
   level:
     com.platform.migrate: info
