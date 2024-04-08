@@ -1,22 +1,24 @@
 syntax = "proto3";
 package example;
 
+import "google/protobuf/timestamp.proto";
+
 // java 配置
 option java_package = "com.platform.dto";
-option java_outer_classname = "Person";
+option java_outer_classname = "Stu";
 
 // option optimize_for = LITE_RUNTIME;
 
-message student {
+message Student {
 
-  int32 id = 1;
+  int64 id = 1;
   string name = 2;
   double weight = 3;
   int64 seq = 4;
   string address = 5;
   Direction direct = 6;
   bool flag = 7;
-  bytes imgs = 8;
+  google.protobuf.Timestamp birthday = 8;
 
 }
 

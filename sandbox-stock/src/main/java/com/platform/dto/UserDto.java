@@ -43,21 +43,21 @@ public class UserDto implements Serializable {
 
 
         // build 构建对象
-        Person.student.Builder builder = Person.student.newBuilder();
+        Stu.Student.Builder builder = Stu.Student.newBuilder();
         builder.setAddress("河南省洛阳市龙门区23号");
         builder.setFlag(true);
         builder.setName("韦孝宽");
-        builder.setDirect(Person.Direction.DOWN);
+        builder.setWeight(34.5);
+        builder.setDirect(Stu.Direction.DOWN);
         builder.setId(345);
         builder.setSeq(123445567890L);
-
         // 构建对象
-        Person.student build = builder.build();
+        Stu.Student build = builder.build();
 
         // 序列化
         byte[] bytes = build.toByteArray();
         // 反序列化
-        Person.student student = Person.student.parseFrom(bytes);
+        Stu.Student student = Stu.Student.parseFrom(bytes);
         System.out.println(student.getAddress());
 
 
