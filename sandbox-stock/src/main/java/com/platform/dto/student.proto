@@ -1,0 +1,30 @@
+syntax = "proto3";
+package example;
+
+// java 配置
+option java_package = "com.platform.dto";
+option java_outer_classname = "Person";
+
+// option optimize_for = LITE_RUNTIME;
+
+message student {
+
+  int32 id = 1;
+  string name = 2;
+  double weight = 3;
+  int64 seq = 4;
+  string address = 5;
+  Direction direct = 6;
+  bool flag = 7;
+  bytes imgs = 8;
+
+}
+
+enum Direction {
+
+  LEFT = 0;
+  RIGHT = 1;
+  UP = 2;
+  DOWN = 3;
+
+}

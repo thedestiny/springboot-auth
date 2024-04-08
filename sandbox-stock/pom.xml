@@ -7,6 +7,7 @@
     <version>1.0</version>
     <name>sandbox-stock</name>
     <description>sandbox-stock</description>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,6 +15,19 @@
         <spring-boot.version>2.3.10.RELEASE</spring-boot.version>
     </properties>
     <dependencies>
+
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.24.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+            <version>3.24.0</version>
+        </dependency>
 
 
         <!-- aviator -->

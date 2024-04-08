@@ -84,6 +84,17 @@ DATE_FORMAT(NOW(),'%m-%d-%Y')
 DATE_FORMAT(NOW(),'%d %b %y')
 DATE_FORMAT(NOW(),'%d %b %Y %T:%f')
 
+DATE_FORMAT(NOW(),'%Y-%m-%d %T' )
+
+
+# mysql 分组查询数据 
+SELECT
+	user_id as 'td', DATE_FORMAT(create_time,'%Y-%m-%d %T' ) as 'ct'
+FROM
+	( SELECT *, ROW_NUMBER() OVER ( PARTITION BY user_id ORDER BY create_time DESC ) AS row_num FROM tb_user_log where create_time >= '2024-03-08' ) t 
+WHERE
+	row_num = 1;
+
 ```
 
 

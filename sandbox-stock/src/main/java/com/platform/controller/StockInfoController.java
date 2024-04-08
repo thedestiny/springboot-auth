@@ -35,6 +35,7 @@ public class StockInfoController {
 
     @Autowired
     private StockService stockService;
+
     @Autowired
     private ExecutorService service;
 
