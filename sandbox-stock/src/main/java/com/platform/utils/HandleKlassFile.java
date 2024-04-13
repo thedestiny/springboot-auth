@@ -9,7 +9,7 @@ public class HandleKlassFile {
 
     public static void main(String[] args) {
 
-        String path = "pro_path\\aries";
+        String path = "placeholder";
 
         String dd = "/* 292 */";
         System.out.println(dd.length());
