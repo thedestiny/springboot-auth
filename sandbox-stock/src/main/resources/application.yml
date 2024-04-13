@@ -69,8 +69,7 @@ person:
       - t11
       - t22
       - t33
-
-
+      -
 app:
   dataList: 34,45,56
   hobbys: '{"lilei": "篮球", "lili": "乒乓球", "hanlei": "羽毛球"}'

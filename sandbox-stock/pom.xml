@@ -16,17 +16,6 @@
     </properties>
     <dependencies>
 
-        <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>1.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>snakeyaml</artifactId>
-                    <groupId>org.yaml</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -39,6 +28,12 @@
             <artifactId>easyexcel-support</artifactId>
             <version>3.1.5</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.yaml</groupId>-->
+<!--            <artifactId>snakeyaml</artifactId>-->
+<!--        </dependency>-->
+
 
 
         <dependency>
@@ -57,6 +52,12 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 

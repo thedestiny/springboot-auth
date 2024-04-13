@@ -8,6 +8,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.github.javafaker.Faker;
 import com.google.common.collect.Lists;
 import com.platform.dto.AppExcelDto;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Description
@@ -39,15 +41,18 @@ public class ExcelController {
     /**
      * 导出上限。默认100000
      */
-    @Value("${total.export.ceiling:100000}")
+    @Value("${export.total.num:1000}")
     public Integer total;
     /**
      * 单次导出条数，默认10000
      */
-    @Value("${perNum.export.size:100000}")
+    @Value("${export.perNum.size:100}")
     public Integer perNum;
 
 
+    /**
+     * 分批生成数据并导出 excel
+     */
     @GetMapping(value = "download")
     public void download(HttpServletRequest request, HttpServletResponse response){
 
@@ -60,12 +65,13 @@ public class ExcelController {
         int line = 0;
         String fileName = "result" + DateUtil.format(new Date(), "YY-MM-DD");
         try {
-            WriteSheet writeSheet = EasyExcelFactory.writerSheet(fileName).build();
+            // 导出为一个 sheet
+            // WriteSheet writeSheet = EasyExcelFactory.writerSheet("result").build();
             while (true) {
+                // 导出为多个 sheet
+                WriteSheet writeSheet = EasyExcelFactory.writerSheet("result-" + line).build();
                 //分页查询
-
                 excelDtoList = buildDataList();
-
                 //根据数据导出excel
                 if (CollUtil.isNotEmpty(excelDtoList)) {
                     if (outputStream == null) {
@@ -127,10 +133,15 @@ public class ExcelController {
 
         List<AppExcelDto> dataList = Lists.newArrayList();
 
+        //  SIMPLIFIED_CHINESE
+        Faker faker = new Faker(new Locale("zh", "CN"));
+        for (int i = 0; i < 100; i++) {
 
-
-
-
+            AppExcelDto dto = new AppExcelDto();
+            dto.setName(faker.name().fullName());
+            dto.setAddress(faker.address().fullAddress());
+            dataList.add(dto);
+        }
         return dataList;
     }
 
@@ -144,6 +155,15 @@ public class ExcelController {
         response.setHeader("Content-Type", "application/force-download");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         return response.getOutputStream();
+    }
+
+    public static void main(String[] args) {
+
+        Faker faker = new Faker(new Locale("zh", "CN"));
+
+        System.out.println(faker.address().fullAddress());
+        System.out.println(faker.name().fullName());
+
     }
 
 
