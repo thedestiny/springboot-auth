@@ -106,6 +106,13 @@
         </filter>
     </appender>
 
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 设置日志事件队列的最大长度 -->
+        <queueSize>512</queueSize>
+        <!-- 添加真正的日志appender，比如File或Console -->
+        <appender-ref ref="CONSOLE" />
+    </appender>
+
 
 
     <root level="INFO">
@@ -113,6 +120,7 @@
         <appender-ref ref="INFO_FILE"/>
         <appender-ref ref="WARN_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
+        <appender-ref ref="ASYNC_FILE"/>
         <!--        <if condition='"true".equals(property("kafka_enabled"))'>-->
         <!--            <then>-->
         <!--                <appender-ref ref="KAFKA_ASYNC"/>-->
