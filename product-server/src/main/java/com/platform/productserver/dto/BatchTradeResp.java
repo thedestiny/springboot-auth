@@ -15,6 +15,8 @@ import java.util.List;
 public class BatchTradeResp implements Serializable {
 
 
+    private static final long serialVersionUID = 4162685945481542445L;
+
     private List<BaseNode> dataList;
 
 

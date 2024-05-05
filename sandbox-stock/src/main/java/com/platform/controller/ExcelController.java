@@ -2,6 +2,7 @@ package com.platform.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -15,12 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
@@ -50,11 +53,32 @@ public class ExcelController {
     public Integer perNum;
 
 
+    @PostMapping(value = "upload")
+    public void upload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+
+//        EasyExcel.read("", AppExcelDto.class, new Ex)
+//        EasyExcel.read(request.getInputStream(),  );
+
+
+    }
+
+
+
+
+
     /**
      * 分批生成数据并导出 excel
      */
     @GetMapping(value = "download")
-    public void download(HttpServletRequest request, HttpServletResponse response){
+    public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里 URLEncoder.encode可以防止中文乱码 当然和EasyExcel没有关系
+        String name = URLEncoder.encode("课程分类", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename="+ name + ".xlsx");
+
 
         ExcelWriter excelWriter = null;
         OutputStream outputStream = null;
@@ -79,7 +103,9 @@ public class ExcelController {
                     }
                     if (excelWriter == null) {
                         excelWriter = EasyExcelFactory.write(outputStream, AppExcelDto.class)
-                                .registerWriteHandler(excelStyle()).build();
+                                .registerWriteHandler(excelStyle())
+                                // .password("123456")
+                                .build();
                     }
                     excelWriter.write(excelDtoList, writeSheet);
                     totalCount = totalCount + excelDtoList.size();
