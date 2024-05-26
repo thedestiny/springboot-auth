@@ -10,15 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * 读取 excel
+ */
 @Slf4j
-@Data
-public class AppExcelListener extends AnalysisEventListener<T> {
+public class AppExcelListener<T> extends AnalysisEventListener<T> {
 
-
-    //创建list集合封装最终的数据
+    // 创建list集合封装最终的数据
     private List<T> list = new ArrayList<>();
-
+    public List<T> getList() {
+        return list;
+    }
 
     //一行一行去读取excle内容
     @Override

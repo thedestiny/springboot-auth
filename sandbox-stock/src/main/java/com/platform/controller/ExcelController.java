@@ -9,8 +9,10 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.fastjson.JSONObject;
 import com.github.javafaker.Faker;
 import com.google.common.collect.Lists;
+import com.platform.config.AppExcelListener;
 import com.platform.dto.AppExcelDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +43,6 @@ import java.util.Locale;
 @RequestMapping(value = "excel")
 public class ExcelController {
 
-
     /**
      * 导出上限。默认100000
      */
@@ -53,18 +55,22 @@ public class ExcelController {
     public Integer perNum;
 
 
+    /**
+     * 上传 excel
+     */
     @PostMapping(value = "upload")
-    public void upload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void upload(MultipartFile file,HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-
-//        EasyExcel.read("", AppExcelDto.class, new Ex)
-//        EasyExcel.read(request.getInputStream(),  );
-
+        AppExcelListener<AppExcelDto> listener = new AppExcelListener<>();
+        // 读取 excel 内容
+        EasyExcel.read(file.getInputStream(), AppExcelDto.class, listener).sheet().doRead();
+        List<AppExcelDto> dataList = listener.getList();
+        // 循环输出内容
+        for (AppExcelDto dto : dataList) {
+            log.info("data node {}", JSONObject.toJSONString(dto));
+        }
 
     }
-
-
-
 
 
     /**
@@ -77,7 +83,7 @@ public class ExcelController {
         response.setCharacterEncoding("utf-8");
         // 这里 URLEncoder.encode可以防止中文乱码 当然和EasyExcel没有关系
         String name = URLEncoder.encode("课程分类", "UTF-8");
-        response.setHeader("Content-disposition", "attachment;filename="+ name + ".xlsx");
+        response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
 
 
         ExcelWriter excelWriter = null;
@@ -127,7 +133,7 @@ public class ExcelController {
 
     }
 
-    protected HorizontalCellStyleStrategy excelStyle(){
+    protected HorizontalCellStyleStrategy excelStyle() {
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
         // 字体策略
         WriteFont contentWriteFont = new WriteFont();
@@ -142,15 +148,15 @@ public class ExcelController {
         return new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
     }
 
-    public void closeOutputStream(ExcelWriter excelWriter, OutputStream outputStream){
-        if(excelWriter != null){
+    public void closeOutputStream(ExcelWriter excelWriter, OutputStream outputStream) {
+        if (excelWriter != null) {
             excelWriter.finish();
         }
-        if(outputStream != null){
+        if (outputStream != null) {
             try {
                 outputStream.close();
             } catch (IOException e) {
-                log.error("export excel error error list:{}",e);
+                log.error("export excel error error list:{}", e);
             }
         }
     }
@@ -191,8 +197,6 @@ public class ExcelController {
         System.out.println(faker.name().fullName());
 
     }
-
-
 
 
 }
