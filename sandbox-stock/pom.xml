@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.3.2</version>
+            <version>3.3.4</version>
         </dependency>
 
         <!-- commons-upload -->
@@ -36,14 +36,6 @@
         </dependency>
 
         <!-- commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-
-
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel-core</artifactId>
@@ -95,7 +87,7 @@
             <version>5.4.1</version>
         </dependency>
 
-
+        <!-- commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
