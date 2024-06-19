@@ -59,7 +59,7 @@ public class ExcelController {
      * 上传 excel
      */
     @PostMapping(value = "upload")
-    public void upload(MultipartFile file,HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void upload(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         AppExcelListener<AppExcelDto> listener = new AppExcelListener<>();
         // 读取 excel 内容
@@ -85,23 +85,20 @@ public class ExcelController {
         String name = URLEncoder.encode("课程分类", "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
 
-
+        // excel writer 计算数据量以及数据的
         ExcelWriter excelWriter = null;
         OutputStream outputStream = null;
-        List<AppExcelDto> excelDtoList;
         int pages = total / perNum;
         int totalCount = 0;
-
         int line = 0;
         String fileName = "result" + DateUtil.format(new Date(), "YY-MM-DD");
         try {
             // 导出为一个 sheet
             // WriteSheet writeSheet = EasyExcelFactory.writerSheet("result").build();
             while (true) {
-                // 导出为多个 sheet
+                // 导出为多个 sheet配置
                 WriteSheet writeSheet = EasyExcelFactory.writerSheet("result-" + line).build();
-                //分页查询
-                excelDtoList = buildDataList();
+                List<AppExcelDto> excelDtoList = buildDataList();   //分页查询, mock 查询结果
                 //根据数据导出excel
                 if (CollUtil.isNotEmpty(excelDtoList)) {
                     if (outputStream == null) {
@@ -110,7 +107,7 @@ public class ExcelController {
                     if (excelWriter == null) {
                         excelWriter = EasyExcelFactory.write(outputStream, AppExcelDto.class)
                                 .registerWriteHandler(excelStyle())
-                                // .password("123456")
+                                // .password("123456") // 设置导出文件的密码
                                 .build();
                     }
                     excelWriter.write(excelDtoList, writeSheet);
@@ -121,11 +118,8 @@ public class ExcelController {
                     break;
                 }
             }
-            if (totalCount > 0) {
-                //发送Kafka消息
-            }
         } catch (Exception e) {
-            log.error(" export excel error error list:{}", e);
+            log.error(" export excel error error list: {}", e.getMessage(), e);
         } finally {
             closeOutputStream(excelWriter, outputStream);
         }
@@ -148,6 +142,9 @@ public class ExcelController {
         return new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
     }
 
+    /**
+     * 关闭文件流
+     */
     public void closeOutputStream(ExcelWriter excelWriter, OutputStream outputStream) {
         if (excelWriter != null) {
             excelWriter.finish();
@@ -156,19 +153,20 @@ public class ExcelController {
             try {
                 outputStream.close();
             } catch (IOException e) {
-                log.error("export excel error error list:{}", e);
+                log.error("export excel error error list:{}", e.getMessage(), e);
             }
         }
     }
 
+    /**
+     * 通过 Faker 来mock 数据
+     */
     private List<AppExcelDto> buildDataList() {
 
         List<AppExcelDto> dataList = Lists.newArrayList();
-
         //  SIMPLIFIED_CHINESE
         Faker faker = new Faker(new Locale("zh", "CN"));
         for (int i = 0; i < 100; i++) {
-
             AppExcelDto dto = new AppExcelDto();
             dto.setName(faker.name().fullName());
             dto.setAddress(faker.address().fullAddress());

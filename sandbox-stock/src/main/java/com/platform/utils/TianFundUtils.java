@@ -70,6 +70,8 @@ public class TianFundUtils {
         HttpResponse execute = request.execute();
         String body = execute.body();
         String replace = body.replace("var rankData = ", "").trim();
+        replace = replace.replace(";", "");
+        System.out.println(replace);
         JSONObject json = JSONObject.parseObject(replace);
         JSONArray datas = json.getJSONArray("datas");
         List<EtfInfo> dtoList = Lists.newArrayList();
@@ -91,12 +93,13 @@ public class TianFundUtils {
             dto.setYear3(bg(split[12]));
             dto.setYear(bg(split[13]));
             dto.setSince(bg(split[14]));
-            // capEtfTradeInfo(dto);
+            capEtfTradeInfo(dto);
             // 基金基本信息
             try {
                 etfInfo(dto);
             } catch (Exception e) {
             }
+            System.out.println("start " + i);
             dtoList.add(dto);
         }
         return dtoList;
@@ -209,7 +212,8 @@ public class TianFundUtils {
         fund.setManager(listMap.getOrDefault("基金经理人", ""));
         String issue = listMap.getOrDefault("成立日期/规模", "");
         fund.setIssue(transIssue(issue));
-        fund.setFundSize(listMap.getOrDefault("资产规模", "").split("（")[0]);
+        String fundSize = listMap.getOrDefault("资产规模", "").split("（")[0];
+        fund.setFundSize(StrUtil.replace(fundSize,"亿元" , ""));
         fund.setShareSize(listMap.getOrDefault("份额规模", "").split("（")[0]);
     }
 
