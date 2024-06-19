@@ -82,9 +82,8 @@ public class ExcelController {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         // 这里 URLEncoder.encode可以防止中文乱码 当然和EasyExcel没有关系
-        String name = URLEncoder.encode("课程分类", "UTF-8");
+        String name = URLEncoder.encode("导出文件名称", "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
-
 
         ExcelWriter excelWriter = null;
         OutputStream outputStream = null;
