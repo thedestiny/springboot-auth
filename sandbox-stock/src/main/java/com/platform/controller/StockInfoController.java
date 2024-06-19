@@ -49,14 +49,14 @@ public class StockInfoController {
     @GetMapping(value = "etf/info/list")
     public String etfInfoList() {
 
-//        List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
-//        service.submit(() -> {
-//            stockService.saveEtfInfoList(etfInfos);
-//        });
+        List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
         List<EtfInfo> result = HuaUtils.captureEtf();
-        service.submit(() -> {
-            stockService.saveEtfInfoList(result);
-        });
+
+        stockService.saveEtfInfoList(etfInfos);
+        stockService.saveEtfInfoList(result);
+
+//        service.submit(() -> {
+//        });
         log.info("finish!");
 
         return "success";

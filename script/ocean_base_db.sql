@@ -79,6 +79,8 @@ CREATE TABLE `tb_etf_info` (
       `fund_size` varchar(100)  NOT NULL DEFAULT '' COMMENT '基金规模',
       `share_size` varchar(100)  NOT NULL DEFAULT '' COMMENT '基金份额',
       `update_date` varchar(20) NOT NULL DEFAULT '0' COMMENT '数据更新日期',
+      `market` varchar(32)   NULL DEFAULT '' COMMENT '市场',
+      `detail` varchar(32)   NULL DEFAULT '' COMMENT '详情',
       PRIMARY KEY (`code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='ETF场内基金基本信息表';
 

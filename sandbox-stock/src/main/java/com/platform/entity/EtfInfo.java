@@ -118,7 +118,7 @@ public class EtfInfo implements Serializable {
     /**
      * 基金规模
      */
-    private String fundSize;
+    private BigDecimal fundSize;
 
     /**
      * 基金份额

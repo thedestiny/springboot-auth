@@ -61,6 +61,7 @@ public class TianFundUtils {
 
     /**
      * etf 信息列表
+     * 164824
      */
     public static List<EtfInfo> etfInfoList() {
 
@@ -71,7 +72,6 @@ public class TianFundUtils {
         String body = execute.body();
         String replace = body.replace("var rankData = ", "").trim();
         replace = replace.replace(";", "");
-        System.out.println(replace);
         JSONObject json = JSONObject.parseObject(replace);
         JSONArray datas = json.getJSONArray("datas");
         List<EtfInfo> dtoList = Lists.newArrayList();
@@ -127,7 +127,8 @@ public class TianFundUtils {
             // f120 20日涨跌
             // f121 60日涨跌
             // f122 今年以来涨跌
-            String response = HttpUtil.get("http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&fields=f58,f43,f170,f44,f45,f46,f60,f119,f120,f121,f122&secid=" + secid);
+            // String response = HttpUtil.get("http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&fields=f58,f43,f170,f44,f45,f46,f60,f119,f120,f121,f122&secid=" + secid);
+            String response = HttpUtil.get("https://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=2&fields=f58,f734,f107,f57,f43,f59,f169,f170,f152,f46,f60,f44,f45,f47,f48,f19,f17,f531,f15,f13,f11,f20,f18,f16,f14,f12,f39,f37,f35,f33,f31,f40,f38,f36,f34,f32,f211,f212,f213,f214,f215,f210,f209,f208,f207,f206,f161,f49,f171,f50,f86,f168,f108,f167,f71,f292,f51,f52,f191,f192,f452,f177&secid=" + secid);
             JSONObject jsonObject = JSONObject.parseObject(response);
             data = jsonObject.getJSONObject("data");
             String brief = data.getString("f58");
@@ -135,12 +136,12 @@ public class TianFundUtils {
             if (data.containsKey("f43") && !StrUtil.equalsAny(data.getString("f43"), "-", null, "")) {
                 dto.setPrice(data.getBigDecimal("f43"));
             }
-            if (data.containsKey("170") && !StrUtil.equalsAny(data.getString("f170"), "-", null, "")) {
+            if (data.containsKey("f170") && !StrUtil.equalsAny(data.getString("f170"), "-", null, "")) {
                 dto.setRate(data.getBigDecimal("f170"));
             }
 
         } catch (Exception e) {
-            log.error(" error  code {} data {} e {}", dto.getCode(), data, e);
+            log.error(" error  code {} data {} e ", dto.getCode(), data, e);
         }
     }
 
@@ -213,7 +214,10 @@ public class TianFundUtils {
         String issue = listMap.getOrDefault("成立日期/规模", "");
         fund.setIssue(transIssue(issue));
         String fundSize = listMap.getOrDefault("资产规模", "").split("（")[0];
-        fund.setFundSize(StrUtil.replace(fundSize,"亿元" , ""));
+        String sz = StrUtil.replace(fundSize, "亿元", "").replace(",", "");
+        try {
+            fund.setFundSize(new BigDecimal(sz));
+        }catch (Exception e){}
         fund.setShareSize(listMap.getOrDefault("份额规模", "").split("（")[0]);
     }
 
