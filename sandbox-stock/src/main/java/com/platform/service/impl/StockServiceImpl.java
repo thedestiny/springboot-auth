@@ -85,8 +85,10 @@ public class StockServiceImpl implements StockService {
         }
         for (EtfInfo fund : etfs) {
             if (infos.containsKey(fund.getCode())) {
+                log.info("update {}", fund.getCode());
                 cnt += etfInfoMapper.updateById(fund);
             } else {
+                log.info("insert {}", fund.getCode());
                 cnt += etfInfoMapper.insert(fund);
             }
         }
