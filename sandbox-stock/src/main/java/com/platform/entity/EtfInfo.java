@@ -135,6 +135,12 @@ public class EtfInfo implements Serializable {
      */
     private BigDecimal rate;
 
+    /**
+     * 市场
+     */
+    private String market;
+
+    private String detail;
 
 
 }

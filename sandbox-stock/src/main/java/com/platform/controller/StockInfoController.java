@@ -7,10 +7,12 @@ import cn.hutool.core.collection.CollUtil;
 //import com.platform.productserver.service.StockService;
 //import com.platform.productserver.stock.SnowStockUtils;
 //import com.platform.productserver.stock.TianFundUtils;
+import com.alibaba.fastjson.JSONArray;
 import com.platform.dto.FundDto;
 import com.platform.entity.EtfInfo;
 import com.platform.entity.StockInfo;
 import com.platform.service.StockService;
+import com.platform.utils.HuaUtils;
 import com.platform.utils.SnowStockUtils;
 import com.platform.utils.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -41,16 +43,22 @@ public class StockInfoController {
 
     /**
      * ETF 信息列表
-     * localhost:9501/api/etf/info/list
+     * localhost:9897/api/etf/info/list
      * http://fund.eastmoney.com/data/fbsfundranking.html
      */
     @GetMapping(value = "etf/info/list")
     public String etfInfoList() {
 
-        List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
+//        List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
+//        service.submit(() -> {
+//            stockService.saveEtfInfoList(etfInfos);
+//        });
+        List<EtfInfo> result = HuaUtils.captureEtf();
         service.submit(() -> {
-            stockService.saveEtfInfoList(etfInfos);
+            stockService.saveEtfInfoList(result);
         });
+        log.info("finish!");
+
         return "success";
     }
 
