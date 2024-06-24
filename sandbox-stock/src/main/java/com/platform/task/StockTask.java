@@ -4,9 +4,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.platform.entity.EtfInfo;
 import com.platform.entity.StockInfo;
 import com.platform.service.StockService;
+import com.platform.utils.HuaUtils;
 import com.platform.utils.SnowStockUtils;
+import com.platform.utils.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -39,7 +42,7 @@ public class StockTask {
     public void task() {
         log.info("start task !");
         Integer total = 0;
-        for (int i = 0; i < 57; i++) {
+        for (int i = 0; i < 60; i++) {
             List<StockInfo> stockInfos = SnowStockUtils.queryStockList(i + 1, 90);
             if (CollUtil.isEmpty(stockInfos)) {
                 return;
@@ -64,10 +67,25 @@ public class StockTask {
                 } catch (Exception e) {
                     log.error("code is node {} error {}",JSONObject.toJSONString(node), e.getMessage(), e);
                 }
-
             }
         }
     }
 
+
+    @Scheduled(cron = "0 */10 * * * ?")
+    public void taskEtf() {
+        log.info("start etf task !");
+        try {
+
+            List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
+            List<EtfInfo> result = HuaUtils.captureEtf();
+
+            service.saveEtfInfoList(etfInfos);
+            service.saveEtfInfoList(result);
+
+        }catch (Exception e){
+
+        }
+    }
 
 }
