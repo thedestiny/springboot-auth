@@ -38,7 +38,7 @@ public class StockTask {
      */
     // 20 22 * * * ?
     // 0 */1 * * * ?
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */10 * * * ?")
     public void task() {
         log.info("start task !");
         Integer total = 0;
@@ -78,9 +78,9 @@ public class StockTask {
         try {
 
             List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
-            List<EtfInfo> result = HuaUtils.captureEtf();
-
             service.saveEtfInfoList(etfInfos);
+
+            List<EtfInfo> result = HuaUtils.captureEtf();
             service.saveEtfInfoList(result);
 
         }catch (Exception e){
