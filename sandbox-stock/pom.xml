@@ -79,6 +79,13 @@
             </exclusions>
         </dependency>
 
+        <!-- shardingsphere-jdbc-core -->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc-core</artifactId>
+            <version>5.2.1</version>
+        </dependency>
+
 
         <!-- aviator -->
         <dependency>
@@ -181,6 +188,12 @@
             <version>3.4.3</version>
         </dependency>
 
+        <!--  jasypt 加解密-->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.5</version>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>
@@ -197,6 +210,13 @@
 
     <build>
         <plugins>
+            <!--  jasypt 编译插件  jasypt.encryptor.password=test  -->
+            <plugin>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-maven-plugin</artifactId>
+                <version>3.0.5</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

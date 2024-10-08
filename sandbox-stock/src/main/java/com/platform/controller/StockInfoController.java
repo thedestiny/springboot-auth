@@ -17,9 +17,11 @@ import com.platform.utils.SnowStockUtils;
 import com.platform.utils.TianFundUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -31,7 +33,7 @@ import java.util.concurrent.ExecutorService;
  * @Date 2023-08-07 9:42 AM
  */
 @Slf4j
-@Controller
+@RestController
 @RequestMapping(value = "api")
 public class StockInfoController {
 
@@ -40,6 +42,15 @@ public class StockInfoController {
 
     @Autowired
     private ExecutorService service;
+
+    @Value("${app.name}")
+    private String name;
+
+    @GetMapping(value = "test")
+    public String test() {
+        log.info("name is {}", name);
+        return name;
+    }
 
     /**
      * ETF 信息列表
@@ -50,9 +61,10 @@ public class StockInfoController {
     public String etfInfoList() {
 
         List<EtfInfo> etfInfos = TianFundUtils.etfInfoList();
-        List<EtfInfo> result = HuaUtils.captureEtf();
 
         stockService.saveEtfInfoList(etfInfos);
+
+        List<EtfInfo> result = HuaUtils.captureEtf();
         stockService.saveEtfInfoList(result);
 
 //        service.submit(() -> {
@@ -71,7 +83,7 @@ public class StockInfoController {
 
         for (int i = 0; i < 100; i++) {
             List<StockInfo> stockInfos = SnowStockUtils.queryStockList(i + 1, 100);
-            log.info("page is {}",i );
+            log.info("page is {}", i);
             if (CollUtil.isNotEmpty(stockInfos)) {
                 stockService.saveStockInfoList(stockInfos);
             }
