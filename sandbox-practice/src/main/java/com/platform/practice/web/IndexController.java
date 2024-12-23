@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class IndexController {
 
-    @GetMapping(value = "/merchant/list")
+    @GetMapping(value = "/test/list")
     public String test(HttpServletRequest request){
         log.info("test {}", request.getRequestURI());
         return "";
