@@ -1,4 +1,4 @@
-package com.platform.utils;
+package com.platform.practice.utils;
 
 import cn.hutool.http.HttpResponse;
 
