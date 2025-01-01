@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 
@@ -185,7 +186,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                 // 查询冻结账户，如果存在则更新数据否则新增数据
                 Freeze freeze = freezeMapper.queryFreezeAccount(update.getId(), activityType);
                 BigDecimal freezeAmt = amount;
-                if (ObjectUtil.isNotEmpty(freeze)) {
+                if (ObjectUtil.isNotEmpty(freeze) && freeze.getId() != null) {
                     freezeAmt = NumberUtil.add(freezeAmt, freeze.getFreezeAmount());
                     freeze.setFreezeAmount(freezeAmt);
                     freezeMapper.updateById(freeze);
@@ -196,6 +197,8 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                     freez.setAccountId(merchant.getId());
                     freez.setFreezeType(activityType);
                     freez.setFreezeAmount(amount);
+                    freez.setCreateTime(new Date());
+                    freez.setUpdateTime(new Date());
                     freezeMapper.insert(freez);
                     transLog.setAccountId(freez.getId());
                 }
@@ -226,7 +229,7 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
         checkMerchantInfo(merchant); // 校验商户信息
         BigDecimal amount = freezeDto.getAmount();  // 获取解冻金额和解冻类型
         String activityType = freezeDto.getActivityType();
-        // 构建流水日志
+        // 构建冻结流水日志
         FreezeLog transLog = buildFreezeLog(merchant, freezeDto, TransTypeEnum.FREEZE_OUT.getCode());
         MerchantLog merchantLog = buildMerchantLog(freezeDto, merchant, TransTypeEnum.FREEZE_OUT.getCode());
         Object obj = template.execute(status -> {
@@ -241,12 +244,12 @@ public class MerchantServiceImpl extends ServiceImpl<MerchantMapper, Merchant> i
                 if (ObjectUtil.isEmpty(freeze))
                     throw new AppException(ResultCode.NOT_EXIST, "冻结类型不存在!");
                 // 查询原冻结流水
-                FreezeLog freezeLog = freezeLogMapper.queryFreezeLog(freezeDto.getRequestNo());
+                FreezeLog freezeLog = freezeLogMapper.queryFreezeLog(freezeDto.getOrigRequestNo());
                 if (ObjectUtil.isEmpty(freezeLog))
                     throw new AppException(ResultCode.NOT_EXIST, "原冻结流水不存在!");
                 // 冻结类型中的冻结金额
                 BigDecimal freezeAmount = freeze.getFreezeAmount();
-                if (!NumberUtil.isGreaterOrEqual(freezeAmount, amount))
+                if (!NumberUtil.isGreater(freezeAmount, amount))
                     throw new AppException(ResultCode.NOT_EXIST, "冻结金额不足!");
                 // 设置用户冻结金额, 原冻结金额 - 解冻金额
                 update.setFreezeAmount(NumberUtil.sub(update.getFreezeAmount(), amount));

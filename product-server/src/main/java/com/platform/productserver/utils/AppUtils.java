@@ -77,4 +77,6 @@ public class AppUtils {
         }
         throw new AppException(ResultCode.NOT_EXIST, "操作类型不存在");
     }
+
+
 }

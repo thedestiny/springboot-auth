@@ -52,4 +52,9 @@ public class FreezeDto implements Serializable {
     @ApiModelProperty("来源")
     private String source;
 
+    @Length(max = 32, message = "原冻结单号请求号长度不能超过32个字符")
+    @ApiModelProperty("原冻结单号")
+    private String origRequestNo;
+
+
 }
