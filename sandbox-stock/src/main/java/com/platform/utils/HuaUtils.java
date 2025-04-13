@@ -66,7 +66,7 @@ public class HuaUtils {
                 JSONObject etf = etfList.getJSONObject(i1);
                 String code = etf.getString("code");
                 String market = etf.getString("market");
-                System.out.println(name + " " + code + " " + market);
+                // System.out.println(name + " " + code + " " + market);
                 EtfInfo ele = new EtfInfo();
                 ele.setCode(code);
                 ele.setMarket(market);

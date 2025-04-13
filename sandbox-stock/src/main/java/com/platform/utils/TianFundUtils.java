@@ -99,7 +99,7 @@ public class TianFundUtils {
                 etfInfo(dto);
             } catch (Exception e) {
             }
-            System.out.println("start " + i);
+            // System.out.println("start " + i);
             dtoList.add(dto);
         }
         return dtoList;
