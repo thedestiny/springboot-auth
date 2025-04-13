@@ -32,15 +32,16 @@ public class StockLineUtils {
         return queryKlineData(code, start, end, klt);
     }
 
-    public static List<List<Object>> queryKlineList(List<StockLineDto> dtos){
+    public static List<List<Object>> queryKlineList(List<StockLineDto> dtos) {
         List<List<Object>> dataList = new ArrayList<>();
         dataList.add(Lists.newArrayList("date", "code", "name", "price"));
-        for (StockLineDto dto : dtos){
+        for (StockLineDto dto : dtos) {
             List<Object> tmpList = new ArrayList<>();
             tmpList.add(Integer.valueOf(dto.getDate().replace("-", "")));
             tmpList.add(dto.getCode());
             tmpList.add(dto.getName());
             tmpList.add(dto.getPrice());
+            tmpList.add(dto.getRate());
             dataList.add(tmpList);
         }
         return dataList;
@@ -48,15 +49,14 @@ public class StockLineUtils {
     }
 
 
-
     public static List<StockLineDto> queryKlineData(String code, String start, String end, String klt) {
-        if(StrUtil.isBlank(klt)){
+        if (StrUtil.isBlank(klt)) {
             klt = "101";
         }
-        if(StrUtil.isBlank(end)){
+        if (StrUtil.isBlank(end)) {
             end = "20300101";
         }
-        if(StrUtil.isBlank(start)){
+        if (StrUtil.isBlank(start)) {
             start = "20200101";
         }
         String url = server + "?" + composeParams(code, start, end, klt);
@@ -78,7 +78,8 @@ public class StockLineUtils {
             dto.setCode(code);
             dto.setName(StrUtil.replace(name, " ", ""));
             dto.setRate(new BigDecimal(split[8]));
-            dto.setPrice(NumberUtil.mul(BigDecimal.valueOf(1000000),new BigDecimal(split[2])).divide(base, 2, RoundingMode.HALF_UP));
+            BigDecimal div = NumberUtil.div(new BigDecimal(split[2]), base, 4, RoundingMode.HALF_UP);
+            dto.setPrice(NumberUtil.mul(div, 100));
             dtoList.add(dto);
         }
 
@@ -99,7 +100,6 @@ public class StockLineUtils {
 
 
     }
-
 
 
     public static String composeParams(String code, String start, String end, String klt) {

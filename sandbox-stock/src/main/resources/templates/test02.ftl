@@ -53,7 +53,7 @@
 
     $("#start_btn").click(function (){
 
-        $.get('/api/stock/data/list?start=20230101&end=20300101&klt=103&codes=' + codes,
+        $.get('/api/stock/data/list?start=20230101&end=20300101&klt=101&codes=' + codes,
             function (res) {
                 const data = res.dataList;
                 const nodeList = res.colors;
@@ -79,7 +79,8 @@
                         max: 'dataMax',
                         axisLabel: {
                             formatter: function (n) {
-                                return Math.round(n) + '';
+                                console.info(" n is " , n)
+                                return n; // Math.round(n) + '';
                             }
                         }
                     },
@@ -182,15 +183,13 @@
         );
     });
 
-    $.when(
-        $.getJSON('/data'),
-        $.getJSON('/api/stock/data/list?start=20230101&end=20300101&klt=102&codes=' + codes)
-    ).done(function (res0, res1) {
-        console.info(res0)
-        console.info(res1)
-        // const flags = res0[0];
-
-    });
+    // $.when(
+    //     $.getJSON('/data'),
+    //     $.getJSON('/api/stock/data/list?start=20230101&end=20300101&klt=102&codes=' + codes)
+    // ).done(function (res0, res1) {
+    //     console.info(res0)
+    //     console.info(res1)
+    // });
 
     if (option && typeof option === 'object') {
         myChart.setOption(option);
