@@ -24,18 +24,21 @@ import java.util.stream.Collectors;
 public class StockChartController {
 
 
+    /**
+     * 颜色
+     */
     private static final String colors = "#00008b\n" +
             "#f00\n" +
             "#ffde00\n" +
             "#002a8f\n" +
             "#003580\n" +
             "#ed2939\n" +
-            "#000\n" +
+            "#000000\n" +
             "#003897\n" +
             "#f93\n" +
             "#bc002d\n" +
             "#024fa2\n" +
-            "#000\n" +
+            "#000000\n" +
             "#00247d\n" +
             "#ef2b2d\n" +
             "#dc143c\n" +
@@ -55,6 +58,13 @@ public class StockChartController {
         log.info("data ");
         return "test01";
     }
+
+    @GetMapping(value = "test02")
+    public String test02() {
+        log.info("data ");
+        return "test02";
+    }
+
 
     @GetMapping(value = "/data/asset/data/life-expectancy-table", produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -79,9 +89,12 @@ public class StockChartController {
     }
 
 
+    /**
+     *  数据k线图
+     */
     @GetMapping(value = "/api/stock/data/list", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public String data01(String start, String end, String klt, String codes) {
+    public String dataLine(String start, String end, String klt, String codes) {
 
         StockInfoDto infoDto = new StockInfoDto();
         List<StockLineDto> dtos = new ArrayList<>();
@@ -112,10 +125,5 @@ public class StockChartController {
     }
 
 
-    @GetMapping(value = "test02")
-    public String test02() {
-        log.info("data ");
-        return "test02";
-    }
 
 }

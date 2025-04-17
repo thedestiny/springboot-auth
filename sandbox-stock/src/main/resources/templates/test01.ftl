@@ -126,7 +126,7 @@
                 ...datasetWithFilters
             ],
             title: {
-                text: '如果贾老板23年100万年买了这些票',
+                text: '如果23年100万年买了这些票',
                 left: 'center',
                 textAlign : 'center'
             },
