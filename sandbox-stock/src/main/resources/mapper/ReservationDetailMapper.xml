@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.mapper.ReservationDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.entity.ReservationDetail">
+        <id column="id" property="id" />
+        <result column="res_id" property="resId" />
+        <result column="masseur_id" property="masseurId" />
+        <result column="reservation_date" property="reservationDate" />
+        <result column="reservation_time" property="reservationTime" />
+        <result column="seq" property="seq" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, res_id, masseur_id, reservation_date, reservation_time, seq, create_time, update_time, remark
+    </sql>
+
+
+    <resultMap type="com.platform.entity.ReservationDetail" id="ReservationDetailResult">
+        <result property="id"    column="id"    />
+        <result property="resId"    column="res_id"    />
+        <result property="masseurId"    column="masseur_id"    />
+        <result property="reservationDate"    column="reservation_date"    />
+        <result property="reservationTime"    column="reservation_time"    />
+        <result property="seq"    column="seq"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectReservationDetailVo">
+        select id, res_id, masseur_id, reservation_date, reservation_time, seq, create_time, update_time, remark from tb_reservation_detail
+    </sql>
+
+    <select id="selectReservationDetailList" parameterType="com.platform.entity.ReservationDetail" resultMap="ReservationDetailResult">
+        <include refid="selectReservationDetailVo"/>
+        <where>
+            <if test="resId != null "> and res_id = #{resId}</if>
+            <if test="masseurId != null "> and masseur_id = #{masseurId}</if>
+            <if test="reservationDate != null  and reservationDate != ''"> and reservation_date = #{reservationDate}</if>
+            <if test="reservationTime != null  and reservationTime != ''"> and reservation_time = #{reservationTime}</if>
+            <if test="seq != null "> and seq = #{seq}</if>
+        </where>
+    </select>
+
+    <select id="selectReservationDetailById" parameterType="Long" resultMap="ReservationDetailResult">
+        <include refid="selectReservationDetailVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertReservationDetail" parameterType="com.platform.entity.ReservationDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_reservation_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resId != null">res_id,</if>
+            <if test="masseurId != null">masseur_id,</if>
+            <if test="reservationDate != null">reservation_date,</if>
+            <if test="reservationTime != null">reservation_time,</if>
+            <if test="seq != null">seq,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resId != null">#{resId},</if>
+            <if test="masseurId != null">#{masseurId},</if>
+            <if test="reservationDate != null">#{reservationDate},</if>
+            <if test="reservationTime != null">#{reservationTime},</if>
+            <if test="seq != null">#{seq},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateReservationDetail" parameterType="com.platform.entity.ReservationDetail">
+        update tb_reservation_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="resId != null">res_id = #{resId},</if>
+            <if test="masseurId != null">masseur_id = #{masseurId},</if>
+            <if test="reservationDate != null">reservation_date = #{reservationDate},</if>
+            <if test="reservationTime != null">reservation_time = #{reservationTime},</if>
+            <if test="seq != null">seq = #{seq},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteReservationDetailById" parameterType="Long">
+        delete from tb_reservation_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteReservationDetailByIds" parameterType="String">
+        delete from tb_reservation_detail where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertEntityList" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_reservation_detail (id, res_id, masseur_id, reservation_date, reservation_time, seq, create_time, update_time, remark) values
+        <foreach item="ele" collection="detailList"  separator="," >
+            (#{ele.id}, #{ele.resId}, #{ele.masseurId},#{ele.reservationDate}, #{ele.reservationTime},0,sysdate(),sysdate(),#{ele.remark})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByResId">
+        delete from tb_reservation_detail where res_id = #{resId}
+    </delete>
+
+    <delete id="deleteByResIdList">
+        delete from tb_reservation_detail where res_id in
+        <foreach item="id" collection="pidList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+
+</mapper>

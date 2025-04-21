@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>
  * 用户预约明细表
  */
 @Data

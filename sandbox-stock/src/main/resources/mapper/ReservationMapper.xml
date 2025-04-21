@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.mapper.ReservationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.platform.entity.Reservation">
+        <id column="id" property="id"/>
+        <result column="res_id" property="resId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="item_id" property="itemId"/>
+        <result column="masseur_id" property="masseurId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="userId"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="node_time" property="nodeTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , res_id, order_id, item_id, masseur_id, shop_id, user_id,
+        start_time, end_time, create_time,node_time
+    </sql>
+
+    <sql id="selectReservationVo">
+        select id,res_id,order_id,item_id,masseur_id,shop_id,user_id,start_time,
+               end_time,create_time,node_time
+        from tb_reservation
+    </sql>
+
+    <select id="selectReservationList" parameterType="com.platform.entity.Reservation" resultMap="BaseResultMap">
+
+        <include refid="selectReservationVo"/>
+        <where>
+            <if test="resId != null ">and res_id = #{resId}</if>
+            <if test="orderId != null ">and order_id = #{orderId}</if>
+            <if test="itemId != null ">and item_id = #{itemId}</if>
+            <if test="masseurId != null ">and masseur_id = #{masseurId}</if>
+            <if test="shopId != null ">and shop_id = #{shopId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="startTime != null ">and start_time &gt;= #{startTime}</if>
+            <if test="endTime != null ">and end_time &lt;= #{endTime}</if>
+            <if test="nodeTime != null and nodeTime != '' ">and node_time = #{nodeTime}</if>
+        </where>
+        order by id desc
+
+    </select>
+
+    <select id="selectReservationById" parameterType="Long" resultMap="BaseResultMap">
+        <include refid="selectReservationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertReservation" parameterType="com.platform.entity.Reservation" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into tb_reservation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="resId != null">res_id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="itemId != null">item_id,</if>
+            <if test="masseurId != null">masseur_id,</if>
+            <if test="shopId != null">shop_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="nodeTime != null">node_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="resId != null">#{resId},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="itemId != null">#{itemId},</if>
+            <if test="masseurId != null">#{masseurId},</if>
+            <if test="shopId != null">#{shopId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="nodeTime != null">#{nodeTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateReservation" parameterType="com.platform.entity.Reservation">
+        update tb_reservation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="resId != null">res_id = #{resId},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="masseurId != null">masseur_id = #{masseurId},</if>
+            <if test="shopId != null">shop_id = #{shopId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id} and seq = 0
+    </update>
+
+    <delete id="deleteReservationById" parameterType="Long">
+        delete
+        from tb_reservation
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteReservationByIds" parameterType="String">
+        delete from tb_reservation where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertEntityList" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_reservation (id, res_id, order_id, item_id, masseur_id,
+                                    shop_id, user_id, start_time, end_time,
+        create_time) values
+        <foreach item="ele" collection="detailList" separator=",">
+            (#{ele.id}, #{ele.resId}, #{ele.orderId},#{ele.itemId}, #{ele.masseurId},
+             #{ele.shopId},#{ele.userId},#{ele.startTime},
+            #{ele.endTime},#{ele.createTime})
+        </foreach>
+    </insert>
+
+    <select id="selectExpireResList" resultType="java.lang.String">
+
+        select distinct res_id
+        from tb_reservation
+        where order_id = 0 and create_time &lt;  (sysdate() -INTERVAL #{timeOut} minute)
+
+    </select>
+
+
+    <delete id="deleteByResId">
+        delete from tb_reservation where res_id = #{resId}
+    </delete>
+
+    <select id="selectUserReservationList" resultMap="BaseResultMap">
+
+        <include refid="selectReservationVo"/>
+        <where>
+            <if test="resId != null ">and res_id = #{resId}</if>
+            <if test="orderId != null ">and order_id = #{orderId}</if>
+            <if test="itemId != null ">and item_id = #{itemId}</if>
+            <if test="masseurId != null ">and masseur_id = #{masseurId}</if>
+            <if test="shopId != null ">and shop_id = #{shopId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="startTime != null ">and start_time = #{startTime}</if>
+            <if test="endTime != null ">and end_time = #{endTime}</if>
+            <if test="resIdList != null and resIdList.size() > 0">
+                and res_id in
+                <foreach item="ele" collection="resIdList" open="(" separator="," close=")">
+                    #{ele}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+
+    <update id="updateReservationOrderIdById">
+
+            update tb_reservation
+            set order_id = #{orderId}
+            where id in
+            <foreach item="ele" collection="resIdList" open="(" separator="," close=")">
+                #{ele}
+            </foreach>
+
+
+    </update>
+
+
+
+    <delete id="deleteByResIdList">
+        delete from tb_reservation where res_id in
+        <foreach item="id" collection="pidList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectReservationByOrderIdList" resultMap="BaseResultMap">
+        <include refid="selectReservationVo"/>
+        where order_id in
+        <foreach item="ele" collection="pidList" open="(" separator="," close=")">
+            #{ele}
+        </foreach>
+
+    </select>
+
+
+    <select id="selectResListCnt" resultType="java.lang.Integer">
+
+         select count(*)
+         from tb_reservation
+         where masseur_id = #{masseurId} and start_time &lt; #{dat} and
+               end_time &gt; #{dat}
+
+    </select>
+
+    <select id="selectReservationListForCheck" resultType="java.lang.Integer">
+        select count(*)
+        from tb_reservation
+        <where>
+            <if test="masseurId != null ">and masseur_id = #{masseurId}</if>
+            <if test="startTime != null and  endTime != null ">
+               and ((start_time &lt;= #{startTime} and end_time &gt;= #{startTime}) or (start_time &lt;= #{endTime} and end_time &gt;= #{endTime}))
+             </if>
+        </where>
+
+    </select>
+
+
+
+
+</mapper>

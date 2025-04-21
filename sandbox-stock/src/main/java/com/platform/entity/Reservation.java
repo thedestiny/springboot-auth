@@ -10,12 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>
  * 用户预约表
- * </p>
- *
- * @author kaiyang
- * @since 2024-12-01
  */
 @Data
 @TableName("tb_reservation")
@@ -56,6 +51,8 @@ public class Reservation  implements Serializable {
     // 预约创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    private String nodeTime;
 
 
 
