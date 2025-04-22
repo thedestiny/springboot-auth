@@ -15,7 +15,26 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.3.10.RELEASE</spring-boot.version>
     </properties>
+
     <dependencies>
+
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-apache-httpclient</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-java</artifactId>
+            <version>0.2.15</version>
+        </dependency>
 
         <!-- validation-api -->
         <dependency>
