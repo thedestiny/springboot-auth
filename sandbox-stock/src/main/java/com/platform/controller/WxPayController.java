@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.platform.config.WeixinConfig;
 import com.platform.dto.PayDto;
 import com.platform.pojo.dto.BaseInfoDto;
+import com.platform.utils.IdGenUtils;
+import com.platform.utils.ZxingUtils;
 import com.wechat.pay.java.service.payments.jsapi.JsapiService;
 import com.wechat.pay.java.service.payments.jsapi.model.Payer;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest;
@@ -94,6 +96,34 @@ public class WxPayController {
 
     }
 
+
+    private String nativePay(PayDto payDto) {
+        com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request = new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
+        request.setAppid(weixinConfig.getAppid());
+        request.setMchid(weixinConfig.getMchId());
+        request.setDescription(payDto.getTitle());
+        // 添加附加参数 附加数据
+        request.setAttach("order-attach");
+        request.setOutTradeNo("out_trade_no");
+        // 时间格式化
+        request.setNotifyUrl("https://example.com/api/v1/weixin/order/notify");
+        com.wechat.pay.java.service.payments.nativepay.model.Amount amount = new com.wechat.pay.java.service.payments.nativepay.model.Amount();
+        amount.setCurrency("CNY");
+        amount.setTotal(transYu2Fen(payDto.getAmount()));
+        request.setAmount(amount);
+        com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse prepay = nativePayService.prepay(request);
+        String codeUrl = prepay.getCodeUrl();
+        log.info("codeUrl {}", codeUrl);
+        String property = System.getProperty("user.dir");
+        String idStr = IdGenUtils.getIdStr();
+        String path = property + "/" + idStr + ".jpg";
+        ZxingUtils.createQRCodeImage("codeUrl", path);
+        // 配置二维码参数
+        return path;
+    }
+
+
+
     /**
      * 转换为 分
      */
@@ -116,8 +146,6 @@ public class WxPayController {
         }
         return xff;
     }
-
-
 
 
 }
