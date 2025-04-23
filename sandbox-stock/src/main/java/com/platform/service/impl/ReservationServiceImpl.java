@@ -4,8 +4,11 @@ package com.platform.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.google.common.collect.Lists;
+import com.platform.entity.ItemInfo;
 import com.platform.entity.Reservation;
 import com.platform.entity.ReservationDetail;
 import com.platform.mapper.ReservationDetailMapper;
@@ -43,16 +46,27 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public BaseInfoDto createConsumerReservation(ReservationReq req) {
+
         // true 新增 false 修改
         Boolean addFlag = req.getAddFlag() == null || req.getAddFlag() == 1;
         String resId = IdGenUtils.getIdStr();
         List<ResDetailNode> nodeList = req.getNodeList();
 
+        // 项目id
+        Long itemId = req.getItemId();
+        // 从数据库查询项目信息,判断你项目是否存在
+        ItemInfo item = new ItemInfo();
         // 单次只能处理一个预约
         ResDetailNode node = nodeList.get(0);
+        // 预约的起止时间
         Date startTime = node.getStartTime();
         Date endTime = node.getEndTime();
+        // 计算期间的分钟数
+        long between = DateUtil.between(startTime, endTime, DateUnit.MINUTE);
+        // 判断项目的分钟数与传入的时间是否匹配
+        if(ObjectUtil.equal(item.getCostTime(), between)){
 
+        }
         // 当前时间
         Date now = new Date();
 

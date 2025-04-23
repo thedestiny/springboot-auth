@@ -23,6 +23,7 @@ public class ReservationReq implements Serializable {
 
     private Long userId;
 
+    @NotEmpty(message = "项目id不能为空")
     private Long itemId;
 
     private Long masseurId;
