@@ -21,6 +21,9 @@ public class MasseurDetailRes {
     @ApiModelProperty(value = "服务人员头像")
     private String avatar;
 
+    @ApiModelProperty(value = "推荐店铺信息")
+    private ShopInfoRes shopInfo;
+
     @ApiModelProperty(value = "服务人员昵称")
     private String nickName;
 
@@ -32,5 +35,8 @@ public class MasseurDetailRes {
 
     @ApiModelProperty(value = "已约时间段,当前时间之后7天内的记录")
     private List<MassBusyDto> busyList;
+
+
+
 
 }
