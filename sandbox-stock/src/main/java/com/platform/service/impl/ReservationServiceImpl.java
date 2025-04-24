@@ -11,8 +11,10 @@ import com.platform.entity.ReservationDetail;
 import com.platform.mapper.ReservationDetailMapper;
 import com.platform.mapper.ReservationMapper;
 import com.platform.pojo.dto.BaseInfoDto;
+import com.platform.pojo.req.BaseReq;
 import com.platform.pojo.req.ResDetailNode;
 import com.platform.pojo.req.ReservationReq;
+import com.platform.pojo.res.MasseurDetailRes;
 import com.platform.service.ReservationService;
 import com.platform.utils.IdGenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -137,6 +139,13 @@ public class ReservationServiceImpl implements ReservationService {
             result.add(detail);
         }
         return result;
+
+    }
+
+    @Override
+    public MasseurDetailRes queryMasseurInfo(BaseReq req) {
+        return null;
+
 
     }
 

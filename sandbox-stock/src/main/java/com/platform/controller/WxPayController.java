@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wechat.pay.java.service.payments.jsapi.model.Amount;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayResponse;
-import com.wechat.pay.java.service.refund.model.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 
 /**
@@ -51,8 +51,26 @@ public class WxPayController {
     @Autowired
     private HttpServletRequest request;
 
+
+
+
+    /**
+     * 订单支付
+     */
     @PostMapping(value = "/order")
-    public String weinxinPay(@RequestBody PayDto payDto){
+    public String wxOrderPay(@RequestBody PayDto payDto){
+
+
+        return "";
+    }
+
+    /**
+     * 订单退款
+     */
+    @PostMapping(value = "/refund")
+    public String wxOrderRefund(@RequestBody PayDto payDto){
+
+
 
 
         return "";
@@ -92,6 +110,13 @@ public class WxPayController {
         Long timestamp = System.currentTimeMillis() / 1000;
         String nonceStr = RandomStringUtils.randomAlphanumeric(32);
         String sign = weixinConfig.jsApiPaySign(String.valueOf(timestamp), nonceStr, prepayId);
+        JSONObject json = new JSONObject();
+        json.put("timeStamp", timestamp);
+        json.put("nonceStr", nonceStr);
+        json.put("package", "prepay_id=" + prepayId);
+        json.put("signType", "RSA");
+        json.put("paySign", sign);
+        log.info("result is {}", json);
 
 
     }
@@ -145,6 +170,19 @@ public class WxPayController {
             return "8.8.8.8";
         }
         return xff;
+    }
+
+
+    @RequestMapping(value = "order/notify")
+    public String orderNotify(HttpServletRequest request, HttpServletResponse response){
+
+        return "";
+    }
+
+    @RequestMapping(value = "refund/notify")
+    public String refundNotify(HttpServletRequest request, HttpServletResponse response){
+
+        return "";
     }
 
 
