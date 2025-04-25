@@ -55,7 +55,11 @@ public class PayDto implements Serializable {
     // 订单标题 支付金额 支付链接 支付单号 状态
     private String title;
 
+    // 订单金额
     private BigDecimal amount;
+
+    // 退款金额
+    private BigDecimal refund;
 
     private String codeUrl;
 

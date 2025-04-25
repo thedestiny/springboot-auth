@@ -7,13 +7,17 @@ import com.platform.common.HttpStatus;
 import com.platform.pojo.base.BaseResp;
 import com.platform.pojo.dto.BaseInfoDto;
 import com.platform.pojo.req.BaseReq;
+import com.platform.pojo.req.ShopItemReq;
 import com.platform.pojo.req.ReservationReq;
 import com.platform.pojo.res.MasseurDetailRes;
+import com.platform.pojo.res.MasseurInfoRes;
 import com.platform.service.ReservationService;
 import com.platform.utils.RespUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -48,5 +52,14 @@ public class ResController {
         return RespUtils.success(detailRes);
     }
 
+
+    /**
+     * 展示一个店铺的所有项目
+     */
+    @PostMapping(value = "/masseur/list")
+    public BaseResp<List<MasseurInfoRes>> shopMasseurInfo(@RequestBody ShopItemReq req) {
+        List<MasseurInfoRes> result = reservationService.shopMasseurInfo(req);
+        return RespUtils.success(result);
+    }
 
 }

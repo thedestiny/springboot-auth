@@ -5,6 +5,10 @@ import cn.hutool.core.util.StrUtil;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAPublicKeyConfig;
+import com.wechat.pay.java.core.notification.NotificationConfig;
+import com.wechat.pay.java.core.notification.NotificationParser;
+import com.wechat.pay.java.core.notification.RSAPublicKeyNotificationConfig;
+import com.wechat.pay.java.service.payments.h5.H5Service;
 import com.wechat.pay.java.service.payments.jsapi.JsapiService;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import com.wechat.pay.java.service.refund.RefundService;
@@ -14,7 +18,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -56,7 +62,34 @@ public class WeixinConfig {
     @Value("${spring.profiles.active}")
     private String env;
 
+    @Value("${app.public-path}")
+    private String pubKey;
 
+
+
+    // 通知内容解析 parser
+
+    @Lazy
+    @Bean("wxNotificationParser")
+    public NotificationParser getNotificationConfig() {
+        try {
+            String pth = File.separator + StrUtil.join(File.separator, "app", "src", "main", "resources") + File.separator ;
+            String property = System.getProperty("user.dir") + pth + pubKey;
+            // System.out.println(property);
+            NotificationConfig config = new RSAPublicKeyNotificationConfig.Builder()
+                    .publicKeyFromPath(StrUtil.equalsAny(env, "prd", "test") ? pubKey : property)
+                    .publicKeyId(pubKeyId)
+                    .apiV3Key(apiV3Key)
+                    .build();
+            NotificationParser parser = new NotificationParser(config);
+            return parser;
+        }catch (Exception e){
+            return null;
+        }
+
+    }
+
+    @Lazy
     // 退款service
     @Bean("wxRefundService")
     public RefundService refundService() {
@@ -64,12 +97,14 @@ public class WeixinConfig {
         return new RefundService.Builder().config(config()).build();
     }
 
+    @Lazy
     @Bean("jsapiService")
     public JsapiService jsapiService() {
         log.info("jsapi service ");
         return new JsapiService.Builder().config(config()).build();
     }
 
+    @Lazy
     // native 支付方式
     @Bean("nativePayService")
     public NativePayService nativePayService() {
@@ -77,11 +112,17 @@ public class WeixinConfig {
         return new NativePayService.Builder().config(config()).build();
     }
 
+    @Lazy
+    @Bean("h5PayService")
+    public H5Service h5PayService() {
+        log.info("h5 pay service ");
+        return new H5Service.Builder().config(config()).build();
+    }
 
+    @Lazy
     @Bean
     public Config config() {
-        String pri = "";
-        String pub = "";
+        String pri = "";String pub = "";
         try {
             ClassPathResource priPath = new ClassPathResource(privateKeyPath);
             pri = priPath.getAbsolutePath();
@@ -89,7 +130,6 @@ public class WeixinConfig {
             ClassPathResource pubPath = new ClassPathResource(pubKeyPath);
             log.info("public key path {}", pubPath.getAbsolutePath());
             pub = pubPath.getAbsolutePath();
-
         } catch (Exception e) {
             log.info("classpath load error {}", e.getMessage());
         }
@@ -101,18 +141,15 @@ public class WeixinConfig {
         // 微信支付api
         // https://github.com/wechatpay-apiv3/wechatpay-java
         Config config =
-                new RSAPublicKeyConfig.Builder()
-                        .merchantId(mchId) //微信支付的商户号
+                new RSAPublicKeyConfig.Builder().merchantId(mchId) //微信支付的商户号
                         .privateKeyFromPath(pri) // 商户API证书私钥的存放路径
                         .publicKeyFromPath(pub) //微信支付公钥的存放路径
                         .publicKeyId(pubKeyId) //微信支付公钥ID
                         .merchantSerialNumber(mchSerialNo) //商户API证书序列号
                         .apiV3Key(apiV3Key) //APIv3密钥
                         .build();
-
         return config;
     }
-
 
     // jsapi 签名
     public String jsApiPaySign(String timestamp, String nonceStr, String prepayId) throws Exception {

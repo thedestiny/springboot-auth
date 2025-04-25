@@ -89,5 +89,20 @@ app:
   dataList: 34,45,56
   hobbys: '{"lilei": "篮球", "lili": "乒乓球", "hanlei": "羽毛球"}'
   hobbyList: '{"lilei": "篮球,足球", "lili": "乒乓球,橄榄球", "hanlei": "羽毛球"}'
-
-
+  public-path: 234
+  weixin:
+    mch-id: 1700
+    appid: wx29fc
+    secret: 6bdc8e420
+    paySignKey: 11e67d705227
+    tradeType: JSAPI
+    certName: xxx
+    mch-serial-no: 635EBD5F5C89
+    # classpath:
+    private-key-path: apiclient_key.pem
+    pub-key-path: pub_key.pem
+    api-v3-key: 8cc616d99f4f499d83d291ab58d410a9
+    domain: https://api.mch.weixin.qq.com
+    notify-domain: https://example.com
+    partner-key: T6m9iK73b0kn9g5
+    pub-key-id: PUB_KEY_ID_0117

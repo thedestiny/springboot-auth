@@ -1,7 +1,6 @@
 package com.platform.common;
 
 
-import com.platform.core.base.ResultCode;
 import lombok.Data;
 
 @Data
