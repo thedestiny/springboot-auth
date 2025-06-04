@@ -3,13 +3,13 @@ package com.platform.authcommon.config;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
 import com.platform.authcommon.common.Constant;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -69,6 +69,14 @@ public class RedisUtils {
         RLock lock = getLock(assemblyKey(key));
         lock.lock(time, timeUnit);
         return lock;
+    }
+
+    /**
+     * 设置全局唯一值开关
+     */
+    public void appAtomicLong() {
+        RAtomicLong atomicLong = redissonClient.getAtomicLong("app_atomic_long_key");
+        atomicLong.compareAndSet(0L, 1L);
     }
 
     /**
