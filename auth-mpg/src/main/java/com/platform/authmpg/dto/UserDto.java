@@ -1,8 +1,11 @@
 package com.platform.authmpg.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.platform.authmpg.config.AppJsonSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Description
@@ -17,5 +20,8 @@ public class UserDto implements Serializable {
     private Long id;
 
     private String name;
+
+    @JsonSerialize(using = AppJsonSerializer.class)
+    private Date createTime;
 
 }

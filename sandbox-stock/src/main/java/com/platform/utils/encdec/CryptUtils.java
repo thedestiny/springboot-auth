@@ -70,7 +70,7 @@ public class CryptUtils {
         try {
             encryptKey = RSAUtils.publicEncrypt(aesKey, appPublicKey);
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | InvalidKeySpecException e) {
-            log.warn("快看看-response RSA 加密失败：{}", e.getMessage());
+            log.warn("response RSA 加密失败：{}", e.getMessage());
             throw new ApiException("加密失败!", e);
         }
         ParamEncryptDto encryptDto = new ParamEncryptDto();
@@ -102,12 +102,9 @@ public class CryptUtils {
         }
         //生成的签名sign添加到原始参数中
         jsonObject.put("sign", sign);
-
         //加签名后的参数转JSON串
         String originalParamSignJsonStr = JSON.toJSONString(jsonObject, SerializerFeature.MapSortField);
-
-        // 加签后的参数AES加密
-        //随机生成AES密码
+        // 随机生成AES密码 加签后的参数AES加密
         String aesKey = UUID.randomUUID().toString();
         //加签后的参数AES加密
         String encryptData = AESUtil.encrypt(originalParamSignJsonStr, aesKey);
@@ -116,7 +113,7 @@ public class CryptUtils {
         try {
             encryptKey = RSAUtils.publicEncrypt(aesKey, appPublicKey);
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | InvalidKeySpecException e) {
-            log.warn("快看看-response RSA 加密失败：{}", e.getMessage());
+            log.warn("response RSA 加密失败：{}", e.getMessage());
             throw new ApiException("加密失败!", e);
         }
         ParamEncryptDto encryptDto = new ParamEncryptDto();
@@ -137,12 +134,10 @@ public class CryptUtils {
          if(StrUtil.isBlank(appId)){
              throw new ApiException("appId 不能为空!");
          }
-
         // 加密返回值
         String responseStr = JSON.toJSONString(body, SerializerFeature.MapSortField);
         // 获取加密返回值encryptKey和encryptData appId
         JSONObject walletResponseObj = JSON.parseObject(responseStr);
-
         String encryptKey = walletResponseObj.getString("encryptKey");
         String encryptData = walletResponseObj.getString("encryptData");
         // 解密得到AES的key 我们自己的私钥 外部私钥解密
@@ -153,12 +148,9 @@ public class CryptUtils {
             log.warn("request RSA 解密失败：{}", e.getMessage());
             throw new ApiException("解密失败!");
         }
-
         // aes的key解密加密回参
         String origResponseStr = AESUtil.decrypt(encryptData, aesKey);
-
         JSONObject origResponseJson = JSON.parseObject(origResponseStr);
-
         // 回参验签
         String sign = origResponseJson.getString("sign");
         if (StringUtils.isBlank(sign)) {
@@ -177,7 +169,6 @@ public class CryptUtils {
             log.warn("request RSA 验证失败：{}", e.getMessage());
             throw new ApiException("验签失败!", e);
         }
-
         if (signVerify) {
             return origResponseNoSignStr;
         } else {
