@@ -30,6 +30,9 @@ public class ApolloChangeAware implements ApplicationContextAware  {
 
     @ApolloConfigChangeListener
     public void onChange(ConfigChangeEvent changeEvent) {
+
+        Object obj = new Object();
+
         log.info("================ apollo 自动刷新值 开始 ===========================");
         for (String changeKey : changeEvent.changedKeys()) {
             ConfigChange configChange = changeEvent.getChange(changeKey);
