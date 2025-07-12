@@ -31,6 +31,7 @@
 
         <module>auth-gateway</module>
         <module>auth-server</module>
+        <module>auth-mpg</module>
         <module>order-server</module>
         <module>product-server</module>
         <module>auth-common</module>
@@ -39,6 +40,7 @@
         <module>sandbox-practice</module>
         <module>sandbox-stock</module>
         <module>sandbox-desen</module>
+
         <module>data-cleaning</module>
 
     </modules>

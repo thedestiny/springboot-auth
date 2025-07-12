@@ -58,15 +58,11 @@ public class CodeGenerateMPG {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
 
-//        dsc.setUrl("jdbc:mysql://localhost:3306/knead_business?useUnicode=true&useSSL=false&characterEncoding=utf8");
-//        dsc.setUsername("root");
-//        dsc.setPassword("123456");
-//        dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-
-        dsc.setUrl("jdbc:mysql://8.130.83.253:5306/knead_business?useUnicode=true&useSSL=false&characterEncoding=utf8");
-        dsc.setUsername("knead_business");
-        dsc.setPassword("EnAC4G4yLmZkDxxj");
+        dsc.setUrl("jdbc:mysql://localhost:3306/knead_business?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUsername("root");
+        dsc.setPassword("123456");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+
 
         mpg.setDataSource(dsc);
 
