@@ -53,5 +53,22 @@ logging.level.org.apache.derby=info
 3 复合策略 复合分片算法 ComplexKeysShardingAlgorithm
 
 
+Feign第一次调用耗时，Ribbon是懒加载机制，第一次调用时，会触发Ribbon的加载过程（从服务注册中心获取服务列表，连接池）
 
+使用拦截器传递认证信息 RequestInterceptor
+Ribbon是Netflix开源的一个客户端负载均衡器, [加权]轮询、[加权]随机 hash 最少连接
 
+服务熔断和服务降级
+请求缓存 请求合并
+
+Sentinel使用滑动窗口限流算法来实现限流。
+
+springcloud gateway 
+kong
+断言 路由 过滤器
+netty 服务器 predicate -> route -> filter
+
+skywalking
+分布式事务
+AT TCC 
+AT模式是Seata默认支持的模式

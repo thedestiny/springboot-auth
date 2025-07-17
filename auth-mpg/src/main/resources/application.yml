@@ -3,5 +3,11 @@ spring:
     url: jdbc:mysql://localhost:3306/my_database
     username: root
     password: 123456
+  banner:
+    charset: UTF-8
 server:
   port: 9096
+ribbon:
+  eager-load:
+    enabled: true
+
