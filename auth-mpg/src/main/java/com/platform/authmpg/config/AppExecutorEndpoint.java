@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description
+ * @Description 轻量化动态线程池实现方案
  * @Author liangkaiyang
  * @Date 2025-07-23 3:58 PM
  */
