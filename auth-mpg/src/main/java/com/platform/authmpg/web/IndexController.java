@@ -2,11 +2,16 @@ package com.platform.authmpg.web;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.management.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Description
@@ -20,13 +25,29 @@ import java.util.List;
 public class IndexController {
 
 
+
+
+
+    @Async("customExecutor") // 指定线程池
+    public CompletableFuture<String> processAsyncTask(String taskId) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            log.info("start index!");
+            return "start" + taskId;
+        });
+
+        // 耗时操作
+        // return CompletableFuture.completedFuture("success" + taskId);
+    }
+
+
     @GetMapping(value = "index")
-    public String index(){
+    public String index() {
         return "success";
     }
 
     @GetMapping(value = "information")
-    public String information(){
+    public String information() {
         showJvmInfo();
         showMemoryInfo();
         showSystem();
