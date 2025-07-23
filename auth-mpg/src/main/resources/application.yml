@@ -11,3 +11,9 @@ ribbon:
   eager-load:
     enabled: true
 
+# 监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,executor # 或者 *
