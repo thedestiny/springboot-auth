@@ -3,6 +3,7 @@ package com.platform.authmpg.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.platform.authmpg.config.AppJsonSerializer;
 import lombok.Data;
+import sun.misc.Contended;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,9 +17,12 @@ import java.util.Date;
 @Data
 public class UserDto implements Serializable {
 
-
+    // 缓存行 填充
+    @Contended
     private Long id;
 
+    // 缓存行 填充
+    @Contended
     private String name;
 
     @JsonSerialize(using = AppJsonSerializer.class)
