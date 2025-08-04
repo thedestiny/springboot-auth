@@ -24,6 +24,10 @@ public class AppConfig {
     // 设置日志级别
     // logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG
 
+    // 初始化 ThreadLocal
+    private static ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 0);
+
+
     @Bean
     public CommonsRequestLoggingFilter logFilter() {
         CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
@@ -31,6 +35,7 @@ public class AppConfig {
         filter.setIncludePayload(true);   // 包含请求体
         filter.setMaxPayloadLength(1024);  // 限制请求体日志长度（避免大字段溢出）
         filter.setAfterMessagePrefix("[req-data]");
+
         return filter;
     }
 
