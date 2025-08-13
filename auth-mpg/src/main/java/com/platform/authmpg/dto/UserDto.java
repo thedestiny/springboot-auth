@@ -39,6 +39,8 @@ public class UserDto implements Serializable {
         // ValidationUtils. 参数校验
         Validate.notBlank(data, "不能为空");
 
+        Validate.validState(data.equals("123"), "数据错误");
+
     }
 
 }
