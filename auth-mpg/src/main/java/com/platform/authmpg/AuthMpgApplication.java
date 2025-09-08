@@ -23,16 +23,23 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class AuthMpgApplication {
 
     public static void main(String[] args) {
-        //
-        //// @Autowired, @Value, @Inject
-        //AutowiredAnnotationBeanPostProcessor bp = new AutowiredAnnotationBeanPostProcessor();
-        //// @Resource, @PostConstruct, @PreDestroy
-        //CommonAnnotationBeanPostProcessor cbp = new CommonAnnotationBeanPostProcessor();
-        //// @Configuration, @ComponentScan, @Bean, @Import, @ImportResource, @PropertySource, (触发扫描 @Component)
-        //ConfigurationClassPostProcessor ccp = new ConfigurationClassPostProcessor();
 
         log.info("start app !");
         SpringApplication.run(AuthMpgApplication.class, args);
+
+
+
+
+
+        //
+        //// @Autowired, @Value, @Inject
+        // AutowiredAnnotationBeanPostProcessor bp = new AutowiredAnnotationBeanPostProcessor();
+        //// @Resource, @PostConstruct, @PreDestroy
+        // CommonAnnotationBeanPostProcessor cbp = new CommonAnnotationBeanPostProcessor();
+        //// @Configuration, @ComponentScan, @Bean, @Import, @ImportResource, @PropertySource, (触发扫描 @Component)
+        // ConfigurationClassPostProcessor ccp = new ConfigurationClassPostProcessor();
+
+
     }
 
 }
