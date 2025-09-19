@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
+
+import java.util.List;
 
 
 @Configuration
@@ -19,7 +22,8 @@ public class AppWebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(interceptor).addPathPatterns("/**");
+        // 注册信息
+        registry.addInterceptor(interceptor).addPathPatterns("/**").excludePathPatterns("/v*/pubApi/**", "/pubApi/**").order(3);
     }
 
 
@@ -28,6 +32,14 @@ public class AppWebMvcConfig implements WebMvcConfigurer {
         // 异步操作的超时时间，值为0或者更小，表示永不超时
         configurer.setDefaultTimeout(60_000);
         configurer.setTaskExecutor(asyncTaskExecutor);
+    }
+
+    @Autowired
+    private AppMethodArgumentResolver argumentResolver;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(argumentResolver);
     }
 }
 
