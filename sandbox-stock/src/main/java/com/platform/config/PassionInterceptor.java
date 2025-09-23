@@ -2,11 +2,13 @@ package com.platform.config;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.util.concurrent.RateLimiter;
 import com.platform.utils.RequestIdHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -21,14 +23,28 @@ import java.util.Map;
 
 @Slf4j
 @Component
+// 项目中配置 app.enable.passion-interceptor 时项目才会注入 bean
+@ConditionalOnProperty(value = {"app.enable.passion-interceptor"})
 public class PassionInterceptor extends HandlerInterceptorAdapter implements Serializable {
     private static final long serialVersionUID = 8006753431020928330L;
 
     private static final String REQUESTID = "requestId";
 
+    // 令牌桶限流
+    private static final RateLimiter rateLimiter = RateLimiter.create(5.0); // 每秒5个令牌
+
+    public static boolean tryAcquire() {
+        return rateLimiter.tryAcquire(); // 尝试获取令牌，如果没有可用令牌则返回false
+    }
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(!tryAcquire()){
+            // todo 返回限流系统信息。·
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return false;
+        }
         String url = request.getRequestURL().toString();
         String id = RequestIdHelper.generate();
         MDC.put(REQUESTID, id);
