@@ -1,0 +1,45 @@
+package com.platform.authcommon.api;
+
+import cn.hutool.core.lang.UUID;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+
+/**
+ * @Description
+ * @Author liangkaiyang
+ * @Date 2025-10-16 6:19 PM
+ */
+
+
+@Slf4j
+public class OrderFeignConfig implements RequestInterceptor {
+
+    @Override
+    public void apply(RequestTemplate template) {
+
+        String param = template.toString();
+        log.info("app-server {} 入参:{}", template.url(), param.replace(param.split("\\{")[0], ""));
+        // feign 调用添加请求头
+        template.header("app-server","order-server");
+        template.header("X-Gaia-Api-Key", "1f35373ccda84693815fa12757e1cfab");
+        template.header("Content-Type", "application/json;charset=utf-8");
+
+    }
+
+
+    @Bean
+    public RequestInterceptor requestInterceptor() {
+        return template -> {
+            template.header("X-Gaia-Api-Key", "1f35373ccda84693815fa12757e1cfaa");
+            template.header("Content-Type", "application/json");
+        };
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(UUID.fastUUID().toString().replace("-",""));
+
+    }
+}
