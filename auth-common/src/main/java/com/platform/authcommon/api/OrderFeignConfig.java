@@ -7,15 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @Description
+ * 调用方式，添加拦截器
  * @Author liangkaiyang
  * @Date 2025-10-16 6:19 PM
  */
-
-
 @Slf4j
 public class OrderFeignConfig implements RequestInterceptor {
 
+    /**
+     *  订单服务feign调用拦截器,实现方式一
+     */
     @Override
     public void apply(RequestTemplate template) {
 
@@ -28,7 +29,9 @@ public class OrderFeignConfig implements RequestInterceptor {
 
     }
 
-
+    /**
+     *  feign调用拦截器,全局方式
+     */
     @Bean
     public RequestInterceptor requestInterceptor() {
         return template -> {
