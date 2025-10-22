@@ -1,0 +1,23 @@
+Feign原理
+
+
+@EnableFeignClients
+
+@Import(FeignClientsRegistrar.class)
+
+这个类实现了 ImportBeanDefinitionRegistrar 接口，在这个接口的registerBeanDefinitions方法中，
+可以手动创建BeanDefinition并注册，之后spring会根据BeanDefinition实例化生成bean，并放入容器中。
+
+
+过Feign的Builder API来手动创建一个Feign客户端
+这个过程中还需要配置Client、Encoder、Decoder、Contract、RequestInterceptor等内容。
+
+Client：实际http请求的发起者，如果不涉及负载均衡可以使用简单的Client.Default，用到负载均衡则可以使用LoadBalancerFeignClient，
+前面也说了，LoadBalancerFeignClient中的delegate其实使用的也是Client.Default
+
+Encoder和Decoder：Feign的编解码器，在spring项目中使用对应的SpringEncoder和ResponseEntityDecoder，
+这个过程中我们借用GsonHttpMessageConverter作为消息转换器来解析json
+
+RequestInterceptor：Feign的拦截器，一般业务用途比较多，比如添加修改header信息等，这里用不到可以不配
+Contract：字面意思是合约，它的作用是将我们传入的接口进行解析验证，看注解的使用是否符合规范，然后将关于http的元数据抽取成结果并返回。
+如果我们使用RequestMapping、PostMapping、GetMapping之类注解的话，那么对应使用的是SpringMvcContract
