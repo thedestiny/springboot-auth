@@ -9,3 +9,4 @@ application-dev.yml
 barcode.png
 qrcode.png
 # product-server/src/test/java/com/platform/productserver/MybatisGenerator.java
+.trae 
