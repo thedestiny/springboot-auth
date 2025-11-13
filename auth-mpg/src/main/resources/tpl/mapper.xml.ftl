@@ -63,14 +63,30 @@
         </#list>
     </insert>
 
+    <insert id="insertSelective" parameterType="${package.Entity}.${table.entityName}">
+        insert into ${table.name}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <#list table.fields as field>
+            <#if !field.keyFlag><#--生成主键排在第一位-->
+            <if test="${field.propertyName} != null">${field.name}<#if field_has_next>,</#if></if>
+            </#if>
+            </#list>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <#list table.fields as field>
+                <#if !field.keyFlag><#--生成主键排在第一位-->
+            <if test="${field.propertyName} != null">${r'#{'}${field.propertyName}${r"}"}<#if field_has_next>,</#if></if>
+                </#if>
+            </#list>
+        </trim>
+    </insert>
+
     <select id="selectEntityById" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from ${table.name}
         <#--生成主键排在第一位-->
-        <#list table.fields as field>
-            <#if field.keyFlag>where ${field.name} = ${r'#{'}${field.propertyName}${r"}"}</#if>
-        </#list>
+        <#list table.fields as field><#if field.keyFlag>where ${field.name} = ${r'#{'}${field.propertyName}${r"}"}</#if></#list>
     </select>
 
     <select id="queryEntityList" resultMap="BaseResultMap">

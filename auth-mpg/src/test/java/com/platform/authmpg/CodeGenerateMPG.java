@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class CodeGenerateMPG {
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
         gc.setOutputDir(projectPath + "/knead-business/src/main/java");
-        gc.setAuthor("kaiyang");
+        gc.setAuthor("kai yang");
         gc.setOpen(false);
         // 是否覆盖项目
         gc.setFileOverride(true);
@@ -45,6 +46,7 @@ public class CodeGenerateMPG {
         gc.setBaseColumnList(true);
         gc.setDateType(DateType.ONLY_DATE);
         gc.setMapperName("%sMapper");
+
         gc.setSwagger2(true); //实体属性 Swagger2 注解
         mpg.setGlobalConfig(gc);
 
@@ -58,7 +60,8 @@ public class CodeGenerateMPG {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
 
-        dsc.setUrl("jdbc:mysql://localhost:3306/knead_business?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        // brew services start mysql
+        dsc.setUrl("jdbc:mysql://localhost:3306/waimai?useUnicode=true&useSSL=false&characterEncoding=utf8");
         dsc.setUsername("root");
         dsc.setPassword("123456");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
@@ -102,16 +105,40 @@ public class CodeGenerateMPG {
         // 自定义输出配置
         List<FileOutConfig> focList = new ArrayList<>();
 //
-        // // 自定义controller的代码模板
-//         String entityTpl = "/tpl/entity.java.ftl";
-//         // 自定义配置会被优先输出
-//         focList.add(new FileOutConfig(entityTpl) {
-//             @Override
-//             public String outputFile(TableInfo tableInfo) {
-//                 String expand = projectPath + "/knead-business/src/main/java/" + pc.getParent() + File.separator + pc.getEntity();
-//                 return String.format((expand + File.separator + "%s" + ".java"), tableInfo.getEntityName());
-//             }
-//         });
+        // 自定义controller的代码模板
+        String entityTpl = "/tpl/entity.java.ftl";
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(entityTpl) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                String expand = projectPath + "/knead-business/src/main/java/" + transPath(pc.getParent()) + File.separator + pc.getEntity();
+                return String.format((expand + File.separator + "%s" + ".java"), tableInfo.getEntityName());
+            }
+        });
+
+        // 自定义controller的代码模板
+        String mapperTpl = "/tpl/mapper.java.ftl";
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(mapperTpl) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名 + pc.getModuleName()
+                modify(tableInfo);
+                String expand = projectPath + "/knead-business/src/main/java/" + transPath(pc.getParent()) + File.separator + pc.getMapper();
+                return String.format((expand + File.separator + "%s" + ".java"), tableInfo.getMapperName());
+            }
+        });
+
+        String xmlTpl = "/tpl/mapper.xml.ftl";
+        // 自定义配置会被优先输出  + pc.getModuleName()
+        focList.add(new FileOutConfig(xmlTpl) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                return projectPath + "/knead-business/src/main/resources/mapper/business"
+                        + "/" + tableInfo.getXmlName() + StringPool.DOT_XML;
+            }
+        });
 //
 //
         // // 自定义controller的代码模板
@@ -154,35 +181,15 @@ public class CodeGenerateMPG {
         //     }
         // });
 //
-        // // 自定义controller的代码模板
-        // String mapperTpl = "/tpl/mapper.java.ftl";
-        // // 自定义配置会被优先输出
-        // focList.add(new FileOutConfig(mapperTpl) {
-        //     @Override
-        //     public String outputFile(TableInfo tableInfo) {
-        //         // 自定义输出文件名 + pc.getModuleName()
-        //         modify(tableInfo);
-        //         String expand = projectPath + "/src/main/java/" + pc.getParent() + File.separator + pc.getMapper();
-        //         return String.format((expand + File.separator + "%s" + ".java"), tableInfo.getMapperName());
-        //     }
-        // });
+
 //
 //
         // // 如果模板引擎是 freemarker /tpl/mapper.xml.ftl
         // String xmlTpl = "/templates/mapper.xml.ftl";
-        String xmlTpl = "/tpl/mapper.xml.ftl";
-//
-         // 自定义配置会被优先输出  + pc.getModuleName()
-         focList.add(new FileOutConfig(xmlTpl) {
-             @Override
-             public String outputFile(TableInfo tableInfo) {
-                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                 return projectPath + "/knead-business/src/main/resources/mapper/business"
-                         + "/" + tableInfo.getXmlName() + StringPool.DOT_XML;
-             }
-         });
+
 
         cfg.setFileOutConfigList(focList);
+        // 使用自定义模板
         mpg.setCfg(cfg);
 
         // TableInfo
@@ -194,11 +201,11 @@ public class CodeGenerateMPG {
 
         // 配置自定义输出模板
         //指定自定义模板路径，注意不要带上.ftl/.vm, 会根据使用的模板引擎自动识别
-        // templateConfig.setEntity(null);
+        templateConfig.setEntity("");
         // templateConfig.setService(null);
         templateConfig.setController("");
         // templateConfig.setServiceImpl(null);
-        // templateConfig.setMapper(null);
+        templateConfig.setMapper("");
         templateConfig.setXml("");
         templateConfig.setEntityKt("");
         // templateConfig.setXml(null);
@@ -228,11 +235,10 @@ public class CodeGenerateMPG {
         // String[] split = TestUtils.sl.split("\n");
         // strategy.setInclude();
         //strategy.setControllerMappingHyphenStyle(true);
-        strategy.setTablePrefix("tb_");
+        strategy.setTablePrefix("t_");
 //        strategy.setInclude("tb_item_order","tb_item_order_detail", "tb_item_refund", "tb_item_refund_detail", "tb_trade_order");
 
-        strategy.setInclude("tb_invite_record");
-        //  strategy.setInclude("tb_user_address");
+        strategy.setInclude("t_cms_article");
         mpg.setStrategy(strategy);
 
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
@@ -241,6 +247,17 @@ public class CodeGenerateMPG {
 
     }
 
+    public static void modify(TableInfo tableInfo) {
+        // tableInfo.setEntityName(tableInfo.getEntityName().substring(1));
+//        tableInfo.setMapperName(tableInfo.getMapperName().substring(1));
+//        tableInfo.setServiceImplName(tableInfo.getServiceImplName().substring(1));
+//        tableInfo.setControllerName(tableInfo.getControllerName().substring(1));
+    }
+
+    public static String transPath(String pth){
+        return pth.replaceAll("\\.", File.separator);
+
+    }
 
 
 }
