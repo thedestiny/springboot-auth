@@ -5,11 +5,17 @@ spring:
     password: 123456
   banner:
     charset: UTF-8
+  batch:
+    job:
+      enabled: true
+
 server:
   port: 9096
 ribbon:
   eager-load:
     enabled: true
+
+
 
 # 监控
 management:

@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class CodeGenerateMPG {
 
 
     public static void main(String[] args) {
+
+        SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
 
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();

@@ -1,0 +1,82 @@
+server:
+  # Tomcat的最大连接数只有200，最大线程数也只有200。这意味着当并发请求超过200时，后续请求就会排队等待。
+  # SpringBoot的默认超时时间是无限长。这会导致连接一直占用，直到客户端主动断开。
+  tomcat:
+    max-connections: 10000 # 最大连接数
+  threads:
+    max: 800      # 最大工作线程数
+    min-spare: 100   # 最小空闲线程数
+    accept-count: 100   # 等待队列长度
+    connection-timeout: 20000
+
+  # leak-detection-threshold这个配置。默认情况下这个检测是关闭的，如果代码中存在连接泄漏问题，根本发现不了。
+  # 连接池的最大和最小连接数
+  datasource:
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+
+  # 设置时区
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-ddHH:mm:ss
+    serialization:
+      write-dates-as-timestamps: false
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=10000,expireAfterWrite=600s
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      file-size-threshold: 2KB
+      location: /tmp
+      resolve-lazily: false
+
+# SpringBoot默认使用 SimpleAsyncTaskExecutor，这个执行器每次都会创建新线程，
+#   没有线程池复用机制。高并发情况下会创建大量线程，最终导致系统资源耗尽。
+  task:
+    execution:
+      pool:
+        core-size: 8
+        max-size: 16
+        queue-capacity: 100
+        keep-alive: 60s
+      thread-name-prefix: async-task-
+    scheduling:
+      pool:
+        size: 4
+      thread-name-prefix: scheduling-
+
+    web:
+      resources:
+        cache:
+          cachecontrol:
+            max-age: 365d
+            cache-public: true
+        chain:
+          strategy:
+            content:
+              enabled: true
+              paths: /**
+              cache: true
+            static-locations: classpath:/static/
+
+# @Transactional(timeout = 30, rollbackFor = Exception.class)
