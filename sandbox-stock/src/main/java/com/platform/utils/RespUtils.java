@@ -45,4 +45,14 @@ public class RespUtils {
         BaseResp<T> resp = new BaseResp<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "参数错误");
         return resp;
     }
+
+
+    public static void main(String[] args) {
+
+        byte dat = -124;
+        System.out.println(dat);
+
+
+
+    }
 }
