@@ -27,3 +27,56 @@ batch processing
 
 https://blog.csdn.net/2501_91483426/article/details/155328171
 
+
+flink 无边界计算和无边界计算 有状态和无状态计算。
+
+实时计算框架 storm spark flink 
+
+kafka rabbitmq rocketmq  处理完数据 发送到mysql rocketmq redis 
+
+jobManager taskManager 
+sources -> flatmap -> keyAggregation&Sink
+算子 算子链 并行度
+
+flink 客户端
+
+sql 
+tableApi
+stream table 
+
+data-warehouse-learning
+
+解压文件
+tar -zxvf flink-1.18.1-bin-scala_2.12.tgz -C /opt/software
+
+
+```
+firewall-cmd --reload
+
+cat > docker-compose.yml <<-'EOF'
+version: '3'
+services:
+  zookeeper:
+    image: wurstemeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka-net  
+  kafka:
+    image: wurstemeister/kafka 
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+         
+EOF
+
+
+
+```
+
+
+
+
+
