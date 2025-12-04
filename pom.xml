@@ -42,6 +42,7 @@
         <module>sandbox-desen</module>
 
         <module>data-cleaning</module>
+        <module>data-flink</module>
 
     </modules>
 
