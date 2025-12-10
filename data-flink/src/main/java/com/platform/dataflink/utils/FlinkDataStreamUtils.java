@@ -88,6 +88,8 @@ public class FlinkDataStreamUtils {
         SingleOutputStreamOperator<Tuple2<String, Integer>> process = tmpList.keyBy(UserInfoDto::getUsername)
                 .window(TumblingEventTimeWindows.of(Time.seconds(1)))
                 .process(new ProcessWindowFunction<UserInfoDto, Tuple2<String, Integer>, String, TimeWindow>() {
+                    private static final long serialVersionUID = 7936463436978621626L;
+
                     @Override
                     public void process(String username, ProcessWindowFunction<UserInfoDto, Tuple2<String, Integer>, String, TimeWindow>.Context context,
                                         Iterable<UserInfoDto> elements, Collector<Tuple2<String, Integer>> out) throws Exception {
