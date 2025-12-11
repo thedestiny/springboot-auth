@@ -81,6 +81,7 @@ public class FlinkDataStreamUtils {
                 new UserInfoDto("1","小张",10, new Date(433), new Date(1))
         );
         // 指定 watermark 时间并指定 eventTime 时间为 applyTime
+        // data-warehouse-learning
         DataStream<UserInfoDto> tmpList = listData
                 .assignTimestampsAndWatermarks(WatermarkStrategy.<UserInfoDto>forBoundedOutOfOrderness(Duration.ofSeconds(1))
                         .withTimestampAssigner((node,tms) -> node.getApplyTime().getTime()));
