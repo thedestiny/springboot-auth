@@ -12,6 +12,8 @@ import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
+import org.apache.flink.runtime.state.hashmap.HashMapStateBackend;
+import org.apache.flink.runtime.state.storage.JobManagerCheckpointStorage;
 import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.*;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+// https://gitee.com/wzylzjtn/data-warehouse-learning/tree/master
 @Slf4j
 public class FlinkDataStreamUtils {
 
@@ -53,6 +56,7 @@ public class FlinkDataStreamUtils {
         // keyBy 分组
         // reduce 聚合数据
         // aggregate 自定义聚合
+        // keyBy 之后进行窗口计算
 
 
         ParameterTool parameterTool = ParameterTool.fromArgs(args);
@@ -62,6 +66,9 @@ public class FlinkDataStreamUtils {
         env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
         env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
 
+        // 设置 state backend 的持久化操作
+        env.setStateBackend(new HashMapStateBackend());
+        env.getCheckpointConfig().setCheckpointStorage(new JobManagerCheckpointStorage("file:///D:/flink-state"));
 
         env.getCheckpointConfig().setCheckpointTimeout(60_000); // 检查点超时时间 60s
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(50_000); // 检查点之间最小暂停时间
@@ -81,7 +88,7 @@ public class FlinkDataStreamUtils {
                 new UserInfoDto("1","小张",10, new Date(433), new Date(1))
         );
         // 指定 watermark 时间并指定 eventTime 时间为 applyTime
-        // data-warehouse-learning
+        // data-warehouse-learning 设置 watermark 延迟时间
         DataStream<UserInfoDto> tmpList = listData
                 .assignTimestampsAndWatermarks(WatermarkStrategy.<UserInfoDto>forBoundedOutOfOrderness(Duration.ofSeconds(1))
                         .withTimestampAssigner((node,tms) -> node.getApplyTime().getTime()));
