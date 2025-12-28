@@ -37,3 +37,42 @@ trace com.example.namespaces methodName
 
 
 ```
+
+```
+
+仪表盘
+刷新实时数据，间隔为2s, 刷新2次
+dashboard -i 2000 -n 2
+
+线程信息
+thread  #显示第一页线程信息
+thread --all 显示所有线程信息
+thread id   #显示对应线程id的堆栈信息，id为上面显示的ID列的值。
+
+
+thread -n 3 #查看最忙的三个线程堆栈信息
+thead -b  #查看当前java进程是否存在死锁
+
+Search Method，搜索jvm已经加载的方法信息
+sm -d 全限定类名,方法名，即全路径
+
+Search Class，搜索jvm已经加载的类信息
+sc -d 全限定类名  #显示对应类的详细信息
+
+反编译类信息成为 java 代码
+jad demo.MathGame
+
+
+作用是观察方法的入参、返回值、异常、实例对象本身等信息。
+watch 全限定类名 方法名 【观察表达式】
+
+# 观察两个层级
+watch demo.MathGame primeFactors '{params, target, returnObj, throwExp}' -x 2 
+
+
+
+
+
+
+
+```
