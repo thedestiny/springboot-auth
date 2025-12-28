@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.platform</groupId>
     <artifactId>auth-mpg</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>auth-mpg</name>
     <description>auth-mpg</description>
     <properties>
