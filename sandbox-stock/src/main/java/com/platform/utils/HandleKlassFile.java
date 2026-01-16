@@ -9,7 +9,7 @@ public class HandleKlassFile {
 
     public static void main(String[] args) {
 
-        String path = "E:\\work\\trade\\ruoyi-business";
+        String path = "E:\\work\\trade\\20251230\\xyhlw-wechat";
 
         String dd = "/* 292 */";
         System.out.println(dd.length());
