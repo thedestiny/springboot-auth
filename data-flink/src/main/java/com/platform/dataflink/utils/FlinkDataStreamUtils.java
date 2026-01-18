@@ -77,7 +77,7 @@ public class FlinkDataStreamUtils {
         env.setParallelism(9); // 设置并发度
 
         List<UserInfoDto> dtoList = new ArrayList<>();
-        dtoList.add(new UserInfoDto("1","小张",10, new Date(433), new Date()));
+        dtoList.add( new UserInfoDto("1","小张",10, new Date(433), new Date()));
         dtoList.add(new UserInfoDto("2","小王",11, new Date(333), new Date()));
         dtoList.add(new UserInfoDto("3","小李",12, new Date(444), new Date()));
 
