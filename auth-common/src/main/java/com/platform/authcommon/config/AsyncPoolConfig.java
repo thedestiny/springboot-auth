@@ -4,9 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
@@ -19,13 +24,28 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @EnableAsync
 @Configuration
-public class AsyncPoolConfig implements AsyncConfigurer {
+public class AsyncPoolConfig implements AsyncConfigurer, SchedulingConfigurer {
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(30);
+        taskScheduler.setBeanName("schedule-task");
+        taskScheduler.setThreadNamePrefix("task-");
+
+        taskRegistrar.setScheduler(taskScheduler);
+    }
 
     private static final int PROCESSORS = Runtime.getRuntime().availableProcessors();
 
+    //  @EventListener
+    // SimpleApplicationEventMulticaster  ApplicationEventMulticaster
     @Bean
     @Override
     public Executor getAsyncExecutor() {
+
+        SimpleApplicationEventMulticaster  multicaster = new SimpleApplicationEventMulticaster();
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(PROCESSORS);
@@ -37,12 +57,14 @@ public class AsyncPoolConfig implements AsyncConfigurer {
         // 等待所有任务结果候再关闭线程池
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);
-        // 定义拒绝策略
+        // 定义拒绝策略 ThreadPoolExecutor
         executor.setRejectedExecutionHandler(
                 new ThreadPoolExecutor.CallerRunsPolicy()
         );
         // 初始化线程池, 初始化 core 线程
         executor.initialize();
+
+
 
         return executor;
     }
