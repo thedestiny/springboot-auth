@@ -61,7 +61,7 @@ InitializingBean 接口，在 bean 初始化完成后调用，用于执行一些
 
 
 互联网三高设计
-高并发 高可用 高扩展
+高并发 高可用 高扩展   
 
 mysql 数据库 cpu 高问题排查
 监控工具、top命令查看
@@ -121,6 +121,10 @@ threadPoolExecutor
 定时任务处理设置线程池 
 监听器同步执行，需要转异步 监听器是同步执行 
 
+aop 
+jdk 动态代理 MethodInterceptor
+cglib 动态代理 Advisor=Pointcut+Advice
 
+BeanNameAutoProxyCreator 基于 bean 名称的自动代理创建器，用于为指定的 bean 名称创建代理对象。
 
 ```
