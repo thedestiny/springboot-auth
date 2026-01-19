@@ -117,7 +117,7 @@ threadPoolExecutor
 
 线程池 处理异步任务
 异步任务  方法添加注解
-异步处理事件 applicationEventMuliCaster
+异步处理事件 applicationEventMuliCaster，配置线程池或者添加 Async 注解，并设置线程池，默认使用的线程池并非真正异步，SimpleAsyncTaskExecutor，无法复用线程
 定时任务处理设置线程池 
 监听器同步执行，需要转异步 监听器是同步执行 
 
