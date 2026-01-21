@@ -127,4 +127,58 @@ cglib 动态代理 Advisor=Pointcut+Advice
 
 BeanNameAutoProxyCreator 基于 bean 名称的自动代理创建器，用于为指定的 bean 名称创建代理对象。
 
+高可用
+https://blog.csdn.net/IOIO_/article/details/155678655
+
+
+# 
+server.tomcat.uri-encoding = UTF-8
+#tomcat最小线程数
+server.tomcat.min-spare-threads = 200
+#tomcat最大线程数
+server.tomcat.max-threads = 1000
+server.connection-timeout = 60000
+
+
+#feign超时时间
+ribbon.ConnectTimeout = 60000
+ribbon.ReadTimeout = 60000
+#开启压缩
+feign.compression.request.enabled = true
+feign.compression.response.enabled = true
+#压缩类型
+feign.compression.request.mime-types = text/xml,application/xml,application/json
+#启用 httpclient
+feign.httpclient.enabled = false
+feign.okhttp.enabled = true
+
+# 最大连接数
+ribbon.MaxTotalConnections = 2000
+# 每个host最大连接数
+ribbon.MaxConnectionsPerHost = 500
+# 最大连接数
+feign.httpclient.max-connections = 2000
+# 每条路由的最大连接数
+feign.httpclient.max-connections-per-route = 500
+
+连接失败
+长尾延迟 
+
+# https://mp.weixin.qq.com/s/WDHnCDNVTM9k0cnzqcFqcg
+长窗低频（长窗口 + 低频次） 1h/7h/24h 5-10次
+短窗高频（短窗口 + 高频次） 1s 100-1000次
+限流 滑动窗口 漏斗 令牌桶
+
+长窗低频重准确性与持久性，需全局一致、长期存储；
+短窗高频重吞吐与响应速度，可牺牲部分精度换取性能。
+
+mysql max_allowed_packet =4M
+查询语句过长，oom, 全表扫描
+若IN列表匹配的行数超过表行数的5%~10%，优化器直接放弃索引，选全表扫描；
+大量数据查询，走临时表的方法
+大表数据查询
+https://mp.weixin.qq.com/s/nH_U9kpIJARiL5XhNdINPw
+线程数优化
+https://mp.weixin.qq.com/s/rdEXjrkh5-kqBSv_qam3Zw
+
 ```

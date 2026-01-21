@@ -1,6 +1,10 @@
 package com.platform.authcommon.config;
 
+import feign.Feign;
 import feign.Logger;
+import feign.Request;
+import feign.Retryer;
+import feign.okhttp.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
@@ -11,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * openfeign 第一次调用慢
@@ -56,7 +61,8 @@ public class FeignClientConfig {
 
     // 第一步开启所有日志打印
     @Bean
-    Logger.Level feignLoggerLevel() {
+    public Logger.Level feignLoggerLevel() {
+
         return Logger.Level.FULL; // 打印所有细节日志
     }
     // 第二步 将日志打印到控制台
@@ -67,6 +73,29 @@ public class FeignClientConfig {
     // spring.main.allow-bean-definition-overriding: true # 允许覆盖Bean定义
     // spring.main.lazy-initialization: false # 全局禁用懒加载（谨慎！可能增加启动时间
     //
+
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient(new okhttp3.OkHttpClient.Builder()
+                .readTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+
+                .build());
+    }
+//
+    @Bean
+    public Feign.Builder feignBuilder() {
+        return Feign.builder()
+                .client(new OkHttpClient()) // 使用OkHttp客户端
+                .options(new Request.Options(5000, 10000))
+                .logLevel(feignLoggerLevel()) // 设置日志级别
+                .requestInterceptor(requestTemplate -> { // 添加请求拦截器，如果需要的话
+                    // requestTemplate.header("Header-Name", "Header-Value");
+                })
+                .retryer(new Retryer.Default(100, TimeUnit.SECONDS.toMillis(1), 3)); // 设置重试策略
+    }
+
 
 
 }

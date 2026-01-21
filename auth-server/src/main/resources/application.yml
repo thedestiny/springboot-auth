@@ -53,11 +53,62 @@ logging:
     com.platform: debug
 
 
+# prometheus 和
 management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
   endpoints:
     web:
       exposure:
+        # include: health,metrics,httptrace
         include: "*"
 
 server:
   port: 9401
+
+
+feign:
+  client:
+    config:
+      default: # 全局默认配置
+        connectTimeout: 5000    # 连接超时
+        readTimeout: 15000      # 读取超时
+        loggerLevel: basic
+      specific-service: # 针对特定服务
+        connectTimeout: 3000
+        readTimeout: 10000
+
+  okhttp:
+    enabled: true
+    max-idle-connections: 200
+    keep-alive-duration: 300  # 连接保持时间(秒)
+    connect-timeout: 5000
+    read-timeout: 10000
+    write-timeout: 10000
+    connection-pool-max-idle-time: 5  # 分钟
+
+ribbon:
+  connectTimeout: 3000
+  readTimeout: 10000
+  okToRetryOnAllOperations: false  # 只对GET请求重试
+  maxAutoRetries: 1
+  maxAutoRetriesNextServer: 1
+
+# Hystrix配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD  # 使用线程隔离
+          thread:
+            timeoutInMilliseconds: 10000
+      circuitBreaker:
+        requestVolumeThreshold: 20
+        sleepWindowInMilliseconds: 5000
+        errorThresholdPercentage: 50
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 10000

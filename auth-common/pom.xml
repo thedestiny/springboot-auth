@@ -24,6 +24,19 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>3.1.10</version>
+        </dependency>
+
+        <!-- OkHttp -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+            <version>13.4</version>
+        </dependency>
+
         <!-- mahout-core -->
         <dependency>
             <groupId>org.apache.mahout</groupId>
