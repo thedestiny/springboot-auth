@@ -40,8 +40,19 @@ public class AppLogFilter extends OncePerRequestFilter {
         // 传递包装后的请求，确保后续组件能重复读取
         filterChain.doFilter(wrappedRequest, wrappedResponse);
 
+        //过滤器链执行完毕，请求体被消费 读取缓存的请求体
+        byte[] reqBody = wrappedRequest.getContentAsByteArray();
+        //将请求体转换为字符串
+        String reqBodyStr = new String(reqBody, wrappedRequest.getCharacterEncoding());
+        log.debug("Received request body: {}", reqBodyStr);
+
+
         // 响应后处理：添加签名
         byte[] responseBody = wrappedResponse.getContentAsByteArray();
+        //将响应体转换为字符串
+        String resBodyStr = new String(responseBody, wrappedResponse.getCharacterEncoding());
+        log.debug("Received response body: {}", resBodyStr);
+
         String signature = generateSignature(responseBody);
         wrappedResponse.setHeader("X-Response-Signature", signature);
         // 必须调用此方法将缓存内容写入原始响应

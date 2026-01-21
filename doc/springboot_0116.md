@@ -181,4 +181,11 @@ https://mp.weixin.qq.com/s/nH_U9kpIJARiL5XhNdINPw
 线程数优化
 https://mp.weixin.qq.com/s/rdEXjrkh5-kqBSv_qam3Zw
 
+redis 内存过高
+使用 keys 命令 热点key key的value过大
+使用 hgetall 命令查看热点key的value
+
+响应时间 并发数 吞吐量
+访问对象的方式 句柄和直接指针
+
 ```
