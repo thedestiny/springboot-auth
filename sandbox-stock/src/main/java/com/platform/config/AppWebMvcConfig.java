@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 
 @Configuration
@@ -23,7 +25,8 @@ public class AppWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册信息
-        registry.addInterceptor(interceptor).addPathPatterns("/**").excludePathPatterns("/v*/pubApi/**", "/pubApi/**").order(3);
+        registry.addInterceptor(interceptor).addPathPatterns("/**")
+                .excludePathPatterns("/v*/pubApi/**", "/pubApi/**").order(3);
     }
 
 
@@ -39,7 +42,36 @@ public class AppWebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+
         resolvers.add(argumentResolver);
     }
+
+
+    public static void main(String[] args) {
+
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(2,
+                10,1000,
+                TimeUnit.SECONDS,new LinkedBlockingQueue<>(2000));
+        // 允许核心线程超时
+        executor.allowCoreThreadTimeOut(true);
+        executor.submit(new Thread());
+
+
+
+        long taskCount = executor.getTaskCount();
+        int activeCount = executor.getActiveCount();
+        executor.toString();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        executorService.submit(new Thread());
+
+        ThreadPoolTaskExecutor tpt = new ThreadPoolTaskExecutor();
+        tpt.initialize();
+
+
+
+    }
+
+
 }
 

@@ -58,6 +58,15 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+  tomcat:
+    accept-count: 20
+    max-connections: 8192
+    max-http-form-post-size: 20MB
+    threads:
+      max: 200
+      min-spare: 20
+    uri-encoding: UTF-8
+    connection-timeout: 20000ms
 
 
 

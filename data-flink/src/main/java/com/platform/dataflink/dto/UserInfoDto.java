@@ -78,6 +78,16 @@ public class UserInfoDto {
         System.out.println(body1);
 
 
+        ThreadLocal<String> threadLocal = new ThreadLocal<String>(){
+            @Override
+            protected String initialValue() {
+                return "ss";
+            }
+        };
+        threadLocal.set("ddd");
+        threadLocal.remove();
+
+
     }
 
 }

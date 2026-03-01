@@ -72,7 +72,7 @@ mysql 数据库 cpu 高问题排查
 活跃的线程，连接，show processlist;
 
 
-
+ShardingSphere
 
 大表治理
 分库分表 数据库分区 数据库分库分表  读写分离
@@ -83,6 +83,8 @@ mysql 数据库 cpu 高问题排查
 
 清空表空间间隙 
 optimize table your_table_name;
+修改表索引， alter_table 重新组织数据
+ALTER TABLE your_table ENGINE=InnoDB;
 
 大表添加字段 5.6 之前会锁表 
 CREATE TABLE new_table LIKE old_table;
@@ -188,4 +190,89 @@ redis 内存过高
 响应时间 并发数 吞吐量
 访问对象的方式 句柄和直接指针
 
+
+AQS是多线程同步器，它是J.U.C包中多个组件的底层实现，如Lock、CountDownLatch、Semaphore等都用到了AQS.
+fail-safe 失败安全
+fail-fast 快速失败
+ConcerrentHashMap和CopyOnWriteArrayList
+静态变量、成员变量、静态代码
+
+
+
+
+
 ```
+
+##### transactional 失效的场景
+
+1 访问权限问题,如果不是 public 方法,不支持事务
+2 final 修饰的方法,spring 事务底层使用了 aop,使用 jdk 动态代理或者cglib生成代理类，final 方法无法被重写，没有办法添加事务功能
+3 方法的内部调用，导致事务不生效 使用 AopContext.currentProxy() 获取代理对象
+4 未被 spring 处理
+5 多线程调用
+6 数据库表不支持事务
+7 没有开启事务操作
+8 方法内异常信息没有正常抛出
+9 事务传播属性设置错误，
+required supports mandatory requires_new not_supported never nested 
+10 spring 默认回滚 runtimeException error 对于非运行时异常，不会回滚
+设置 rollbackFor
+
+大事务操作会导致死锁 回滚时间长 接口超时 主从延迟 数据库连接池沾满 锁等待
+网络io 文件io 
+
+应用层使用的注解
+@transactional
+
+PlatformTransactionManager 事务管理器 DataSourceTransactionManager
+DataSource 资源层
+TransactionDefinition 事务配置
+TransactionStatus 事务状态
+
+权限问题 代理机制导致 异常类型
+数据库连接池配置 
+最小连接 cpu*2 
+最大连接 cpu*10 
+
+线程的6大状态
+new-ready-running-terminate
+waiting-blocked
+time-waiting
+线程池的状态
+running shutdown stop tidying terminated
+
+
+daemon 
+守护线程是在后台运行，程序终止时退出守护线程终止
+用户线程是 用户创建，任务结束时线程结束
+
+collection map 
+set list queue  
+hashmap 会出现死循环和数据覆盖的问题，
+数组+链表
+优化有改为数组+链表+红黑树
+头插法和尾插法
+
+java 并发集合
+java内存模型 JMM
+java并发基础
+java锁
+并发工具类
+其它线程工具类
+java并发集合
+原子类atomic
+阻塞队列
+线程池
+
+juc
+Synchronized
+
+
+
+1 负责龙湖集团会员账户体系的创建与维护，涵盖积分发放、消费管理、清算结算及积分有效期处理，确保系统功能的稳定性和高可用。
+2 参与账户体系重构，设计并实施新旧系统数据迁移方案，实现系统不停机切换，确保业务连续性。
+3 从零搭建订单中心、交易中心，实现珑珠生活的订单和交易分离，提高系统的性能。
+4 参与集团技术任务，推动服务部署容器化，MQ消息上云，服务升级至jdk17,日志脱敏，旧系统下线等多项任务，优化系统架构和运维效率。
+
+
+
