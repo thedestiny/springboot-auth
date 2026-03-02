@@ -6,6 +6,7 @@ import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +38,34 @@ public class SftpUtils implements AutoCloseable {
     // 初始化 ftp 连接
     public void initSftp(FtpConfig config) throws JSchException {
         this.connectSftpServer(config.getHostname(), config.getUsername(), config.getPassword(), config.getPort());
+    }
+
+    // 读取文件
+    public void streamReadFile() {
+
+        SimpleApplicationEventMulticaster multicaster = new SimpleApplicationEventMulticaster();
+
+        String remoteFilePath = "/path/to/large/file.log";
+
+        try {
+            // 获取远程文件的输入流
+            InputStream inputStream = channel.get(remoteFilePath);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            // 逐行读取，流式处理
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // 在此处处理每一行数据
+                System.out.println(line); // 示例：打印行内容
+                // 可以在这里添加业务逻辑，如：解析、写入本地文件等
+            }
+
+            reader.close();
+
+
+        } catch (Exception e) {
+
+        }
+
     }
 
 
@@ -183,8 +212,6 @@ public class SftpUtils implements AutoCloseable {
     }
 
 
-
-
     /**
      * 下载文件
      *
@@ -310,8 +337,6 @@ public class SftpUtils implements AutoCloseable {
     public void information(String path) {
 
         // rename()：   重命名指定文件或目录
-
-
 
 
     }

@@ -1,9 +1,13 @@
 package com.platform.config;
 
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.ErrorHandler;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -40,6 +44,19 @@ public class AppBusConfig {
         executor.setAwaitTerminationSeconds(30);
         executor.initialize();
         return executor;
+    }
+
+    // 异步事件使用 @Async 或者 EventMulticaster 配置线程池
+    @Bean
+    public SimpleApplicationEventMulticaster simpleApplicationEventMulticaster() {
+
+        SimpleApplicationEventMulticaster multicaster = new SimpleApplicationEventMulticaster();
+        // 设置异步线程池
+        multicaster.setTaskExecutor(asyncTaskExecutor());
+        // 设置错误处理器
+        // multicaster.setErrorHandler(new LoggingErrorHandler());
+
+        return multicaster;
     }
 
 }
