@@ -9,6 +9,8 @@ import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.ErrorHandler;
 
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -23,10 +25,19 @@ public class AppBusConfig {
 
     @Bean("mvcAsyncTaskExecutor")
     public AsyncTaskExecutor asyncTaskExecutor() {
+
+        ConcurrentHashMap data = new ConcurrentHashMap();
+        HashMap<String,String> map = new HashMap<>(12,0.75f);
+        map.put("corePoolSize","5");
+        map.put("queueCapacity","3");
+        map.put("maxPoolSize","10");
+
+
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 线程池维护线程的最少数量
         // asyncServiceExecutor.setCorePoolSize(Runtime.getRuntime().availableProcessors() + 1);
         executor.setCorePoolSize(5);
+        executor.setQueueCapacity(3);
         // 线程池维护线程的最大数量
         executor.setMaxPoolSize(10);
         // 线程池所使用的缓冲队列
