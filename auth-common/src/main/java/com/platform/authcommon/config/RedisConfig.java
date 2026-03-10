@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 
 /**
@@ -47,7 +48,6 @@ public class RedisConfig {
         //可以用"redis://"来启用SSL连接
         // .addNodeAddress(prefix + properties.getHost() + ":" + properties.getPort());
         RedissonClient redisson = Redisson.create(config);
-
 
 
         log.info("init Redisson config end");
@@ -85,15 +85,15 @@ public class RedisConfig {
             "end\n" +
             "return 0 -- 限流";
 
-    public void test(){
+    public void test() {
         DefaultRedisScript<Integer> redisScript = new DefaultRedisScript<>(rateLimit, Integer.class); // 使用 List 来接收返回值。
-        String[] keys = new String[]{""};
+        String[] keys = new String[]{"1"};
         String[] args = new String[]{"value"};
-        String[] result = stringRedisTemplate.execute(redisScript, keys, args);
-        System.out.println("Result: " + Arrays.toString(result)); // 输出结果应该包括键和值
+//        String[] result = redisTemplate.execute(redisScript, keys, args);
+//        System.out.println("Result: " + Arrays.toString(result)); // 输出结果应该包括键和值
     }
-        redisTemplate.
-    }
+//        redisTemplate.
+//    }
 
     public static void main(String[] args) {
 

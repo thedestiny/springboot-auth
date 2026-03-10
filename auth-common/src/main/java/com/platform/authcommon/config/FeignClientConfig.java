@@ -5,6 +5,7 @@ import feign.Logger;
 import feign.Request;
 import feign.Retryer;
 import feign.okhttp.OkHttpClient;
+import okhttp3.ConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
@@ -76,11 +77,15 @@ public class FeignClientConfig {
 
     @Bean
     public OkHttpClient okHttpClient() {
+        // 自定义连接池
+        ConnectionPool pool = new ConnectionPool(10, 5, TimeUnit.MINUTES);
+        pool.connectionCount();
         return new OkHttpClient(new okhttp3.OkHttpClient.Builder()
-                .readTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
-                .connectTimeout(5, TimeUnit.SECONDS)
-
+                .retryOnConnectionFailure(true) // 重试失败的请求
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .connectionPool(pool) // 配置连接池
                 .build());
     }
 //
