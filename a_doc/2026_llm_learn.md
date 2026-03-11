@@ -29,3 +29,21 @@ gpt qwen claude 大语言模型
 
 找到信息 -> 找的准 -> 怎么找自主规划任务的智能助理
 
+分片 索引 
+召回 重排 生成
+
+
+deepseek 大模型
+所涉及的模型有 DeepSeek-V3.2
+
+智谱AI大模型
+所涉及的模型有 glm-5
+
+siliconFlow 大模型
+所涉及的大模型 Pro/MiniMaxAI/MiniMax-M2.5
+
+kimi 大模型 月之暗面
+所涉及的大模型 kimi-k2.5
+
+
+
