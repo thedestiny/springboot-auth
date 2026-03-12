@@ -11,3 +11,7 @@ qrcode.png
 # product-server/src/test/java/com/platform/productserver/MybatisGenerator.java
 .trae
 /data_lib
+
+.idea
+target
+.vscode
