@@ -3,9 +3,6 @@ spring:
   application:
     name: sandbox-sa-token
   datasource:
-    url: jdbc:mysql://localhost:3306/test_001?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
     active: dev
@@ -13,19 +10,23 @@ spring:
 # Sa-Token 配置
 sa-token:
   # token 名称（同时也是 cookie 名称）
-  token-name: token
+  token-name: satoken
   # token 有效期（单位：秒），默认30天，-1 代表永久有效
   timeout: 2592000
-  # token 最低活跃频率（单位：秒），-1 表示关闭活跃检测
+  # token 最低活跃频率 单位：秒,如果 token 超过此时间没有访问系统就会被冻结 ，-1 表示关闭活跃检测
   active-timeout: -1
   # 是否允许同一账号多地同时登录（true=允许，false=新登录挤掉旧登录）
   is-concurrent: true
   # 在多人登录同一账号时，是否共用一个 token（true=共用，false=各自独立）
-  is-share: true
-  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  is-share: false
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik） simple-uuid
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+  # 指定 token 提交前缀
+  token-prefix: "Bearer "
+  # 指定 Cookie 模式下自动填充 token 提交前缀
+  cookie-auto-fill-prefix: true
 
 # MyBatis Plus 配置
 mybatis-plus:
