@@ -1,0 +1,35 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: contract-boot
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/contract_boot?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: Root123456!
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+  mapper-locations: classpath*:mapper/**/*.xml
+
+
+esign:
+  # E签宝开放平台应用配置（默认使用官方 SaaSAPI_V3_Demo 的模拟环境凭据，请替换为自有应用）
+  app-id: 7439141928
+  app-secret: 29886371cce21aa683fc121654dfd11d
+  host: https://smlopenapi.esign.cn
+  notify-url: https://237ddf9e.r20.cpolar.top
+  # 甲方企业id 信息
+  # org-id: d121e83ec92a4e519ea92676d17df225
+  template:
+    component-key-a: partyAName
+    component-key-b: partyBName
+    component-key-contract-no: contractNo
